@@ -8,7 +8,7 @@ const icons:Record<string,typeof Activity>={work_order:Wrench,inspection:Clipboa
 export default async function ActivityPage({params}:{params:Promise<{locale:string}>}){
  const{locale}=await params;if(!isLocale(locale))notFound();
  const s=await createClient();
- const{data:logs}=await s.from("audit_logs").select("id,action,entity_type,entity_id,summary,metadata,created_at,actor_id,profiles:actor_id(full_name,work_email)").order("created_at",{ascending:false}).limit(100);
+ const{data:rawLogs}=await s.from("audit_logs").select("id,action,entity_type,entity_id,summary,metadata,created_at,actor_id").order("created_at",{ascending:false}).limit(100);\n const actorIds=[...new Set((rawLogs??[]).map(x=>x.actor_id).filter(Boolean))] as string[];\n const{data:profiles}=actorIds.length?await s.from("profiles").select("id,full_name,work_email").in("id",actorIds):{data:[]};\n const profileMap=new Map((profiles??[]).map(p=>[p.id,p]));\n const logs=(rawLogs??[]).map(row=>({...row,profiles:row.actor_id?profileMap.get(row.actor_id):null}));
  const groups=(logs??[]).reduce<Record<string,typeof logs>>((acc,row)=>{const key=new Date(row.created_at).toLocaleDateString(locale,{year:"numeric",month:"long",day:"numeric"});(acc[key]??=[]).push(row);return acc}, {});
  return <div className="space-y-7">
   <div><p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--kram-orange)]">System</p><h1 className="mt-2 text-3xl font-bold tracking-[-0.045em] text-zinc-950">Activity</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-500">A chronological audit trail of operational changes across KRAM.</p></div>
