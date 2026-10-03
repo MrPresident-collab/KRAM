@@ -105,3 +105,20 @@ export async function transitionWorkOrder(
 
   return { success: true, message: "Work order updated successfully." };
 }
+
+
+export type EvidenceState={success:boolean;message:string};
+export async function uploadWorkOrderEvidence(_p:EvidenceState,fd:FormData):Promise<EvidenceState>{
+ const id=String(fd.get("workOrderId")||""),type=String(fd.get("evidenceType")||"other"),caption=String(fd.get("caption")||""),file=fd.get("file");
+ if(!id||!(file instanceof File)||file.size===0)return{success:false,message:"Select a file."};
+ if(file.size>20*1024*1024)return{success:false,message:"Maximum file size is 20 MB."};
+ const allowed=["image/jpeg","image/png","image/webp","video/mp4","application/pdf"];if(!allowed.includes(file.type))return{success:false,message:"Unsupported file type."};
+ const s=await createClient();const{data:c}=await s.auth.getClaims();const uid=c?.claims?.sub;if(!uid)return{success:false,message:"Your session is no longer valid."};
+ const{data:record}=await s.from("work_orders").select("id,organization_id,branch_id").eq("id",id).maybeSingle();if(!record)return{success:false,message:"Work order not found."};
+ const{data:m}=await s.from("organization_members").select("organization_id,role").eq("user_id",uid).eq("organization_id",record.organization_id).limit(1).maybeSingle();if(!m||!["owner","admin","regional_admin","operations"].includes(m.role))return{success:false,message:"You are not authorized to upload evidence."};
+ const documentId=crypto.randomUUID(),safe=file.name.replace(/[^a-zA-Z0-9._-]/g,"-"),path=record.organization_id+"/"+(record.branch_id||"global")+"/"+documentId+"/"+safe;
+ const{error:uploadError}=await s.storage.from("kram-documents").upload(path,file,{contentType:file.type,upsert:false});if(uploadError)return{success:false,message:"Upload failed."};
+ const{error}=await s.from("work_order_media").insert({id:documentId,work_order_id:id,organization_id:record.organization_id,storage_path:path,file_name:file.name,mime_type:file.type,size_bytes:file.size,evidence_type:type,caption:caption||null,uploaded_by:uid});
+ if(error){await s.storage.from("kram-documents").remove([path]);return{success:false,message:"Evidence record could not be created."}};
+ for(const l of["fr","en","pt"])revalidatePath("/"+l+"/ops/work-orders/"+id);return{success:true,message:"Evidence uploaded successfully."};
+}
