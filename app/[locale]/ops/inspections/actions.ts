@@ -1,5 +1,6 @@
 "use server";
 import {revalidatePath} from"next/cache";import{z}from"zod";import{createClient}from"@/lib/supabase/server";
+import {writeAudit} from "@/lib/audit";
 const schema=z.object({assetId:z.string().uuid(),inspectionType:z.enum(["initial","routine","technical","pre_handover","emergency","other"]),scheduledFor:z.string().optional(),inspectorName:z.string().trim().max(120).optional(),inspectorPhone:z.string().trim().max(40).optional(),summary:z.string().trim().max(3000).optional(),recommendations:z.string().trim().max(3000).optional()});
 export type InspectionActionState={success:boolean;message:string};
 
@@ -31,6 +32,7 @@ export async function createInspection(_prev:InspectionActionState,fd:FormData):
  const{data:a}=await supabase.from("assets").select("id,organization_id,branch_id").eq("id",parsed.data.assetId).eq("organization_id",m.organization_id).maybeSingle();if(!a)return{success:false,message:"The selected asset is not accessible."};
  const{data:i,error}=await supabase.from("inspections").insert({organization_id:m.organization_id,asset_id:a.id,branch_id:a.branch_id,inspection_type:parsed.data.inspectionType,scheduled_for:parsed.data.scheduledFor?new Date(parsed.data.scheduledFor).toISOString():null,inspector_name:parsed.data.inspectorName||null,inspector_phone:parsed.data.inspectorPhone||null,summary:parsed.data.summary||null,recommendations:parsed.data.recommendations||null,created_by:userId}).select("id").single();
  if(error||!i)return{success:false,message:"The inspection could not be created."};
+ await writeAudit(supabase,{organizationId:m.organization_id,branchId:a.branch_id,actorId:userId,action:"inspection.created",entityType:"inspection",entityId:i.id,summary:"Inspection created",metadata:{inspectionType:parsed.data.inspectionType}});
 
  const { error: checklistError } = await supabase.from("inspection_items").insert(
    checklistTemplate.map(([category,item])=>({
@@ -86,6 +88,7 @@ export async function updateInspectionItem(fd: FormData): Promise<InspectionActi
    .eq("organization_id",m.organization_id);
 
  if(error)return{success:false,message:"The checklist item could not be updated."};
+ await writeAudit(supabase,{organizationId:m.organization_id,actorId:userId,action:"inspection.item_updated",entityType:"inspection_item",entityId:item.id,summary:"Inspection checklist item updated",metadata:{status:parsed.data.status}});
 
  revalidatePath("/fr/ops/inspections/"+item.inspection_id);
  revalidatePath("/en/ops/inspections/"+item.inspection_id);
