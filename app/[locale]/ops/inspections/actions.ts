@@ -93,3 +93,23 @@ export async function updateInspectionItem(fd: FormData): Promise<InspectionActi
 
  return{success:true,message:"Checklist item updated."};
 }
+
+
+export type EvidenceState={success:boolean;message:string};
+async function uploadEvidence(kind:"inspection"|"work_order",fd:FormData):Promise<EvidenceState>{
+ const id=String(fd.get(kind==="inspection"?"inspectionId":"workOrderId")||"");
+ const file=fd.get("file");const type=String(fd.get("evidenceType")||"other");const caption=String(fd.get("caption")||"");
+ if(!id||!(file instanceof File)||file.size===0)return{success:false,message:"Select a file."};
+ if(file.size>20*1024*1024)return{success:false,message:"Maximum file size is 20 MB."};
+ const allowed=["image/jpeg","image/png","image/webp","video/mp4","application/pdf"];if(!allowed.includes(file.type))return{success:false,message:"Unsupported file type."};
+ const s=await createClient();const{data:c}=await s.auth.getClaims();const uid=c?.claims?.sub;if(!uid)return{success:false,message:"Your session is no longer valid."};
+ const table=kind==="inspection"?"inspections":"work_orders";const{data:record}=await s.from(table).select("id,organization_id,branch_id").eq("id",id).maybeSingle();if(!record)return{success:false,message:"Record not found."};
+ const{data:m}=await s.from("organization_members").select("organization_id,role").eq("user_id",uid).eq("organization_id",record.organization_id).limit(1).maybeSingle();if(!m||!["owner","admin","regional_admin","operations"].includes(m.role))return{success:false,message:"You are not authorized to upload evidence."};
+ const documentId=crypto.randomUUID();const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,"-");const path=record.organization_id+"/"+(record.branch_id||"global")+"/"+documentId+"/"+safe;
+ const{error:uploadError}=await s.storage.from("kram-documents").upload(path,file,{contentType:file.type,upsert:false});if(uploadError)return{success:false,message:"Upload failed."};
+ const table2=kind==="inspection"?"inspection_media":"work_order_media";
+ const payload=kind==="inspection"?{id:documentId,inspection_id:id,organization_id:record.organization_id,storage_path:path,caption:caption||null,media_type:file.type.startsWith("video/")?"video":file.type.startsWith("image/")?"image":"document",evidence_type:type,uploaded_by:uid}:{id:documentId,work_order_id:id,organization_id:record.organization_id,storage_path:path,file_name:file.name,mime_type:file.type,size_bytes:file.size,evidence_type:type,caption:caption||null,uploaded_by:uid};
+ const{error}=await s.from(table2).insert(payload);if(error){await s.storage.from("kram-documents").remove([path]);return{success:false,message:"Evidence record could not be created."}};
+ for(const l of["fr","en","pt"])revalidatePath("/"+l+"/ops/"+(kind==="inspection"?"inspections":"work-orders")+"/"+id);return{success:true,message:"Evidence uploaded successfully."};
+}
+export async function uploadInspectionEvidence(_p:EvidenceState,fd:FormData){return uploadEvidence("inspection",fd)}
