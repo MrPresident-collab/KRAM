@@ -1,0 +1,15 @@
+"use server";
+import {revalidatePath} from "next/cache";import {z} from "zod";import {createClient} from "@/lib/supabase/server";
+const schema=z.object({assetId:z.string().uuid(),title:z.string().trim().min(3).max(180),category:z.string().trim().min(2).max(60),priority:z.enum(["low","normal","high","urgent"]),description:z.string().trim().max(3000).optional(),estimatedCost:z.coerce.number().nonnegative().optional(),clientApproval:z.enum(["not_required","pending","approved","rejected"])});
+export type WorkOrderActionState={success:boolean;message:string};
+export async function createWorkOrder(_prev:WorkOrderActionState,fd:FormData):Promise<WorkOrderActionState>{
+ const parsed=schema.safeParse({assetId:fd.get("assetId"),title:fd.get("title"),category:fd.get("category"),priority:fd.get("priority"),description:fd.get("description"),estimatedCost:fd.get("estimatedCost")||undefined,clientApproval:fd.get("clientApproval")});
+ if(!parsed.success)return{success:false,message:"Please complete the required work order fields."};
+ const supabase=await createClient();const{data:claims}=await supabase.auth.getClaims();const userId=claims?.claims?.sub;if(!userId)return{success:false,message:"Your session is no longer valid."};
+ const{data:membership}=await supabase.from("organization_members").select("organization_id").eq("user_id",userId).limit(1).maybeSingle();if(!membership)return{success:false,message:"You are not authorized to create work orders."};
+ const{data:asset}=await supabase.from("assets").select("id,organization_id,branch_id").eq("id",parsed.data.assetId).eq("organization_id",membership.organization_id).maybeSingle();if(!asset)return{success:false,message:"The selected asset is not accessible."};
+ const{error}=await supabase.from("work_orders").insert({organization_id:membership.organization_id,asset_id:asset.id,branch_id:asset.branch_id,title:parsed.data.title,category:parsed.data.category,priority:parsed.data.priority,description:parsed.data.description||null,estimated_cost:parsed.data.estimatedCost??null,client_approval:parsed.data.clientApproval,created_by:userId});
+ if(error)return{success:false,message:"The work order could not be created."};
+ revalidatePath("/fr/ops/work-orders");revalidatePath("/en/ops/work-orders");revalidatePath("/pt/ops/work-orders");revalidatePath("/fr/ops/assets/"+asset.id);revalidatePath("/en/ops/assets/"+asset.id);revalidatePath("/pt/ops/assets/"+asset.id);
+ return{success:true,message:"Work order created successfully."};
+}
