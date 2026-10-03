@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import type { Locale } from "@/lib/i18n";
 import { copy } from "@/lib/i18n";
+import { ScopeSwitcher } from "@/components/ops/scope-switcher";
 
 export function OpsSidebar({ locale }: { locale: Locale }) {
   const pathname = usePathname();
@@ -57,10 +58,10 @@ export function OpsSidebar({ locale }: { locale: Locale }) {
         })}</nav>
       </div>)}
     </div>
-    <div className="border-t border-[var(--kram-border)] p-4">
+    <div className="border-t border-[var(--kram-border)] p-4"><ScopeSwitcher />
       <div className="rounded-xl bg-[var(--kram-background)] p-3">
         <div className="flex items-center gap-2"><LifeBuoy size={15} className="text-[var(--kram-orange)]" /><span className="text-xs font-semibold">KRAM Ops</span></div>
-        <p className="mt-1 text-[11px] leading-4 text-zinc-500">Kinshasa operations</p>
+        <p className="mt-1 text-[11px] leading-4 text-zinc-500">Control your authorized KRAM scope.</p>
       </div>
     </div>
   </aside>;
