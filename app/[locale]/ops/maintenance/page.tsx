@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { ClipboardList, ClipboardCheck, FolderKanban, Wrench, ShieldCheck, Wallet, FileText, Activity } from "lucide-react";
+import { Wrench } from "lucide-react";
 import { isLocale, type Locale } from "@/lib/i18n";
 import { getModuleCopy } from "@/lib/ops-modules";
 import { OpsModulePage } from "@/components/ops/module-page";
