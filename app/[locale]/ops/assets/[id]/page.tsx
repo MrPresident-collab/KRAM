@@ -39,7 +39,7 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ lo
   const openWorkOrders = (workOrders ?? []).filter((x) => !["closed", "verified", "completed"].includes(x.status)).length;
   const activeInspections = (inspections ?? []).filter((x) => !["closed", "report_ready"].includes(x.status)).length;
   const activeProjects = (projects ?? []).filter((x) => !["closed", "completed"].includes(x.status)).length;
-  const expenseTotal = (expenses ?? []).reduce((sum, x) => sum + Number(x.amount ?? 0), 0);
+  const expenseTotals = (expenses ?? []).reduce<Record<string, number>>((acc, x) => { const currency = x.currency || "—"; acc[currency] = (acc[currency] || 0) + Number(x.amount ?? 0); return acc; }, {}); const expenseSummary = Object.entries(expenseTotals).map(([currency, amount]) => amount.toLocaleString() + " " + currency).join(" · ") || "0";
 
   const statusLabel = asset.status === "attention"
     ? locale === "fr" ? "Attention" : locale === "pt" ? "Atenção" : "Needs attention"
@@ -100,7 +100,7 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ lo
         <AssetMetric icon={ClipboardList} label="Open work orders" value={String(openWorkOrders)} />
         <AssetMetric icon={ClipboardCheck} label="Active inspections" value={String(activeInspections)} />
         <AssetMetric icon={FolderKanban} label="Active projects" value={String(activeProjects)} />
-        <AssetMetric icon={Receipt} label="Recorded expenses" value={expenseTotal.toLocaleString() + " USD"} />
+        <AssetMetric icon={Receipt} label="Recorded expenses" value={expenseSummary} />
       </section>
 
       <section className="grid gap-5 xl:grid-cols-[1.5fr_1fr]">
