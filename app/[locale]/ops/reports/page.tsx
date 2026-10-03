@@ -1,11 +1,14 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ClipboardList, ClipboardCheck, FolderKanban, Wrench, ShieldCheck, Wallet, FileText, Activity } from "lucide-react";
-import { isLocale, type Locale } from "@/lib/i18n";
-import { getModuleCopy } from "@/lib/ops-modules";
-import { OpsModulePage } from "@/components/ops/module-page";
+import { FileText, Plus, ArrowRight } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
+import { copy, isLocale, type Locale } from "@/lib/i18n";
 
-export default async function ReportsPage({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = await params;
-  if (!isLocale(locale)) notFound();
-  return <OpsModulePage locale={locale as Locale} copy={getModuleCopy(locale as Locale, "reports")} icon={FileText} />;
+export default async function ReportsPage({params}:{params:Promise<{locale:string}>}){
+ const{locale}=await params;if(!isLocale(locale))notFound();const t=copy[locale as Locale];const s=await createClient();
+ const{data:reports}=await s.from("reports").select("id,title,report_type,status,summary,created_at,published_at,assets(id,name),inspections(id,inspection_type),projects(id,name),work_orders(id,title)").order("created_at",{ascending:false});
+ const rows=reports??[];const draft=rows.filter(x=>x.status==="draft").length;const review=rows.filter(x=>x.status==="review").length;const published=rows.filter(x=>x.status==="published"||x.status==="sent").length;
+ return <div className="space-y-7"><section className="flex flex-col justify-between gap-5 md:flex-row md:items-end"><div><p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--kram-orange)]">Documents</p><div className="mt-2 flex items-center gap-3"><div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--kram-charcoal)] text-white"><FileText size={19}/></div><h1 className="text-3xl font-bold tracking-[-0.045em] text-zinc-950">Reports</h1></div><p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-500">Operational reports and client-ready records generated from KRAM activity.</p></div><Link href={"/"+locale+"/ops/reports/new"} className="inline-flex items-center gap-2 rounded-xl bg-[var(--kram-orange)] px-4 py-2.5 text-sm font-bold text-white"><Plus size={16}/> New report</Link></section>
+ <section className="grid gap-4 sm:grid-cols-3">{[["Total reports",rows.length],["Draft / review",draft+review],["Published / sent",published]].map(([label,value])=><div key={label as string} className="rounded-2xl border border-[var(--kram-border)] bg-white p-5"><p className="text-xs font-semibold uppercase tracking-[0.12em] text-zinc-400">{label}</p><p className="mt-3 text-2xl font-bold text-zinc-950">{value}</p></div>)}</section>
+ <section className="overflow-hidden rounded-2xl border border-[var(--kram-border)] bg-white"><div className="border-b border-zinc-100 px-5 py-4"><h2 className="text-base font-bold">Report register</h2></div>{rows.length?<div className="divide-y divide-zinc-100">{rows.map(r=>{const a=Array.isArray(r.assets)?r.assets[0]:r.assets;const i=Array.isArray(r.inspections)?r.inspections[0]:r.inspections;const p=Array.isArray(r.projects)?r.projects[0]:r.projects;const w=Array.isArray(r.work_orders)?r.work_orders[0]:r.work_orders;return <Link key={r.id} href={"/"+locale+"/ops/reports/"+r.id} className="flex items-center justify-between gap-5 px-5 py-4 hover:bg-zinc-50/70"><div className="min-w-0"><p className="truncate text-sm font-bold text-zinc-900">{r.title}</p><p className="mt-1 truncate text-xs text-zinc-400">{a?.name||"No asset"} · {i?.inspection_type||p?.name||w?.title||r.report_type}</p></div><div className="flex shrink-0 items-center gap-4"><span className="rounded-full border border-zinc-200 px-2.5 py-1 text-[11px] font-semibold capitalize text-zinc-600">{r.status}</span><ArrowRight size={16} className="text-zinc-300"/></div></Link>})}</div>:<div className="flex min-h-72 flex-col items-center justify-center text-center"><FileText size={22} className="text-zinc-300"/><h3 className="mt-4 text-sm font-bold">No reports yet</h3><p className="mt-1 text-sm text-zinc-500">Reports will appear here as KRAM operations are documented.</p></div>}</section></div>;
 }
