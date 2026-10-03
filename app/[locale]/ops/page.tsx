@@ -1,50 +1,43 @@
-import { Activity, AlertCircle, Building2, ClipboardList, Users } from "lucide-react";
+import { Activity, AlertTriangle, ArrowUpRight, Building2, CheckCircle2, ClipboardList, Clock3, FileCheck2, Plus, ShieldCheck, Users } from "lucide-react";
 import { notFound } from "next/navigation";
-import { StatCard } from "@/components/ops/stat-card";
 import { copy, isLocale, type Locale } from "@/lib/i18n";
+import { createClient } from "@/lib/supabase/server";
+
+// Supabase's fluent query builder is intentionally kept behind this small count helper.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function countRows(supabase: Awaited<ReturnType<typeof createClient>>, table: string, filters?: (query: any) => any) {
+  let query = supabase.from(table).select("id", { count: "exact", head: true });
+  if (filters) query = filters(query);
+  const { count } = await query;
+  return count ?? 0;
+}
 
 export default async function OpsDashboard({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const t = copy[locale as Locale];
-
-  return <div className="space-y-7">
-    <section>
-      <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--kram-orange)]">{t.dashboard.eyebrow}</p>
-      <div className="mt-2 flex flex-col justify-between gap-4 md:flex-row md:items-end">
-        <div><h1 className="text-3xl font-bold tracking-[-0.045em] text-zinc-950 md:text-4xl">{t.dashboard.title}</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-500">{t.dashboard.description}</p></div>
-        <span className="rounded-full border border-[var(--kram-border)] bg-white px-3 py-1.5 text-xs font-medium text-zinc-500">{t.common.today}</span>
-      </div>
-    </section>
-
-    <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-      <StatCard label={t.dashboard.clients} value="—" hint="CRM" icon={Users} />
-      <StatCard label={t.dashboard.assets} value="—" hint="Asset registry" icon={Building2} />
-      <StatCard label={t.dashboard.openWorkOrders} value="—" hint="Operations" icon={ClipboardList} />
-      <StatCard label={t.dashboard.awaitingApproval} value="—" hint="Decisions" icon={AlertCircle} />
-      <StatCard label={t.dashboard.activeOperations} value="—" hint="Live work" icon={Activity} />
-    </section>
-
-    <section className="grid gap-5 xl:grid-cols-[1.4fr_1fr]">
-      <div className="rounded-2xl border border-[var(--kram-border)] bg-white p-6">
-        <div className="flex items-center justify-between"><div><h2 className="text-base font-bold text-zinc-950">{t.dashboard.needsAttention}</h2><p className="mt-1 text-xs text-zinc-400">{t.dashboard.operationsSnapshot}</p></div><AlertCircle size={18} className="text-[var(--kram-orange)]" /></div>
-        <div className="mt-6 divide-y divide-zinc-100">{[t.dashboard.approval,t.dashboard.overdue,t.dashboard.verification].map((item)=><div key={item} className="flex items-center justify-between py-4"><span className="text-sm text-zinc-600">{item}</span><span className="h-7 min-w-7 rounded-full bg-zinc-100 px-2 text-center text-xs font-bold leading-7 text-zinc-500">0</span></div>)}</div>
-      </div>
-
-      <div className="rounded-2xl border border-[var(--kram-border)] bg-white p-6">
-        <div className="flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-[var(--kram-orange)]" />
-          <h2 className="text-base font-bold text-[var(--kram-orange)]">{t.dashboard.recentActivity}</h2>
-        </div>
-        <p className="mt-1 text-xs text-zinc-400">Your latest operational events will appear here.</p>
-        <div className="mt-6 flex min-h-36 items-center justify-center rounded-xl border border-dashed border-[var(--kram-border)] bg-[var(--kram-background)] px-6 text-center">
-          <div>
-            <Activity size={20} className="mx-auto text-[var(--kram-metal)]" />
-            <p className="mt-2 text-sm font-semibold text-zinc-700">No activity recorded yet</p>
-            <p className="mt-1 text-xs text-zinc-400">Activity will populate as KRAM operations are connected.</p>
-          </div>
-        </div>
-      </div>
-    </section>
+  const supabase = await createClient();
+  const [assets, clients, openOrders, approvals, activeOrders, attentionAssets, inspections, providers] = await Promise.all([
+    countRows(supabase, "assets"),
+    countRows(supabase, "clients"),
+    countRows(supabase, "work_orders", q => q.not("status", "in", "(closed,verified,completed)")),
+    countRows(supabase, "approvals", q => q.eq("status", "pending")),
+    countRows(supabase, "work_orders", q => q.eq("status", "in_progress")),
+    countRows(supabase, "assets", q => q.eq("status", "attention")),
+    countRows(supabase, "inspections", q => q.eq("status", "scheduled")),
+    countRows(supabase, "service_providers", q => q.eq("verification_status", "verified")),
+  ]);
+  const metrics = [
+    { label: t.dashboard.assets, value: assets, note: "Asset registry", icon: Building2 },
+    { label: t.dashboard.openWorkOrders, value: openOrders, note: "Across all branches", icon: ClipboardList },
+    { label: t.dashboard.awaitingApproval, value: approvals, note: "Requires a decision", icon: Clock3, accent: true },
+    { label: t.dashboard.activeOperations, value: activeOrders, note: "Field work in progress", icon: Activity },
+  ];
+  const fr = locale === "fr";
+  return <div className="space-y-7 pb-10">
+    <section className="kram-grid relative overflow-hidden rounded-2xl border border-[var(--kram-border)] bg-white px-6 py-7 md:px-9 md:py-8"><div className="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-[var(--kram-orange-soft)] to-transparent opacity-70" /><div className="relative flex flex-col justify-between gap-6 lg:flex-row lg:items-end"><div><div className="mb-3 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.18em] text-[var(--kram-orange)]"><span className="h-1.5 w-1.5 rounded-full bg-[var(--kram-orange)]" /> {fr ? "Centre de contrôle" : "Control centre"}</div><h1 className="max-w-2xl text-3xl font-black tracking-[-.055em] text-[var(--kram-deep)] md:text-[42px]">{fr ? "La situation, en un regard." : "The situation, at a glance."}</h1><p className="mt-3 max-w-xl text-sm leading-6 text-[var(--kram-metal)]">{fr ? "Pilotez les actifs, les interventions et les décisions qui maintiennent KRAM en mouvement." : "Pilot the assets, interventions and decisions that keep KRAM moving."}</p></div><div className="flex gap-2"><a href={`/${locale}/ops/work-orders`} className="inline-flex items-center gap-2 rounded-xl bg-[var(--kram-orange)] px-4 py-2.5 text-xs font-bold text-white shadow-[0_6px_18px_rgba(244,119,33,.2)] hover:bg-[#df6816]"><Plus size={15} /> {fr ? "Créer une demande" : "Create request"}</a><a href={`/${locale}/ops/assets`} className="inline-flex items-center gap-2 rounded-xl border border-[var(--kram-border)] bg-white px-4 py-2.5 text-xs font-bold text-[var(--kram-charcoal)] hover:bg-[var(--kram-bg)]">{fr ? "Voir les actifs" : "View assets"}<ArrowUpRight size={14} /></a></div></div></section>
+    <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">{metrics.map(({ label, value, note, icon: Icon, accent }) => <div key={label} className="rounded-2xl border border-[var(--kram-border)] bg-white p-5"><div className="flex items-start justify-between"><div className={`grid h-9 w-9 place-items-center rounded-xl ${accent ? "bg-[var(--kram-orange-soft)] text-[var(--kram-orange)]" : "bg-[var(--kram-bg)] text-[var(--kram-metal)]"}`}><Icon size={17} /></div>{accent && <span className="rounded-full bg-[var(--kram-orange-soft)] px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-[var(--kram-orange)]">Priority</span>}</div><div className="mt-5 text-3xl font-black tracking-[-.06em] text-[var(--kram-deep)]">{value}</div><div className="mt-1 text-[13px] font-bold text-[var(--kram-charcoal)]">{label}</div><div className="mt-1 text-[11px] text-[var(--kram-metal)]">{note}</div></div>)}</section>
+    <section className="grid gap-5 xl:grid-cols-[1.35fr_.65fr]"><div className="rounded-2xl border border-[var(--kram-border)] bg-white"><div className="flex items-center justify-between border-b border-[var(--kram-border)] px-6 py-5"><div><h2 className="text-[15px] font-black tracking-[-.02em] text-[var(--kram-deep)]">{fr ? "À traiter maintenant" : "Action required"}</h2><p className="mt-1 text-xs text-[var(--kram-metal)]">{fr ? "Les signaux qui demandent une intervention opérationnelle." : "Signals that need operational attention."}</p></div><AlertTriangle size={18} className="text-[var(--kram-orange)]" /></div><div className="divide-y divide-[var(--kram-border)]">{[{ label: "Client approvals", value: approvals, route: "approvals" }, { label: "Assets needing attention", value: attentionAssets, route: "assets" }, { label: "Scheduled inspections", value: inspections, route: "inspections" }].map(({ label, value, route }) => <a href={`/${locale}/ops/${route}`} key={label} className="flex items-center justify-between px-6 py-4 transition hover:bg-[var(--kram-bg)]"><div className="flex items-center gap-3"><span className={`h-2 w-2 rounded-full ${value > 0 ? "bg-[var(--kram-orange)]" : "bg-[var(--kram-soft-metal)]"}`} /><span className="text-sm font-semibold text-[var(--kram-charcoal)]">{label}</span></div><span className="rounded-full bg-[var(--kram-bg)] px-2.5 py-1 text-xs font-black text-[var(--kram-metal)]">{value}</span></a>)}</div></div><div className="rounded-2xl bg-[var(--kram-deep)] p-6 text-white"><div className="flex items-start justify-between"><div><p className="text-[10px] font-bold uppercase tracking-[.16em] text-[var(--kram-orange)]">KRAM network</p><h2 className="mt-2 text-xl font-black tracking-[-.04em]">{fr ? "Capacité terrain" : "Field capacity"}</h2></div><ShieldCheck size={20} className="text-[var(--kram-orange)]" /></div><div className="mt-8 flex items-end justify-between"><div><div className="text-4xl font-black tracking-[-.07em]">{providers}</div><p className="mt-1 text-xs text-white/55">{fr ? "prestataires vérifiés" : "verified providers"}</p></div><a href={`/${locale}/ops/providers`} className="rounded-xl border border-white/15 px-3 py-2 text-xs font-bold text-white hover:bg-white/10">{fr ? "Voir le réseau" : "View network"}</a></div><div className="mt-7 h-1.5 overflow-hidden rounded-full bg-white/10"><div className="h-full w-[68%] rounded-full bg-[var(--kram-orange)]" /></div><p className="mt-2 text-[11px] text-white/45">{fr ? "Disponibilité et couverture par agence" : "Availability and coverage by branch"}</p></div></section>
+    <section className="grid gap-5 md:grid-cols-3"><div className="rounded-2xl border border-[var(--kram-border)] bg-white p-5"><div className="flex items-center gap-2 text-[var(--kram-metal)]"><Users size={16} /><span className="text-[10px] font-bold uppercase tracking-[.15em]">Clients</span></div><div className="mt-5 text-2xl font-black tracking-[-.05em]">{clients}</div><p className="mt-1 text-xs text-[var(--kram-metal)]">{fr ? "propriétaires suivis par KRAM" : "owners supported by KRAM"}</p></div><div className="rounded-2xl border border-[var(--kram-border)] bg-white p-5"><div className="flex items-center gap-2 text-[var(--kram-metal)]"><CheckCircle2 size={16} /><span className="text-[10px] font-bold uppercase tracking-[.15em]">System health</span></div><div className="mt-5 text-2xl font-black tracking-[-.05em] text-[var(--kram-green)]">Operational</div><p className="mt-1 text-xs text-[var(--kram-metal)]">Supabase + RLS connected</p></div><div className="rounded-2xl border border-[var(--kram-border)] bg-white p-5"><div className="flex items-center gap-2 text-[var(--kram-metal)]"><FileCheck2 size={16} /><span className="text-[10px] font-bold uppercase tracking-[.15em]">Evidence chain</span></div><div className="mt-5 text-2xl font-black tracking-[-.05em]">{inspections}</div><p className="mt-1 text-xs text-[var(--kram-metal)]">{fr ? "inspections planifiées" : "scheduled inspections"}</p></div></section>
   </div>;
 }

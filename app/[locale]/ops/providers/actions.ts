@@ -22,7 +22,7 @@ export async function createProvider(_prev:ProviderActionState,fd:FormData):Prom
  if(!uid)return{success:false,message:"Your session is no longer valid."};
  const{data:m}=await s.from("organization_members").select("organization_id,role").eq("user_id",uid).limit(1).maybeSingle();
  if(!m||!["owner","admin","regional_admin","operations"].includes(m.role))return{success:false,message:"You are not authorized to add service providers."};
- let branchId=parsed.data.branchId||null;
+	 const branchId=parsed.data.branchId||null;
  if(branchId){const{data:b}=await s.from("branches").select("id").eq("id",branchId).eq("organization_id",m.organization_id).maybeSingle();if(!b)return{success:false,message:"The selected branch is not accessible."}}
  const{data:p,error}=await s.from("service_providers").insert({organization_id:m.organization_id,branch_id:branchId,name:parsed.data.name,phone:parsed.data.phone||null,email:parsed.data.email||null,coverage:parsed.data.coverage||null,notes:parsed.data.notes||null}).select("id").single();
  if(error||!p)return{success:false,message:"The service provider could not be added."};

@@ -2,26 +2,31 @@
 
 :root {
   --kram-charcoal: #242424;
-  --kram-charcoal-deep: #181818;
+  --kram-deep: #181818;
   --kram-metal: #707070;
-  --kram-metal-soft: #b7b7b3;
+  --kram-soft-metal: #b7b7b3;
   --kram-orange: #f47721;
   --kram-orange-soft: #fff0e6;
-  --kram-background: #f3f3f0;
+  --kram-bg: #f3f3f0;
   --kram-border: #deded9;
   --kram-surface: #ffffff;
+  --kram-green: #2d8a63;
+  --kram-ink: #171717;
 }
 
 * { box-sizing: border-box; }
-html { min-width: 320px; background: var(--kram-background); }
+html { min-width: 320px; background: var(--kram-bg); }
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--kram-background);
+  background: var(--kram-bg);
   color: var(--kram-charcoal);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 button, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
 ::selection { background: var(--kram-orange); color: white; }
 .kram-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-.kram-scrollbar::-webkit-scrollbar-thumb { background: var(--kram-metal-soft); border-radius: 999px; }
+.kram-scrollbar::-webkit-scrollbar-thumb { background: var(--kram-soft-metal); border-radius: 999px; }
+.kram-grid { background-image: linear-gradient(to right, rgba(36,36,36,.035) 1px, transparent 1px), linear-gradient(to bottom, rgba(36,36,36,.035) 1px, transparent 1px); background-size: 34px 34px; }

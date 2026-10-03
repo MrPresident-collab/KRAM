@@ -100,7 +100,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ l
         <div className="space-y-5">
           <div className="rounded-2xl border border-[var(--kram-border)] bg-white">
             <div className="flex items-center justify-between border-b border-zinc-100 px-5 py-4">
-              <div><h2 className="text-base font-bold text-zinc-950">Client operations</h2><p className="mt-1 text-xs text-zinc-400">Recent activity across this client's assets.</p></div>
+              <div><h2 className="text-base font-bold text-zinc-950">Client operations</h2><p className="mt-1 text-xs text-zinc-400">Recent activity across this client&apos;s assets.</p></div>
               <Link href={`/${locale}/ops/assets/new`} className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--kram-charcoal)] px-2.5 py-1.5 text-[11px] font-bold text-white"><Plus size={13}/> Asset</Link>
             </div>
             {(workOrders?.length || inspections?.length || projects?.length) ? <div className="divide-y divide-zinc-100">
@@ -128,6 +128,9 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ l
           <div className="rounded-2xl border border-[var(--kram-border)] bg-white p-6"><h2 className="text-base font-bold text-zinc-950">Notes</h2><p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-zinc-600">{client.notes || "No notes have been recorded for this client."}</p><div className="mt-6 border-t border-zinc-100 pt-5"><p className="text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-400">Record</p><p className="mt-2 text-xs text-zinc-500">Created {new Date(client.created_at).toLocaleString(locale)}</p><p className="mt-1 text-xs text-zinc-500">Updated {new Date(client.updated_at).toLocaleString(locale)}</p></div></div>
         </div>
       </section>
+    </div>
+  );
+}
 
 
 function SummaryMetric({icon:Icon,label,value}:{icon:typeof Building2;label:string;value:string}) {
