@@ -1,5 +1,6 @@
 "use server";
 import {revalidatePath} from "next/cache";import {z} from "zod";import {createClient} from "@/lib/supabase/server";
+import {writeAudit} from "@/lib/audit";
 const schema=z.object({assetId:z.string().uuid(),title:z.string().trim().min(3).max(180),category:z.string().trim().min(2).max(60),priority:z.enum(["low","normal","high","urgent"]),description:z.string().trim().max(3000).optional(),estimatedCost:z.coerce.number().nonnegative().optional(),clientApproval:z.enum(["not_required","pending","approved","rejected"])});
 export type WorkOrderActionState={success:boolean;message:string};
 export async function createWorkOrder(_prev:WorkOrderActionState,fd:FormData):Promise<WorkOrderActionState>{
@@ -10,6 +11,7 @@ export async function createWorkOrder(_prev:WorkOrderActionState,fd:FormData):Pr
  const{data:asset}=await supabase.from("assets").select("id,organization_id,branch_id").eq("id",parsed.data.assetId).eq("organization_id",membership.organization_id).maybeSingle();if(!asset)return{success:false,message:"The selected asset is not accessible."};
  const{error}=await supabase.from("work_orders").insert({organization_id:membership.organization_id,asset_id:asset.id,branch_id:asset.branch_id,title:parsed.data.title,category:parsed.data.category,priority:parsed.data.priority,description:parsed.data.description||null,estimated_cost:parsed.data.estimatedCost??null,client_approval:parsed.data.clientApproval,created_by:userId});
  if(error)return{success:false,message:"The work order could not be created."};
+ await writeAudit(supabase,{organizationId:membership.organization_id,branchId:asset.branch_id,actorId:userId,action:"work_order.created",entityType:"work_order",entityId:asset.id,summary:"Work order created",metadata:{title:parsed.data.title,priority:parsed.data.priority}});
  revalidatePath("/fr/ops/work-orders");revalidatePath("/en/ops/work-orders");revalidatePath("/pt/ops/work-orders");revalidatePath("/fr/ops/assets/"+asset.id);revalidatePath("/en/ops/assets/"+asset.id);revalidatePath("/pt/ops/assets/"+asset.id);
  return{success:true,message:"Work order created successfully."};
 }
@@ -80,6 +82,7 @@ export async function transitionWorkOrder(
     .eq("organization_id", current.organization_id);
 
   if (updateError) return { success: false, message: "The work order could not be updated." };
+  await writeAudit(supabase,{organizationId:current.organization_id,branchId:current.branch_id,actorId:userId,action:"work_order.status_changed",entityType:"work_order",entityId:current.id,summary:`Work order moved from ${current.status} to ${parsed.data.status}`,metadata:{from:current.status,to:parsed.data.status,note:parsed.data.note||null}});
 
   const { error: historyError } = await supabase
     .from("work_order_updates")
