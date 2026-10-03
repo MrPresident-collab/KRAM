@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Building2, CheckCircle2, MapPin, UserRound } from "lucide-react";
+import { ArrowLeft, Building2, CheckCircle2, MapPin, UserRound, ClipboardList, ClipboardCheck, FolderKanban, Receipt, FileText, Plus } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { copy, isLocale, type Locale } from "@/lib/i18n";
 
@@ -26,6 +26,20 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ lo
 
   const client = Array.isArray(asset.clients) ? asset.clients[0] : asset.clients;
   const labels = typeLabels[locale];
+
+  const [{ data: workOrders }, { data: inspections }, { data: projects }, { data: expenses }, { data: reports }, { count: documentCount }] = await Promise.all([
+    supabase.from("work_orders").select("id,title,status,priority,created_at").eq("asset_id", id).order("created_at", { ascending: false }).limit(8),
+    supabase.from("inspections").select("id,inspection_type,status,scheduled_for,created_at").eq("asset_id", id).order("created_at", { ascending: false }).limit(8),
+    supabase.from("projects").select("id,name,status,progress_percent,updated_at").eq("asset_id", id).order("updated_at", { ascending: false }).limit(8),
+    supabase.from("expenses").select("id,description,amount,currency,status,expense_date").eq("asset_id", id).order("expense_date", { ascending: false }).limit(8),
+    supabase.from("reports").select("id,title,status,report_type,created_at").eq("asset_id", id).order("created_at", { ascending: false }).limit(8),
+    supabase.from("documents").select("id", { count: "exact", head: true }).eq("asset_id", id),
+  ]);
+
+  const openWorkOrders = (workOrders ?? []).filter((x) => !["closed", "verified", "completed"].includes(x.status)).length;
+  const activeInspections = (inspections ?? []).filter((x) => !["closed", "report_ready"].includes(x.status)).length;
+  const activeProjects = (projects ?? []).filter((x) => !["closed", "completed"].includes(x.status)).length;
+  const expenseTotal = (expenses ?? []).reduce((sum, x) => sum + Number(x.amount ?? 0), 0);
 
   const statusLabel = asset.status === "attention"
     ? locale === "fr" ? "Attention" : locale === "pt" ? "Atenção" : "Needs attention"
@@ -82,42 +96,55 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ lo
         </div>
       </section>
 
-      <section className="grid gap-5 xl:grid-cols-[1.6fr_1fr]">
-        <div className="rounded-2xl border border-[var(--kram-border)] bg-white p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-base font-bold text-zinc-950">Asset control center</h2>
-              <p className="mt-1 text-xs text-zinc-400">Operational records attached to this asset.</p>
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <AssetMetric icon={ClipboardList} label="Open work orders" value={String(openWorkOrders)} />
+        <AssetMetric icon={ClipboardCheck} label="Active inspections" value={String(activeInspections)} />
+        <AssetMetric icon={FolderKanban} label="Active projects" value={String(activeProjects)} />
+        <AssetMetric icon={Receipt} label="Recorded expenses" value={expenseTotal.toLocaleString() + " USD"} />
+      </section>
+
+      <section className="grid gap-5 xl:grid-cols-[1.5fr_1fr]">
+        <div className="space-y-5">
+          <div className="rounded-2xl border border-[var(--kram-border)] bg-white">
+            <div className="flex items-center justify-between border-b border-zinc-100 px-5 py-4">
+              <div><h2 className="text-base font-bold text-zinc-950">Recent operations</h2><p className="mt-1 text-xs text-zinc-400">Latest work connected to this asset.</p></div>
+              <div className="flex items-center gap-2">
+                <Link href={`/${locale}/ops/work-orders/new`} className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 px-2.5 py-1.5 text-[11px] font-bold text-zinc-700"><Plus size={13}/> Work order</Link>
+                <Link href={`/${locale}/ops/inspections/new`} className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--kram-charcoal)] px-2.5 py-1.5 text-[11px] font-bold text-white"><Plus size={13}/> Inspection</Link>
+              </div>
             </div>
+            {(workOrders?.length || inspections?.length || projects?.length) ? <div className="divide-y divide-zinc-100">
+              {(workOrders ?? []).slice(0,4).map((x)=><Link key={"wo-"+x.id} href={`/${locale}/ops/work-orders/${x.id}`} className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-zinc-50"><div><p className="text-sm font-semibold text-zinc-800">{x.title}</p><p className="mt-1 text-xs text-zinc-400">Work Order · {x.priority}</p></div><span className="text-xs font-semibold text-zinc-500">{x.status.replaceAll("_"," ")}</span></Link>)}
+              {(inspections ?? []).slice(0,3).map((x)=><Link key={"in-"+x.id} href={`/${locale}/ops/inspections/${x.id}`} className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-zinc-50"><div><p className="text-sm font-semibold text-zinc-800 capitalize">{x.inspection_type.replaceAll("_"," ")}</p><p className="mt-1 text-xs text-zinc-400">Inspection · {x.scheduled_for ? new Date(x.scheduled_for).toLocaleDateString(locale) : "Not scheduled"}</p></div><span className="text-xs font-semibold text-zinc-500">{x.status.replaceAll("_"," ")}</span></Link>)}
+              {(projects ?? []).slice(0,2).map((x)=><Link key={"pr-"+x.id} href={`/${locale}/ops/projects/${x.id}`} className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-zinc-50"><div><p className="text-sm font-semibold text-zinc-800">{x.name}</p><p className="mt-1 text-xs text-zinc-400">Project · {x.progress_percent}% complete</p></div><span className="text-xs font-semibold text-zinc-500">{x.status.replaceAll("_"," ")}</span></Link>)}
+            </div> : <div className="flex min-h-48 items-center justify-center text-sm text-zinc-400">No operational records yet.</div>}
           </div>
-          <div className="mt-5 grid gap-3 sm:grid-cols-2">
-            {[
-              ["Inspections", `/${locale}/ops/inspections`],
-              ["Work Orders", `/${locale}/ops/work-orders`],
-              ["Projects", `/${locale}/ops/projects`],
-              ["Maintenance", `/${locale}/ops/maintenance`],
-              ["Expenses", `/${locale}/ops/expenses`],
-              ["Reports", `/${locale}/ops/reports`],
-            ].map(([label, href]) => (
-              <Link key={label} href={href} className="rounded-xl border border-zinc-100 bg-zinc-50/60 p-4 transition hover:border-orange-200 hover:bg-orange-50/30">
-                <p className="text-sm font-bold text-zinc-800">{label}</p>
-                <p className="mt-1 text-xs text-zinc-400">No records connected yet</p>
-              </Link>
-            ))}
+
+          <div className="rounded-2xl border border-[var(--kram-border)] bg-white">
+            <div className="border-b border-zinc-100 px-5 py-4"><h2 className="text-base font-bold">Financial & document records</h2></div>
+            <div className="grid gap-3 p-5 sm:grid-cols-2">
+              <Link href={`/${locale}/ops/expenses?asset=${id}`} className="rounded-xl border border-zinc-100 p-4 hover:bg-zinc-50"><div className="flex items-center gap-2"><Receipt size={16} className="text-[var(--kram-orange)]"/><span className="text-sm font-bold">Expenses</span></div><p className="mt-2 text-xs text-zinc-400">{expenses?.length ?? 0} recent records</p></Link>
+              <Link href={`/${locale}/ops/reports?asset=${id}`} className="rounded-xl border border-zinc-100 p-4 hover:bg-zinc-50"><div className="flex items-center gap-2"><FileText size={16} className="text-[var(--kram-orange)]"/><span className="text-sm font-bold">Reports</span></div><p className="mt-2 text-xs text-zinc-400">{reports?.length ?? 0} reports · {documentCount ?? 0} documents</p></Link>
+            </div>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-[var(--kram-border)] bg-white p-6">
-          <h2 className="text-base font-bold text-zinc-950">Description</h2>
-          <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-zinc-600">{asset.description || "No description has been recorded for this asset."}</p>
-          <div className="mt-6 border-t border-zinc-100 pt-5">
-            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-400">Coordinates</p>
-            <p className="mt-2 text-xs text-zinc-500">
-              {asset.latitude != null && asset.longitude != null ? `${asset.latitude}, ${asset.longitude}` : "No coordinates recorded yet."}
-            </p>
+        <div className="space-y-5">
+          <div className="rounded-2xl border border-[var(--kram-border)] bg-white p-6">
+            <h2 className="text-base font-bold text-zinc-950">Description</h2>
+            <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-zinc-600">{asset.description || "No description has been recorded for this asset."}</p>
+            <div className="mt-6 border-t border-zinc-100 pt-5"><p className="text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-400">Coordinates</p><p className="mt-2 text-xs text-zinc-500">{asset.latitude != null && asset.longitude != null ? `${asset.latitude}, ${asset.longitude}` : "No coordinates recorded yet."}</p></div>
+          </div>
+          <div className="rounded-2xl border border-[var(--kram-border)] bg-white p-6">
+            <h2 className="text-base font-bold">Quick actions</h2>
+            <div className="mt-4 grid gap-2"><Link href={`/${locale}/ops/projects/new`} className="rounded-xl border border-zinc-100 px-4 py-3 text-xs font-bold text-zinc-700 hover:bg-zinc-50">Start project</Link><Link href={`/${locale}/ops/expenses/new`} className="rounded-xl border border-zinc-100 px-4 py-3 text-xs font-bold text-zinc-700 hover:bg-zinc-50">Record expense</Link><Link href={`/${locale}/ops/reports/new`} className="rounded-xl border border-zinc-100 px-4 py-3 text-xs font-bold text-zinc-700 hover:bg-zinc-50">Create report</Link></div>
           </div>
         </div>
       </section>
     </div>
   );
+}
+
+function AssetMetric({icon:Icon,label,value}:{icon:typeof ClipboardList;label:string;value:string}) {
+ return <div className="rounded-2xl border border-[var(--kram-border)] bg-white p-5"><Icon size={17} className="text-[var(--kram-orange)]"/><p className="mt-3 text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-400">{label}</p><p className="mt-2 text-2xl font-bold text-zinc-950">{value}</p></div>;
 }
