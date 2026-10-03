@@ -36,14 +36,16 @@ export async function createReport(_prev:ReportActionState,fd:FormData):Promise<
   return{success:false,message:"You are not authorized to create reports."};
 
  let source:{asset_id?:string;inspection_id?:string;project_id?:string;work_order_id?:string}={};
+ let sourceBranchId:string|null=null;
 
  if(parsed.data.sourceType!=="none"){
   if(!parsed.data.sourceId)return{success:false,message:"Please select a source record."};
 
   const tableMap={asset:"assets",inspection:"inspections",project:"projects",work_order:"work_orders"} as const;
   const table=tableMap[parsed.data.sourceType];
-  const{data:record}=await supabase.from(table).select("id,organization_id").eq("id",parsed.data.sourceId).eq("organization_id",m.organization_id).maybeSingle();
+  const{data:record}=await supabase.from(table).select("id,organization_id,branch_id").eq("id",parsed.data.sourceId).eq("organization_id",m.organization_id).maybeSingle();
   if(!record)return{success:false,message:"The selected source record is not accessible."};
+  sourceBranchId="branch_id" in record ? (record.branch_id as string|null) : null;
 
   source={
    ...(parsed.data.sourceType==="asset"?{asset_id:record.id}:{}),
@@ -55,6 +57,7 @@ export async function createReport(_prev:ReportActionState,fd:FormData):Promise<
 
  const{data:report,error}=await supabase.from("reports").insert({
   organization_id:m.organization_id,
+  branch_id:sourceBranchId,
   title:parsed.data.title,
   report_type:parsed.data.reportType,
   summary:parsed.data.summary||null,
@@ -116,4 +119,48 @@ export async function createReport(_prev:ReportActionState,fd:FormData):Promise<
 
  for(const locale of["fr","en","pt"])revalidatePath("/"+locale+"/ops/reports");
  return{success:true,message:"Report created successfully."};
+}
+
+
+const reportTransitions:Record<string,string[]>={
+ draft:["review"],
+ review:["published","draft"],
+ published:["sent","archived"],
+ sent:["archived"],
+ archived:[],
+};
+
+export async function transitionReport(_prev:ReportActionState,fd:FormData):Promise<ReportActionState>{
+ const parsed=z.object({
+  reportId:z.string().uuid(),
+  status:z.enum(["draft","review","published","sent","archived"]),
+ }).safeParse({reportId:fd.get("reportId"),status:fd.get("status")});
+ if(!parsed.success)return{success:false,message:"Invalid report transition."};
+
+ const s=await createClient();const{data:claims}=await s.auth.getClaims();const uid=claims?.claims?.sub;
+ if(!uid)return{success:false,message:"Your session is no longer valid."};
+
+ const{data:m}=await s.from("organization_members").select("organization_id,role").eq("user_id",uid).limit(1).maybeSingle();
+ if(!m||!["owner","admin","regional_admin","operations","finance"].includes(m.role))
+  return{success:false,message:"You are not authorized to update reports."};
+
+ const{data:r}=await s.from("reports").select("id,organization_id,branch_id,status").eq("id",parsed.data.reportId).eq("organization_id",m.organization_id).maybeSingle();
+ if(!r)return{success:false,message:"Report not found."};
+
+ if(!((reportTransitions[r.status]??[]).includes(parsed.data.status)))
+  return{success:false,message:"That report transition is not allowed."};
+
+ const{error}=await s.from("reports").update({
+  status:parsed.data.status,
+  published_at:parsed.data.status==="published"?new Date().toISOString():undefined,
+  updated_at:new Date().toISOString(),
+ }).eq("id",r.id).eq("organization_id",r.organization_id);
+
+ if(error)return{success:false,message:"The report could not be updated."};
+
+ for(const l of["fr","en","pt"]){
+  revalidatePath("/"+l+"/ops/reports");
+  revalidatePath("/"+l+"/ops/reports/"+r.id);
+ }
+ return{success:true,message:"Report updated successfully."};
 }
