@@ -20,6 +20,16 @@ export function OpsSidebar({ locale }: { locale: Locale }) {
     `/${locale}/ops/clients`,
     `/${locale}/ops/users`,
     `/${locale}/ops/settings`,
+    `/${locale}/ops/work-orders`,
+    `/${locale}/ops/inspections`,
+    `/${locale}/ops/projects`,
+    `/${locale}/ops/maintenance`,
+    `/${locale}/ops/assets/properties`,
+    `/${locale}/ops/providers`,
+    `/${locale}/ops/expenses`,
+    `/${locale}/ops/approvals`,
+    `/${locale}/ops/reports`,
+    `/${locale}/ops/activity`,
   ]);
 
   const sections = [
