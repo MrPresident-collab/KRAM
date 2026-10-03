@@ -1,0 +1,10 @@
+"use client";
+import{useActionState}from"react";import{Loader2,Send,CheckCircle2,Archive,Eye}from"lucide-react";import{transitionReport,type ReportActionState}from"../actions";import type{Locale}from"@/lib/i18n";
+const labels={fr:{review:"Envoyer en revue",publish:"Publier",sent:"Marquer envoyé",archive:"Archiver",saving:"Enregistrement..."},en:{review:"Send to review",publish:"Publish",sent:"Mark sent",archive:"Archive",saving:"Saving..."},pt:{review:"Enviar para revisão",publish:"Publicar",sent:"Marcar como enviado",archive:"Arquivar",saving:"A guardar..."}} as const;
+export function ReportActions({locale,reportId,status}:{locale:Locale;reportId:string;status:string}){
+ const[state,action,pending]=useActionState<ReportActionState,FormData>(transitionReport,{success:false,message:""});const t=labels[locale];
+ const next=status==="draft"?["review"]:status==="review"?["published"]:status==="published"?["sent"]:status==="sent"?["archived"]:[];
+ const meta:{label:string;icon:typeof Send;value:string}[]=[{label:t.review,icon:Eye,value:"review"},{label:t.publish,icon:CheckCircle2,value:"published"},{label:t.sent,icon:Send,value:"sent"},{label:t.archive,icon:Archive,value:"archived"}];
+ const item=meta.find(x=>x.value===next[0]);if(!item)return null;const Icon=item.icon;
+ return <div className="space-y-2"><form action={action}><input type="hidden" name="reportId" value={reportId}/><input type="hidden" name="status" value={item.value}/><button disabled={pending} className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--kram-charcoal)] px-4 py-2.5 text-xs font-bold text-white">{pending?<Loader2 size={14} className="animate-spin"/>:<Icon size={14}/>} {pending?t.saving:item.label}</button></form>{state.message&&<p className={`text-[11px] ${state.success?"text-emerald-700":"text-red-600"}`}>{state.message}</p>}</div>;
+}
