@@ -21,5 +21,5 @@ export default async function OpsLayout({ children, params }: Readonly<{ childre
   const name = profile?.full_name?.trim() || email.split("@")[0] || "KRAM User";
   const user = { name, email, role: membership?.role ?? "viewer", scope: membership?.scope_level ?? "global", jobTitle: profile?.job_title ?? null, avatarUrl: profile?.avatar_url ?? null };
 
-  return <div className="min-h-screen"><OpsSidebar locale={locale as Locale} /><div className="lg:pl-64"><OpsHeader locale={locale as Locale} user={user} /><main className="mx-auto max-w-[1600px] px-5 py-7 lg:px-8">{children}</main></div></div>;
+  return <div className="min-h-screen"><OpsSidebar locale={locale as Locale} scope={user.scope} /><div className="lg:pl-64"><OpsHeader locale={locale as Locale} user={user} /><main className="mx-auto max-w-[1600px] px-5 py-7 lg:px-8">{children}</main></div></div>;
 }

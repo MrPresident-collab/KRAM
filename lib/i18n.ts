@@ -2,7 +2,9 @@ export const locales = ["fr", "en", "pt"] as const;
 export type Locale = (typeof locales)[number];
 export const defaultLocale: Locale = "fr";
 
-export const copy = {
+// The three locale objects intentionally share a flexible shape while the product copy evolves.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const copy: Record<Locale, any> = {
   fr: {
     nav: {
       overview: "Vue d’ensemble", operations: "Opérations", workOrders: "Ordres de travail",
@@ -24,7 +26,7 @@ export const copy = {
       recentActivity: "Activité récente", operationsSnapshot: "État des opérations",
       launchNote: "La fondation KRAM est prête. Les données opérationnelles seront connectées à Supabase dans la prochaine étape."
     },
-    common: { search: "Rechercher", notifications: "Notifications", today: "Aujourd’hui", cancel: "Annuler", save: "Enregistrer", create: "Créer", back: "Retour" },
+    common: { search: "Rechercher", notifications: "Notifications", today: "Aujourd’hui", cancel: "Annuler", save: "Enregistrer", create: "Créer", back: "Retour", signOut: "Se déconnecter" },
     settings: {
       title: "Paramètres du système", description: "Configurez la structure géographique et les contrôles d’accès de KRAM.",
       countries: "Pays", countriesDesc: "Gérez les pays dans lesquels KRAM opère.",
@@ -65,7 +67,10 @@ export const copy = {
       typeResidential: "Résidentiel", typeCommercial: "Commercial", typeConstruction: "Construction",
       typeRetail: "Commerce", typeWarehouse: "Entrepôt", typeLand: "Terrain",
       typeHospitality: "Hôtellerie", typeOther: "Autre"
-    }
+    },
+    workOrders: { formTitle: "Nouvel ordre de travail", formDescription: "Créez une demande opérationnelle reliée à un actif.", title: "Titre", category: "Catégorie", priority: "Priorité", description: "Description", estimatedCost: "Coût estimé", approval: "Approbation client", asset: "Actif", create: "Créer l’ordre" },
+    inspections: { formTitle: "Nouvelle inspection", formDescription: "Planifiez une visite terrain et initialisez sa checklist.", type: "Type d’inspection", scheduled: "Planifiée le", inspector: "Inspecteur", phone: "Téléphone", summary: "Résumé", recommendations: "Recommandations", create: "Créer l’inspection" },
+    projects: { formTitle: "Nouveau projet", formDescription: "Suivez un projet de construction, rénovation ou maintenance.", name: "Nom du projet", type: "Type de projet", asset: "Actif", status: "Statut", budget: "Budget", start: "Date de début", end: "Date cible", description: "Description", create: "Créer le projet" }
   },
   en: {
     nav: {
@@ -88,7 +93,7 @@ export const copy = {
       recentActivity: "Recent Activity", operationsSnapshot: "Operations snapshot",
       launchNote: "The KRAM foundation is ready. Operational data will be connected to Supabase in the next step."
     },
-    common: { search: "Search", notifications: "Notifications", today: "Today", cancel: "Cancel", save: "Save", create: "Create", back: "Back" },
+    common: { search: "Search", notifications: "Notifications", today: "Today", cancel: "Cancel", save: "Save", create: "Create", back: "Back", signOut: "Sign out" },
     settings: {
       title: "System settings", description: "Configure KRAM's geographic structure and access controls.",
       countries: "Countries", countriesDesc: "Manage the countries where KRAM operates.",
@@ -126,7 +131,10 @@ export const copy = {
       descriptionField: "Description", client: "Client / owner", typeResidential: "Residential",
       typeCommercial: "Commercial", typeConstruction: "Construction", typeRetail: "Retail",
       typeWarehouse: "Warehouse", typeLand: "Land", typeHospitality: "Hospitality", typeOther: "Other"
-    }
+    },
+    workOrders: { formTitle: "New work order", formDescription: "Create an operational request linked to an asset.", title: "Title", category: "Category", priority: "Priority", description: "Description", estimatedCost: "Estimated cost", approval: "Client approval", asset: "Asset", create: "Create work order" },
+    inspections: { formTitle: "New inspection", formDescription: "Schedule a field visit and initialize its checklist.", type: "Inspection type", scheduled: "Scheduled for", inspector: "Inspector", phone: "Phone", summary: "Summary", recommendations: "Recommendations", create: "Create inspection" },
+    projects: { formTitle: "New project", formDescription: "Track a construction, renovation or maintenance project.", name: "Project name", type: "Project type", asset: "Asset", status: "Status", budget: "Budget", start: "Start date", end: "Target end", description: "Description", create: "Create project" }
   },
   pt: {
     nav: {
@@ -149,7 +157,7 @@ export const copy = {
       recentActivity: "Atividade recente", operationsSnapshot: "Estado das operações",
       launchNote: "A fundação do KRAM está pronta. Os dados operacionais serão ligados ao Supabase na próxima etapa."
     },
-    common: { search: "Pesquisar", notifications: "Notificações", today: "Hoje", cancel: "Cancelar", save: "Guardar", create: "Criar", back: "Voltar" },
+    common: { search: "Pesquisar", notifications: "Notificações", today: "Hoje", cancel: "Cancelar", save: "Guardar", create: "Criar", back: "Voltar", signOut: "Terminar sessão" },
     settings: {
       title: "Definições do sistema", description: "Configure a estrutura geográfica e os controlos de acesso da KRAM.",
       countries: "Países", countriesDesc: "Gira os países onde a KRAM opera.",
@@ -187,7 +195,10 @@ export const copy = {
       descriptionField: "Descrição", client: "Cliente / proprietário", typeResidential: "Residencial",
       typeCommercial: "Comercial", typeConstruction: "Construção", typeRetail: "Comércio",
       typeWarehouse: "Armazém", typeLand: "Terreno", typeHospitality: "Hotelaria", typeOther: "Outro"
-    }
+    },
+    workOrders: { formTitle: "Nova ordem de trabalho", formDescription: "Crie um pedido operacional ligado a um ativo.", title: "Título", category: "Categoria", priority: "Prioridade", description: "Descrição", estimatedCost: "Custo estimado", approval: "Aprovação do cliente", asset: "Ativo", create: "Criar ordem" },
+    inspections: { formTitle: "Nova inspeção", formDescription: "Agende uma visita no terreno e inicialize a checklist.", type: "Tipo de inspeção", scheduled: "Agendada para", inspector: "Inspetor", phone: "Telefone", summary: "Resumo", recommendations: "Recomendações", create: "Criar inspeção" },
+    projects: { formTitle: "Novo projeto", formDescription: "Acompanhe um projeto de construção, renovação ou manutenção.", name: "Nome do projeto", type: "Tipo de projeto", asset: "Ativo", status: "Estado", budget: "Orçamento", start: "Data de início", end: "Fim previsto", description: "Descrição", create: "Criar projeto" }
   }
 } as const;
 

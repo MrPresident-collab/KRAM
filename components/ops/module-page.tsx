@@ -8,13 +8,13 @@ type ModuleCopy = {
   title: string;
   description: string;
   primaryAction?: string;
-  metrics: Array<{ label: string; value: string; hint: string }>;
+  metrics: readonly { label: string; value: string; hint: string }[];
   queueTitle: string;
   queueDescription: string;
   emptyTitle: string;
   emptyDescription: string;
   workflowTitle: string;
-  workflow: string[];
+  workflow: readonly string[];
   backLabel?: string;
   backHref?: string;
 };
@@ -23,10 +23,12 @@ export function OpsModulePage({
   locale,
   copy,
   icon: Icon,
+  actionHref,
 }: {
   locale: Locale;
   copy: ModuleCopy;
   icon: LucideIcon;
+  actionHref?: string;
 }) {
   return (
     <div className="space-y-7">
@@ -41,14 +43,7 @@ export function OpsModulePage({
           </div>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-500">{copy.description}</p>
         </div>
-        {copy.primaryAction && (
-          <button
-            type="button"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--kram-orange)] px-4 py-2.5 text-sm font-bold text-white shadow-sm"
-          >
-            {copy.primaryAction}
-          </button>
-        )}
+        {copy.primaryAction && actionHref && <Link href={actionHref} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--kram-orange)] px-4 py-2.5 text-sm font-bold text-white shadow-sm">{copy.primaryAction}</Link>}
       </section>
 
       <section className="grid gap-4 sm:grid-cols-3">

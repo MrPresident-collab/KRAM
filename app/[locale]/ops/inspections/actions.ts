@@ -112,7 +112,7 @@ async function uploadEvidence(kind:"inspection"|"work_order",fd:FormData):Promis
  const{error:uploadError}=await s.storage.from("kram-documents").upload(path,file,{contentType:file.type,upsert:false});if(uploadError)return{success:false,message:"Upload failed."};
  const table2=kind==="inspection"?"inspection_media":"work_order_media";
  const payload=kind==="inspection"?{id:documentId,inspection_id:id,organization_id:record.organization_id,storage_path:path,caption:caption||null,media_type:file.type.startsWith("video/")?"video":file.type.startsWith("image/")?"image":"document",evidence_type:type,uploaded_by:uid}:{id:documentId,work_order_id:id,organization_id:record.organization_id,storage_path:path,file_name:file.name,mime_type:file.type,size_bytes:file.size,evidence_type:type,caption:caption||null,uploaded_by:uid};
- const{error}=await s.from(table2).insert(payload);if(error){await s.storage.from("kram-documents").remove([path]);return{success:false,message:"Evidence record could not be created."}};
+ const{error}=await (table2 === "inspection_media" ? s.from("inspection_media").insert(payload as never) : s.from("work_order_media").insert(payload as never));if(error){await s.storage.from("kram-documents").remove([path]);return{success:false,message:"Evidence record could not be created."}};
  for(const l of["fr","en","pt"])revalidatePath("/"+l+"/ops/"+(kind==="inspection"?"inspections":"work-orders")+"/"+id);return{success:true,message:"Evidence uploaded successfully."};
 }
 export async function uploadInspectionEvidence(_p:EvidenceState,fd:FormData){return uploadEvidence("inspection",fd)}

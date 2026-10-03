@@ -44,7 +44,7 @@ export default async function AssetsPage({ params }: { params: Promise<{ locale:
             <td className="px-5 py-4"><Link href={`/${locale}/ops/assets/${asset.id}`} className="block"><div className="font-semibold text-zinc-900 group-hover:text-[var(--kram-orange)]">{asset.name}</div><div className="mt-0.5 text-xs font-medium text-zinc-400">{asset.reference_code}</div></Link></td>
             <td className="px-5 py-4 text-sm capitalize text-zinc-600">{asset.type.replaceAll("_", " ")}</td>
             <td className="px-5 py-4 text-sm text-zinc-600">{[asset.city, asset.country_code].filter(Boolean).join(", ") || "—"}</td>
-            <td className="px-5 py-4 text-sm text-zinc-600">{asset.clients?.full_name || "—"}</td>
+            <td className="px-5 py-4 text-sm text-zinc-600">{((Array.isArray(asset.clients) ? asset.clients[0] : asset.clients) as { full_name?: string } | null | undefined)?.full_name || "—"}</td>
             <td className="px-5 py-4"><span className="inline-flex rounded-full border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-xs font-semibold capitalize text-zinc-600">{asset.status}</span></td>
             <td className="px-4 py-4 text-right"><Link href={`/${locale}/ops/assets/${asset.id}`} aria-label={asset.name}><ArrowRight size={16} className="ml-auto text-zinc-300 transition group-hover:text-zinc-700" /></Link></td>
           </tr>)}</tbody>

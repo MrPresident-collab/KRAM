@@ -25,8 +25,6 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ lo
   if (error || !asset) notFound();
 
   const client = Array.isArray(asset.clients) ? asset.clients[0] : asset.clients;
-  const labels = typeLabels[locale];
-
   const [{ data: workOrders }, { data: inspections }, { data: projects }, { data: expenses }, { data: reports }, { count: documentCount }] = await Promise.all([
     supabase.from("work_orders").select("id,title,status,priority,created_at").eq("asset_id", id).order("created_at", { ascending: false }).limit(8),
     supabase.from("inspections").select("id,inspection_type,status,scheduled_for,created_at").eq("asset_id", id).order("created_at", { ascending: false }).limit(8),
@@ -68,7 +66,7 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ lo
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-full bg-orange-50 px-3 py-1.5 text-xs font-bold text-[var(--kram-orange)]">{labels[asset.type]}</span>
+            <span className="rounded-full bg-orange-50 px-3 py-1.5 text-xs font-bold text-[var(--kram-orange)]">{typeLabels[locale as Locale][asset.type as keyof typeof typeLabels.fr]}</span>
             <span className="rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1.5 text-xs font-semibold text-zinc-600">{statusLabel}</span>
           </div>
         </div>

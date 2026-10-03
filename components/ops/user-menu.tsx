@@ -25,7 +25,7 @@ export function UserMenu({ locale, user }: { locale: Locale; user: UserIdentity 
   const scopeMap = scopeLabels[locale];
   const role = roleMap[user.role as keyof typeof roleMap] ?? user.role;
   const scope = scopeMap[user.scope as keyof typeof scopeMap] ?? user.scope;
-  const initials = user.name.split(/s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join("").toUpperCase() || user.email.slice(0, 1).toUpperCase();
+  const initials = user.name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join("").toUpperCase() || user.email.slice(0, 1).toUpperCase();
 
   async function signOut() {
     await supabase.auth.signOut();

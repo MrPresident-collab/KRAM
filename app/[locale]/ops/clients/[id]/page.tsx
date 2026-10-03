@@ -21,7 +21,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ l
     .split(/\s+/)
     .filter(Boolean)
     .slice(0, 2)
-    .map((part) => part[0])
+    .map((part: string) => part[0])
     .join("")
     .toUpperCase();
 
