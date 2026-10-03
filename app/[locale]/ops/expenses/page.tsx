@@ -1,11 +1,14 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ClipboardList, ClipboardCheck, FolderKanban, Wrench, ShieldCheck, Wallet, FileText, Activity } from "lucide-react";
-import { isLocale, type Locale } from "@/lib/i18n";
-import { getModuleCopy } from "@/lib/ops-modules";
-import { OpsModulePage } from "@/components/ops/module-page";
+import { ArrowRight, Plus, Receipt } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
+import { copy, isLocale, type Locale } from "@/lib/i18n";
 
 export default async function ExpensesPage({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = await params;
-  if (!isLocale(locale)) notFound();
-  return <OpsModulePage locale={locale as Locale} copy={getModuleCopy(locale as Locale, "expenses")} icon={Wallet} />;
+ const { locale }=await params;if(!isLocale(locale))notFound();const t=copy[locale as Locale];const supabase=await createClient();
+ const {data:rows}=await supabase.from("expenses").select("id,description,category,amount,currency,status,expense_date,assets(id,name,reference_code),work_orders(id,title)").order("expense_date",{ascending:false}).order("created_at",{ascending:false});
+ const all=rows??[];const requested=all.filter(x=>x.status==="requested").length;const approved=all.filter(x=>x.status==="approved").length;const paid=all.filter(x=>x.status==="paid").length;const total=all.reduce((n,x)=>n+Number(x.amount||0),0);
+ return <div className="space-y-7"><section className="flex flex-col justify-between gap-5 md:flex-row md:items-end"><div><p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--kram-orange)]">{t.nav.finance}</p><div className="mt-2 flex items-center gap-3"><div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--kram-charcoal)] text-white"><Receipt size={19}/></div><h1 className="text-3xl font-bold tracking-[-0.045em] text-zinc-950">Expenses</h1></div><p className="mt-3 text-sm leading-6 text-zinc-500">Track operational costs from request through verification.</p></div><Link href={"/"+locale+"/ops/expenses/new"} className="inline-flex items-center gap-2 rounded-xl bg-[var(--kram-orange)] px-4 py-2.5 text-sm font-bold text-white"><Plus size={16}/> New expense</Link></section>
+ <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{[["Total recorded",total.toLocaleString()+" USD"],["Requested",String(requested)],["Approved",String(approved)],["Paid",String(paid)]].map(([label,value])=><div key={label} className="rounded-2xl border border-[var(--kram-border)] bg-white p-5"><p className="text-xs font-semibold uppercase tracking-[0.12em] text-zinc-400">{label}</p><p className="mt-3 text-2xl font-bold text-zinc-950">{value}</p></div>)}</section>
+ <section className="overflow-hidden rounded-2xl border border-[var(--kram-border)] bg-white"><div className="border-b border-zinc-100 px-5 py-4"><h2 className="text-base font-bold text-zinc-950">Expense register</h2></div>{all.length?<div className="divide-y divide-zinc-100">{all.map(e=>{const a=Array.isArray(e.assets)?e.assets[0]:e.assets;const w=Array.isArray(e.work_orders)?e.work_orders[0]:e.work_orders;return <Link key={e.id} href={"/"+locale+"/ops/expenses/"+e.id} className="flex items-center justify-between gap-5 px-5 py-4 hover:bg-zinc-50/70"><div className="min-w-0"><p className="truncate text-sm font-bold text-zinc-900">{e.description}</p><p className="mt-1 text-xs text-zinc-400">{a?.name||"No asset"} · {w?.title||"No work order"} · {e.category}</p></div><div className="flex shrink-0 items-center gap-4"><div className="text-right"><p className="text-sm font-bold text-zinc-900">{Number(e.amount).toLocaleString()} {e.currency}</p><p className="text-[11px] capitalize text-zinc-400">{e.status.replaceAll("_"," ")}</p></div><ArrowRight size={16} className="text-zinc-300"/></div></Link>})}</div>:<div className="flex min-h-72 flex-col items-center justify-center px-6 text-center"><Receipt size={22} className="text-zinc-300"/><h3 className="mt-4 text-sm font-bold text-zinc-800">No expenses yet</h3><p className="mt-1 text-sm text-zinc-500">Operational costs will appear here.</p></div>}</section></div>;
 }
