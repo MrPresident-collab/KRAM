@@ -24,7 +24,31 @@ export const copy = {
       recentActivity: "Activité récente", operationsSnapshot: "État des opérations",
       launchNote: "La fondation KRAM est prête. Les données opérationnelles seront connectées à Supabase dans la prochaine étape."
     },
-    common: { search: "Rechercher", notifications: "Notifications", today: "Aujourd’hui" }
+    common: { search: "Rechercher", notifications: "Notifications", today: "Aujourd’hui", cancel: "Annuler", save: "Enregistrer", create: "Créer", back: "Retour" },
+    clients: {
+      title: "Clients", description: "Gérez les propriétaires et contacts liés aux actifs KRAM.",
+      newClient: "Nouveau client", search: "Rechercher un client", records: "clients",
+      name: "Nom", contact: "E-mail", phone: "Téléphone", created: "Créé le",
+      loadError: "Impossible de charger les clients.", emptyTitle: "Aucun client",
+      emptyDescription: "Commencez par enregistrer un propriétaire ou un contact pour son actif.",
+      createFirst: "Créer le premier client", formTitle: "Créer un client",
+      formDescription: "Ajoutez les coordonnées de base du client.", fullName: "Nom complet",
+      email: "Adresse e-mail", notes: "Notes", createSuccess: "Client créé avec succès."
+    },
+    assets: {
+      title: "Tous les actifs", description: "Registre central des propriétés, projets et autres actifs suivis par KRAM.",
+      newAsset: "Nouvel actif", search: "Rechercher un actif", records: "actifs",
+      asset: "Actif", type: "Type", location: "Emplacement", owner: "Propriétaire", status: "Statut",
+      loadError: "Impossible de charger les actifs.", emptyTitle: "Aucun actif",
+      emptyDescription: "Créez un actif pour commencer à suivre son état, ses opérations et son historique.",
+      createFirst: "Créer le premier actif", formTitle: "Créer un actif",
+      formDescription: "Enregistrez les informations essentielles de l’actif.",
+      name: "Nom de l’actif", reference: "Code de référence", country: "Pays", city: "Ville",
+      address: "Adresse", descriptionField: "Description", client: "Client / propriétaire",
+      typeResidential: "Résidentiel", typeCommercial: "Commercial", typeConstruction: "Construction",
+      typeRetail: "Commerce", typeWarehouse: "Entrepôt", typeLand: "Terrain",
+      typeHospitality: "Hôtellerie", typeOther: "Autre"
+    }
   },
   en: {
     nav: {
@@ -47,7 +71,28 @@ export const copy = {
       recentActivity: "Recent Activity", operationsSnapshot: "Operations snapshot",
       launchNote: "The KRAM foundation is ready. Operational data will be connected to Supabase in the next step."
     },
-    common: { search: "Search", notifications: "Notifications", today: "Today" }
+    common: { search: "Search", notifications: "Notifications", today: "Today", cancel: "Cancel", save: "Save", create: "Create", back: "Back" },
+    clients: {
+      title: "Clients", description: "Manage owners and contacts connected to KRAM assets.",
+      newClient: "New client", search: "Search clients", records: "clients", name: "Name",
+      contact: "Email", phone: "Phone", created: "Created", loadError: "Unable to load clients.",
+      emptyTitle: "No clients yet", emptyDescription: "Start by registering an owner or contact for an asset.",
+      createFirst: "Create first client", formTitle: "Create client",
+      formDescription: "Add the client's basic contact details.", fullName: "Full name",
+      email: "Email address", notes: "Notes", createSuccess: "Client created successfully."
+    },
+    assets: {
+      title: "All Assets", description: "Central registry for properties, projects and other assets tracked by KRAM.",
+      newAsset: "New asset", search: "Search assets", records: "assets", asset: "Asset", type: "Type",
+      location: "Location", owner: "Owner", status: "Status", loadError: "Unable to load assets.",
+      emptyTitle: "No assets yet", emptyDescription: "Create an asset to begin tracking its condition, operations and history.",
+      createFirst: "Create first asset", formTitle: "Create asset",
+      formDescription: "Record the essential information for the asset.", name: "Asset name",
+      reference: "Reference code", country: "Country", city: "City", address: "Address",
+      descriptionField: "Description", client: "Client / owner", typeResidential: "Residential",
+      typeCommercial: "Commercial", typeConstruction: "Construction", typeRetail: "Retail",
+      typeWarehouse: "Warehouse", typeLand: "Land", typeHospitality: "Hospitality", typeOther: "Other"
+    }
   },
   pt: {
     nav: {
@@ -70,7 +115,28 @@ export const copy = {
       recentActivity: "Atividade recente", operationsSnapshot: "Estado das operações",
       launchNote: "A fundação do KRAM está pronta. Os dados operacionais serão ligados ao Supabase na próxima etapa."
     },
-    common: { search: "Pesquisar", notifications: "Notificações", today: "Hoje" }
+    common: { search: "Pesquisar", notifications: "Notificações", today: "Hoje", cancel: "Cancelar", save: "Guardar", create: "Criar", back: "Voltar" },
+    clients: {
+      title: "Clientes", description: "Gira proprietários e contactos ligados aos ativos KRAM.",
+      newClient: "Novo cliente", search: "Pesquisar clientes", records: "clientes", name: "Nome",
+      contact: "E-mail", phone: "Telefone", created: "Criado em", loadError: "Não foi possível carregar os clientes.",
+      emptyTitle: "Ainda não há clientes", emptyDescription: "Comece por registar um proprietário ou contacto de um ativo.",
+      createFirst: "Criar primeiro cliente", formTitle: "Criar cliente",
+      formDescription: "Adicione os dados básicos de contacto do cliente.", fullName: "Nome completo",
+      email: "Endereço de e-mail", notes: "Notas", createSuccess: "Cliente criado com sucesso."
+    },
+    assets: {
+      title: "Todos os ativos", description: "Registo central de propriedades, projetos e outros ativos acompanhados pela KRAM.",
+      newAsset: "Novo ativo", search: "Pesquisar ativos", records: "ativos", asset: "Ativo", type: "Tipo",
+      location: "Localização", owner: "Proprietário", status: "Estado", loadError: "Não foi possível carregar os ativos.",
+      emptyTitle: "Ainda não há ativos", emptyDescription: "Crie um ativo para começar a acompanhar o seu estado, operações e histórico.",
+      createFirst: "Criar primeiro ativo", formTitle: "Criar ativo",
+      formDescription: "Registe as informações essenciais do ativo.", name: "Nome do ativo",
+      reference: "Código de referência", country: "País", city: "Cidade", address: "Morada",
+      descriptionField: "Descrição", client: "Cliente / proprietário", typeResidential: "Residencial",
+      typeCommercial: "Comercial", typeConstruction: "Construção", typeRetail: "Comércio",
+      typeWarehouse: "Armazém", typeLand: "Terreno", typeHospitality: "Hotelaria", typeOther: "Outro"
+    }
   }
 } as const;
 
