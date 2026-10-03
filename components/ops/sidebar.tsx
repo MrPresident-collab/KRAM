@@ -13,6 +13,15 @@ import { ScopeSwitcher } from "@/components/ops/scope-switcher";
 export function OpsSidebar({ locale }: { locale: Locale }) {
   const pathname = usePathname();
   const t = copy[locale];
+
+  const implemented = new Set([
+    `/${locale}/ops`,
+    `/${locale}/ops/assets`,
+    `/${locale}/ops/clients`,
+    `/${locale}/ops/users`,
+    `/${locale}/ops/settings`,
+  ]);
+
   const sections = [
     { label: null, items: [{ href: `/${locale}/ops`, label: t.nav.overview, icon: LayoutDashboard }] },
     { label: t.nav.operations, items: [
@@ -52,14 +61,22 @@ export function OpsSidebar({ locale }: { locale: Locale }) {
         <nav className="space-y-1">{section.items.map((item) => {
           const Icon = item.icon;
           const active = pathname === item.href || (item.href !== `/${locale}/ops` && pathname.startsWith(item.href));
-          return <Link key={item.href} href={item.href} className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${active ? "bg-[var(--kram-black)] text-white" : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950"}`}>
-            <Icon size={17} strokeWidth={active ? 2.2 : 1.8} /><span>{item.label}</span>
-          </Link>;
+          const ready = implemented.has(item.href) || item.href.startsWith(`/${locale}/ops/users`) || item.href.startsWith(`/${locale}/ops/settings`);
+          return ready ? (
+            <Link key={item.href} href={item.href} className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${active ? "bg-[var(--kram-charcoal)] text-white" : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950"}`}>
+              <Icon size={17} strokeWidth={active ? 2.2 : 1.8} /><span>{item.label}</span>
+            </Link>
+          ) : (
+            <div key={item.href} title="Coming soon" className="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-300">
+              <Icon size={17} strokeWidth={1.8} /><span>{item.label}</span>
+            </div>
+          );
         })}</nav>
       </div>)}
     </div>
-    <div className="border-t border-[var(--kram-border)] p-4"><ScopeSwitcher />
-      <div className="rounded-xl bg-[var(--kram-background)] p-3">
+    <div className="border-t border-[var(--kram-border)] p-4">
+      <ScopeSwitcher />
+      <div className="mt-3 rounded-xl bg-[var(--kram-background)] p-3">
         <div className="flex items-center gap-2"><LifeBuoy size={15} className="text-[var(--kram-orange)]" /><span className="text-xs font-semibold">KRAM Ops</span></div>
         <p className="mt-1 text-[11px] leading-4 text-zinc-500">Control your authorized KRAM scope.</p>
       </div>
