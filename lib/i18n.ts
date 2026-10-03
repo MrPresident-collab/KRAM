@@ -25,6 +25,22 @@ export const copy = {
       launchNote: "La fondation KRAM est prête. Les données opérationnelles seront connectées à Supabase dans la prochaine étape."
     },
     common: { search: "Rechercher", notifications: "Notifications", today: "Aujourd’hui", cancel: "Annuler", save: "Enregistrer", create: "Créer", back: "Retour" },
+    settings: {
+      title: "Paramètres du système", description: "Configurez la structure géographique et les contrôles d’accès de KRAM.",
+      countries: "Pays", countriesDesc: "Gérez les pays dans lesquels KRAM opère.",
+      branches: "Agences", branchesDesc: "Gérez les agences, villes et zones opérationnelles.",
+      access: "Accès & rôles", accessDesc: "Contrôlez les rôles et la portée géographique des utilisateurs.",
+      comingSoon: "Cette section sera disponible prochainement.", noCountries: "Aucun pays configuré.",
+      branchCreate: "Créer une agence", branchName: "Nom de l’agence", branchCode: "Code de l’agence",
+      city: "Ville", region: "Région", country: "Pays", createBranch: "Créer l’agence",
+      branchHint: "Un code court et unique au sein de KRAM."
+    },
+    users: {
+      title: "Utilisateurs & rôles", description: "Gérez les accès internes, les rôles et la portée opérationnelle.",
+      staff: "Personnel", staffDesc: "Utilisateurs internes autorisés à accéder à KRAM Ops.",
+      roles: "Rôles", rolesDesc: "Définissez les responsabilités et niveaux d’accès.",
+      scope: "Portée géographique", scopeDesc: "Limitez l’accès à l’échelle globale, nationale ou d’agence."
+    },
     auth: { signIn: "Se connecter", email: "Adresse e-mail", password: "Mot de passe", signInAction: "Accéder à KRAM Ops", signingIn: "Connexion...", invalid: "E-mail ou mot de passe incorrect.", subtitle: "Accédez à votre centre de contrôle KRAM." },
     clients: {
       title: "Clients", description: "Gérez les propriétaires et contacts liés aux actifs KRAM.",
@@ -73,6 +89,22 @@ export const copy = {
       launchNote: "The KRAM foundation is ready. Operational data will be connected to Supabase in the next step."
     },
     common: { search: "Search", notifications: "Notifications", today: "Today", cancel: "Cancel", save: "Save", create: "Create", back: "Back" },
+    settings: {
+      title: "System settings", description: "Configure KRAM's geographic structure and access controls.",
+      countries: "Countries", countriesDesc: "Manage the countries where KRAM operates.",
+      branches: "Branches", branchesDesc: "Manage branches, cities and operational areas.",
+      access: "Access & roles", accessDesc: "Control user roles and geographic scope.",
+      comingSoon: "This section will be available soon.", noCountries: "No countries configured.",
+      branchCreate: "Create branch", branchName: "Branch name", branchCode: "Branch code",
+      city: "City", region: "Region", country: "Country", createBranch: "Create branch",
+      branchHint: "A short, unique code within KRAM."
+    },
+    users: {
+      title: "Users & roles", description: "Manage internal access, roles and operational scope.",
+      staff: "Staff", staffDesc: "Internal users authorized to access KRAM Ops.",
+      roles: "Roles", rolesDesc: "Define responsibilities and access levels.",
+      scope: "Geographic scope", scopeDesc: "Limit access at global, country or branch level."
+    },
     auth: { signIn: "Sign in", email: "Email address", password: "Password", signInAction: "Enter KRAM Ops", signingIn: "Signing in...", invalid: "Incorrect email or password.", subtitle: "Access your KRAM control center." },
     clients: {
       title: "Clients", description: "Manage owners and contacts connected to KRAM assets.",
@@ -118,6 +150,22 @@ export const copy = {
       launchNote: "A fundação do KRAM está pronta. Os dados operacionais serão ligados ao Supabase na próxima etapa."
     },
     common: { search: "Pesquisar", notifications: "Notificações", today: "Hoje", cancel: "Cancelar", save: "Guardar", create: "Criar", back: "Voltar" },
+    settings: {
+      title: "Definições do sistema", description: "Configure a estrutura geográfica e os controlos de acesso da KRAM.",
+      countries: "Países", countriesDesc: "Gira os países onde a KRAM opera.",
+      branches: "Filiais", branchesDesc: "Gira filiais, cidades e áreas operacionais.",
+      access: "Acesso e funções", accessDesc: "Controle as funções e o âmbito geográfico dos utilizadores.",
+      comingSoon: "Esta secção estará disponível em breve.", noCountries: "Ainda não há países configurados.",
+      branchCreate: "Criar filial", branchName: "Nome da filial", branchCode: "Código da filial",
+      city: "Cidade", region: "Região", country: "País", createBranch: "Criar filial",
+      branchHint: "Um código curto e único dentro da KRAM."
+    },
+    users: {
+      title: "Utilizadores e funções", description: "Gira acessos internos, funções e âmbito operacional.",
+      staff: "Pessoal", staffDesc: "Utilizadores internos autorizados a aceder ao KRAM Ops.",
+      roles: "Funções", rolesDesc: "Defina responsabilidades e níveis de acesso.",
+      scope: "Âmbito geográfico", scopeDesc: "Limite o acesso ao nível global, nacional ou de filial."
+    },
     auth: { signIn: "Iniciar sessão", email: "Endereço de e-mail", password: "Palavra-passe", signInAction: "Entrar no KRAM Ops", signingIn: "A entrar...", invalid: "E-mail ou palavra-passe incorretos.", subtitle: "Aceda ao seu centro de controlo KRAM." },
     clients: {
       title: "Clientes", description: "Gira proprietários e contactos ligados aos ativos KRAM.",
