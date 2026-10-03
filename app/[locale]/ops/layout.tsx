@@ -14,19 +14,12 @@ export default async function OpsLayout({ children, params }: Readonly<{ childre
 
   const [{ data: profile }, { data: membership }] = await Promise.all([
     supabase.from("profiles").select("full_name,job_title,avatar_url").eq("id", userId).maybeSingle(),
-    supabase.from("organization_members").select("role,scope_level").eq("user_id", userId).eq("role", "owner").eq("scope_level", "global").order("created_at", { ascending: true }).limit(1).maybeSingle(),
+    supabase.from("organization_members").select("role,scope_level").eq("user_id", userId).order("created_at", { ascending: true }).limit(1).maybeSingle(),
   ]);
 
   const email = typeof claims.claims.email === "string" ? claims.claims.email : "—";
   const name = profile?.full_name?.trim() || email.split("@")[0] || "KRAM User";
-  const user = {
-    name,
-    email,
-    role: membership?.role ?? "viewer",
-    scope: membership?.scope_level ?? "global",
-    jobTitle: profile?.job_title ?? null,
-    avatarUrl: profile?.avatar_url ?? null,
-  };
+  const user = { name, email, role: membership?.role ?? "viewer", scope: membership?.scope_level ?? "global", jobTitle: profile?.job_title ?? null, avatarUrl: profile?.avatar_url ?? null };
 
   return <div className="min-h-screen"><OpsSidebar locale={locale as Locale} /><div className="lg:pl-64"><OpsHeader locale={locale as Locale} user={user} /><main className="mx-auto max-w-[1600px] px-5 py-7 lg:px-8">{children}</main></div></div>;
 }
