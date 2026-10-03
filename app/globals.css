@@ -1,11 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --kram-black: #111111;
-  --kram-orange: #ff7a00;
-  --kram-orange-soft: #fff1e6;
-  --kram-background: #f7f7f5;
-  --kram-border: #e8e8e5;
+  --kram-charcoal: #242424;
+  --kram-charcoal-deep: #181818;
+  --kram-metal: #707070;
+  --kram-metal-soft: #b7b7b3;
+  --kram-orange: #f47721;
+  --kram-orange-soft: #fff0e6;
+  --kram-background: #f3f3f0;
+  --kram-border: #deded9;
+  --kram-surface: #ffffff;
 }
 
 * { box-sizing: border-box; }
@@ -14,10 +18,10 @@ body {
   margin: 0;
   min-height: 100vh;
   background: var(--kram-background);
-  color: var(--kram-black);
+  color: var(--kram-charcoal);
   font-family: Arial, Helvetica, sans-serif;
 }
 button, input, textarea, select { font: inherit; }
 ::selection { background: var(--kram-orange); color: white; }
 .kram-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-.kram-scrollbar::-webkit-scrollbar-thumb { background: #d4d4d0; border-radius: 999px; }
+.kram-scrollbar::-webkit-scrollbar-thumb { background: var(--kram-metal-soft); border-radius: 999px; }
