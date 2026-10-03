@@ -13,3 +13,95 @@ export async function createWorkOrder(_prev:WorkOrderActionState,fd:FormData):Pr
  revalidatePath("/fr/ops/work-orders");revalidatePath("/en/ops/work-orders");revalidatePath("/pt/ops/work-orders");revalidatePath("/fr/ops/assets/"+asset.id);revalidatePath("/en/ops/assets/"+asset.id);revalidatePath("/pt/ops/assets/"+asset.id);
  return{success:true,message:"Work order created successfully."};
 }
+
+
+const transitions: Record<string,string[]> = {
+  draft: ["pending_approval","approved"],
+  pending_approval: ["approved","draft"],
+  approved: ["assigned","in_progress"],
+  assigned: ["in_progress"],
+  in_progress: ["awaiting_evidence","completed"],
+  awaiting_evidence: ["completed","in_progress"],
+  completed: ["verified","in_progress"],
+  verified: ["closed"],
+  closed: [],
+};
+
+export async function transitionWorkOrder(
+  _prev: WorkOrderActionState,
+  fd: FormData,
+): Promise<WorkOrderActionState> {
+  const workOrderId = String(fd.get("workOrderId") ?? "");
+  const nextStatus = String(fd.get("status") ?? "");
+  const note = String(fd.get("note") ?? "").trim();
+
+  const parsed = z.object({
+    workOrderId: z.string().uuid(),
+    status: z.enum(["draft","pending_approval","approved","assigned","in_progress","awaiting_evidence","completed","verified","closed"]),
+    note: z.string().max(2000),
+  }).safeParse({ workOrderId, status: nextStatus, note });
+
+  if (!parsed.success) return { success: false, message: "Invalid status update." };
+
+  const supabase = await createClient();
+  const { data: claims } = await supabase.auth.getClaims();
+  const userId = claims?.claims?.sub;
+  if (!userId) return { success: false, message: "Your session is no longer valid." };
+
+  const { data: membership } = await supabase
+    .from("organization_members")
+    .select("organization_id,role")
+    .eq("user_id", userId)
+    .limit(1)
+    .maybeSingle();
+
+  if (!membership || !["owner","admin","regional_admin","operations"].includes(membership.role)) {
+    return { success: false, message: "You are not authorized to update work orders." };
+  }
+
+  const { data: current } = await supabase
+    .from("work_orders")
+    .select("id,organization_id,branch_id,status")
+    .eq("id", parsed.data.workOrderId)
+    .eq("organization_id", membership.organization_id)
+    .maybeSingle();
+
+  if (!current) return { success: false, message: "Work order not found." };
+
+  const allowed = transitions[current.status] ?? [];
+  if (!allowed.includes(parsed.data.status)) {
+    return { success: false, message: "That status transition is not allowed." };
+  }
+
+  const { error: updateError } = await supabase
+    .from("work_orders")
+    .update({ status: parsed.data.status, updated_at: new Date().toISOString() })
+    .eq("id", current.id)
+    .eq("organization_id", current.organization_id);
+
+  if (updateError) return { success: false, message: "The work order could not be updated." };
+
+  const { error: historyError } = await supabase
+    .from("work_order_updates")
+    .insert({
+      work_order_id: current.id,
+      organization_id: current.organization_id,
+      actor_id: userId,
+      from_status: current.status,
+      to_status: parsed.data.status,
+      note: parsed.data.note || null,
+    });
+
+  if (historyError) {
+    return { success: false, message: "The status changed, but its history could not be recorded." };
+  }
+
+  revalidatePath("/fr/ops/work-orders");
+  revalidatePath("/en/ops/work-orders");
+  revalidatePath("/pt/ops/work-orders");
+  revalidatePath("/fr/ops/work-orders/" + current.id);
+  revalidatePath("/en/ops/work-orders/" + current.id);
+  revalidatePath("/pt/ops/work-orders/" + current.id);
+
+  return { success: true, message: "Work order updated successfully." };
+}
