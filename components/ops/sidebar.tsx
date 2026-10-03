@@ -29,6 +29,7 @@ export function OpsSidebar({ locale }: { locale: Locale }) {
     `/${locale}/ops/expenses`,
     `/${locale}/ops/approvals`,
     `/${locale}/ops/reports`,
+    `/${locale}/ops/documents`,
     `/${locale}/ops/activity`,
   ]);
 
@@ -50,7 +51,7 @@ export function OpsSidebar({ locale }: { locale: Locale }) {
       { href: `/${locale}/ops/expenses`, label: t.nav.expenses, icon: Wallet },
       { href: `/${locale}/ops/approvals`, label: t.nav.approvals, icon: ClipboardCheck }
     ]},
-    { label: t.nav.documents, items: [{ href: `/${locale}/ops/reports`, label: t.nav.reports, icon: FileText }] },
+    { label: t.nav.documents, items: [{ href: `/${locale}/ops/reports`, label: t.nav.reports, icon: FileText }, { href: `/${locale}/ops/documents`, label: "Document library", icon: FileText }] },
     { label: t.nav.system, items: [
       { href: `/${locale}/ops/activity`, label: t.nav.activity, icon: Activity },
       { href: `/${locale}/ops/users`, label: t.nav.usersRoles, icon: Users },
