@@ -19,7 +19,7 @@ export default async function AssetsPage({ params }: { params: Promise<{ locale:
         <h1 className="mt-2 text-3xl font-bold tracking-[-0.045em] text-zinc-950 md:text-4xl">{t.assets.title}</h1>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-500">{t.assets.description}</p>
       </div>
-      <Link href={`/${locale}/ops/assets/new`} className="inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--kram-black)] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-zinc-800">
+      <Link href={`/${locale}/ops/assets/new`} className="inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--kram-charcoal)] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-zinc-800">
         <Plus size={16} />{t.assets.newAsset}
       </Link>
     </section>
