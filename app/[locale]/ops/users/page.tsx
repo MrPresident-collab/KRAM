@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Users, ShieldCheck, Globe2, Building2 } from "lucide-react";
 import { isLocale, type Locale, copy } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase/server";
@@ -13,10 +13,10 @@ export default async function UsersPage({ params }: { params: Promise<{ locale:s
   const supabase=await createClient();
   const { data: claims }=await supabase.auth.getClaims();
   const userId=claims?.claims?.sub;
-  if(!userId) notFound();
+  if(!userId) redirect(`/${locale}/login`);
 
-  const { data: membership }=await supabase.from("organization_members").select("organization_id,role,scope_level,country_id,branch_id").eq("user_id",userId).in("role",["owner","admin","regional_admin"]).limit(1).maybeSingle();
-  if(!membership) notFound();
+  const { data: membership }=await supabase.from("organization_members").select("organization_id,role,scope_level,country_id,branch_id").eq("user_id",userId).order("created_at",{ascending:true}).limit(1).maybeSingle();
+  if(!membership) return <div className="rounded-2xl border border-red-200 bg-red-50 p-8"><h1 className="text-lg font-bold text-red-900">KRAM access is not configured</h1><p className="mt-2 text-sm text-red-700">Your account is authenticated, but it is not assigned to a KRAM organization.</p></div>;
 
   const { data: staff }=await supabase.from("organization_members").select("id,user_id,role,scope_level,country_id,branch_id,profiles(full_name,work_email,job_title,avatar_url),countries(name),branches(name,city)").eq("organization_id",membership.organization_id).order("created_at",{ascending:true});
   const canCreate=membership.role==="owner"||membership.role==="admin"||membership.role==="regional_admin";
