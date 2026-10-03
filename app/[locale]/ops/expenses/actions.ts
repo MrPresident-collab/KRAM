@@ -1,5 +1,6 @@
 "use server";
 import { revalidatePath } from "next/cache";
+import {writeAudit} from "@/lib/audit";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 export type ExpenseActionState={success:boolean;message:string};
@@ -12,6 +13,7 @@ export async function createExpense(_prev:ExpenseActionState,fd:FormData):Promis
  if(!m||!["owner","admin","regional_admin","operations","finance"].includes(m.role))return{success:false,message:"You are not authorized to create expenses."};
  const{data:expense,error}=await s.from("expenses").insert({organization_id:m.organization_id,description:parsed.data.description,category:parsed.data.category,amount:parsed.data.amount,currency:parsed.data.currency.toUpperCase(),paid_to:parsed.data.paidTo||null,expense_date:parsed.data.expenseDate,asset_id:parsed.data.assetId||null,work_order_id:parsed.data.workOrderId||null,provider_id:parsed.data.providerId||null,project_id:parsed.data.projectId||null,payment_method:parsed.data.paymentMethod||null,notes:parsed.data.notes||null,created_by:uid}).select("id").single();
  if(error||!expense)return{success:false,message:"The expense could not be created."};
+ await writeAudit(s,{organizationId:m.organization_id,actorId:uid,action:"expense.created",entityType:"expense",entityId:expense.id,summary:"Expense created",metadata:{amount:parsed.data.amount,currency:parsed.data.currency,category:parsed.data.category}});
  const {error:approvalError}=await s.from("approvals").insert({
    organization_id:m.organization_id,
    expense_id:expense.id,
@@ -83,6 +85,7 @@ export async function transitionExpense(
    .eq("id",e.id).eq("organization_id",e.organization_id);
 
  if(updateError)return{success:false,message:"The expense could not be updated."};
+ await writeAudit(s,{organizationId:e.organization_id,actorId:uid,action:`expense.${parsed.data.status}`,entityType:"expense",entityId:e.id,summary:`Expense moved to ${parsed.data.status}`,metadata:{from:e.status,to:parsed.data.status,note:parsed.data.note||null}});
 
  if(["approved","rejected"].includes(parsed.data.status)){
    await s.from("approvals")
