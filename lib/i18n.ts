@@ -25,6 +25,7 @@ export const copy = {
       launchNote: "La fondation KRAM est prête. Les données opérationnelles seront connectées à Supabase dans la prochaine étape."
     },
     common: { search: "Rechercher", notifications: "Notifications", today: "Aujourd’hui", cancel: "Annuler", save: "Enregistrer", create: "Créer", back: "Retour" },
+    auth: { signIn: "Se connecter", email: "Adresse e-mail", password: "Mot de passe", signInAction: "Accéder à KRAM Ops", signingIn: "Connexion...", invalid: "E-mail ou mot de passe incorrect.", subtitle: "Accédez à votre centre de contrôle KRAM." },
     clients: {
       title: "Clients", description: "Gérez les propriétaires et contacts liés aux actifs KRAM.",
       newClient: "Nouveau client", search: "Rechercher un client", records: "clients",
@@ -72,6 +73,7 @@ export const copy = {
       launchNote: "The KRAM foundation is ready. Operational data will be connected to Supabase in the next step."
     },
     common: { search: "Search", notifications: "Notifications", today: "Today", cancel: "Cancel", save: "Save", create: "Create", back: "Back" },
+    auth: { signIn: "Sign in", email: "Email address", password: "Password", signInAction: "Enter KRAM Ops", signingIn: "Signing in...", invalid: "Incorrect email or password.", subtitle: "Access your KRAM control center." },
     clients: {
       title: "Clients", description: "Manage owners and contacts connected to KRAM assets.",
       newClient: "New client", search: "Search clients", records: "clients", name: "Name",
@@ -116,6 +118,7 @@ export const copy = {
       launchNote: "A fundação do KRAM está pronta. Os dados operacionais serão ligados ao Supabase na próxima etapa."
     },
     common: { search: "Pesquisar", notifications: "Notificações", today: "Hoje", cancel: "Cancelar", save: "Guardar", create: "Criar", back: "Voltar" },
+    auth: { signIn: "Iniciar sessão", email: "Endereço de e-mail", password: "Palavra-passe", signInAction: "Entrar no KRAM Ops", signingIn: "A entrar...", invalid: "E-mail ou palavra-passe incorretos.", subtitle: "Aceda ao seu centro de controlo KRAM." },
     clients: {
       title: "Clientes", description: "Gira proprietários e contactos ligados aos ativos KRAM.",
       newClient: "Novo cliente", search: "Pesquisar clientes", records: "clientes", name: "Nome",
