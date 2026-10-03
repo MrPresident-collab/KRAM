@@ -1,11 +1,13 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ClipboardList, ClipboardCheck, FolderKanban, Wrench, ShieldCheck, Wallet, FileText, Activity } from "lucide-react";
-import { isLocale, type Locale } from "@/lib/i18n";
-import { getModuleCopy } from "@/lib/ops-modules";
-import { OpsModulePage } from "@/components/ops/module-page";
-
-export default async function ProvidersPage({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = await params;
-  if (!isLocale(locale)) notFound();
-  return <OpsModulePage locale={locale as Locale} copy={getModuleCopy(locale as Locale, "providers")} icon={ShieldCheck} />;
+import { UsersRound, Plus, ArrowRight } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
+import { copy, isLocale, type Locale } from "@/lib/i18n";
+export default async function ProvidersPage({params}:{params:Promise<{locale:string}>}) {
+ const {locale}=await params; if(!isLocale(locale)) notFound(); const t=copy[locale as Locale]; const s=await createClient();
+ const {data:rows}=await s.from("service_providers").select("id,name,phone,status,verification_status,coverage").order("name"); const all=rows??[];
+ const active=all.filter(x=>x.status==="active").length; const verified=all.filter(x=>x.verification_status==="verified").length;
+ return <div className="space-y-7"><section className="flex flex-col justify-between gap-5 md:flex-row md:items-end"><div><p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--kram-orange)]">{t.nav.providers}</p><div className="mt-2 flex items-center gap-3"><div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--kram-charcoal)] text-white"><UsersRound size={19}/></div><h1 className="text-3xl font-bold tracking-[-0.045em] text-zinc-950">Service Providers</h1></div><p className="mt-3 text-sm leading-6 text-zinc-500">KRAM field network of technicians and service professionals.</p></div><Link href={"/"+locale+"/ops/providers/new"} className="inline-flex items-center gap-2 rounded-xl bg-[var(--kram-orange)] px-4 py-2.5 text-sm font-bold text-white"><Plus size={16}/> Add provider</Link></section>
+ <section className="grid gap-4 sm:grid-cols-2"><div className="rounded-2xl border border-[var(--kram-border)] bg-white p-5"><p className="text-xs font-semibold uppercase tracking-[0.12em] text-zinc-400">Active</p><p className="mt-3 text-3xl font-bold text-zinc-950">{active}</p></div><div className="rounded-2xl border border-[var(--kram-border)] bg-white p-5"><p className="text-xs font-semibold uppercase tracking-[0.12em] text-zinc-400">Verified</p><p className="mt-3 text-3xl font-bold text-zinc-950">{verified}</p></div></section>
+ <section className="overflow-hidden rounded-2xl border border-[var(--kram-border)] bg-white"><div className="border-b border-zinc-100 px-5 py-4"><h2 className="text-base font-bold">Field network</h2></div>{all.length?<div className="divide-y divide-zinc-100">{all.map(p=><Link key={p.id} href={"/"+locale+"/ops/providers/"+p.id} className="flex items-center justify-between gap-5 px-5 py-4 hover:bg-zinc-50"><div><p className="text-sm font-bold text-zinc-900">{p.name}</p><p className="mt-1 text-xs text-zinc-400">{p.coverage||"Coverage not recorded"} · {p.phone||"No phone"}</p></div><div className="flex items-center gap-3"><span className="rounded-full border border-zinc-200 px-2.5 py-1 text-[11px] font-semibold text-zinc-600">{p.verification_status}</span><ArrowRight size={16} className="text-zinc-300"/></div></Link>)}</div>:<div className="flex min-h-72 flex-col items-center justify-center text-center"><UsersRound size={22} className="text-zinc-300"/><h3 className="mt-4 text-sm font-bold">No service providers yet</h3><p className="mt-1 text-sm text-zinc-500">Start building KRAM’s field network.</p></div>}</section></div>;
 }
