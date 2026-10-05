@@ -2,16 +2,17 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Building2, Mail, Phone, UserRound, ClipboardList, ClipboardCheck, FolderKanban, Receipt, FileText, Plus } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { copy, isLocale, type Locale } from "@/lib/i18n";
+import { copy, isLocale, type Locale, getDetailUi } from "@/lib/i18n";
 
 export default async function ClientDetailPage({ params }: { params: Promise<{ locale: string; id: string }> }) {
   const { locale, id } = await params;
   if (!isLocale(locale)) notFound();
   const t = copy[locale as Locale];
+  const ui = getDetailUi(locale as Locale).client;
   const supabase = await createClient();
 
   const [{ data: client, error }, { data: assets }] = await Promise.all([
-    supabase.from("clients").select("id,full_name,email,primary_phone,alternative_phone,residency_country,residency_city,residency_address,preferred_language,preferred_contact_method,notes,created_at,updated_at").eq("id", id).maybeSingle(),
+    supabase.from("clients").select("id,full_name,email,primary_phone,alternative_phone,residency_country,residency_city,residency_address,preferred_language,preferred_contact_method,notes,created_at,updated_at,client_authorized_contacts(*)").eq("id", id).maybeSingle(),
     supabase.from("assets").select("id,name,reference_code,type,status,city,country_code").eq("client_id", id).order("created_at", { ascending: false }),
   ]);
 
@@ -90,42 +91,42 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ l
       </section>
 
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <SummaryMetric icon={Building2} label="Assets" value={String(assets?.length ?? 0)} />
-        <SummaryMetric icon={ClipboardList} label="Open work orders" value={String(openWorkOrders)} />
-        <SummaryMetric icon={ClipboardCheck} label="Active inspections" value={String(activeInspections)} />
-        <SummaryMetric icon={FolderKanban} label="Active projects" value={String(activeProjects)} />
+        <SummaryMetric icon={Building2} label={ui.asset + "s"} value={String(assets?.length ?? 0)} />
+        <SummaryMetric icon={ClipboardList} label={ui.openWorkOrders} value={String(openWorkOrders)} />
+        <SummaryMetric icon={ClipboardCheck} label={ui.activeInspections} value={String(activeInspections)} />
+        <SummaryMetric icon={FolderKanban} label={ui.activeProjects} value={String(activeProjects)} />
       </section>
 
       <section className="grid gap-5 xl:grid-cols-[1.5fr_1fr]">
         <div className="space-y-5">
           <div className="rounded-2xl border border-[var(--kram-border)] bg-white">
             <div className="flex items-center justify-between border-b border-zinc-100 px-5 py-4">
-              <div><h2 className="text-base font-bold text-zinc-950">Client operations</h2><p className="mt-1 text-xs text-zinc-400">Recent activity across this client&apos;s assets.</p></div>
+              <div><h2 className="text-base font-bold text-zinc-950">{ui.clientOperations}</h2><p className="mt-1 text-xs text-zinc-400">{ui.clientOperationsDesc}</p></div>
               <Link href={`/${locale}/ops/assets/new`} className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--kram-charcoal)] px-2.5 py-1.5 text-[11px] font-bold text-white"><Plus size={13}/> Asset</Link>
             </div>
             {(workOrders?.length || inspections?.length || projects?.length) ? <div className="divide-y divide-zinc-100">
-              {(workOrders ?? []).slice(0,4).map((x) => { const a = Array.isArray(x.assets) ? x.assets[0] : x.assets; return <Link key={x.id} href={`/${locale}/ops/work-orders/${x.id}`} className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-zinc-50"><div><p className="text-sm font-semibold text-zinc-800">{x.title}</p><p className="mt-1 text-xs text-zinc-400">Work Order · {a?.name ?? "Asset"} · {x.priority}</p></div><span className="text-xs font-semibold capitalize text-zinc-500">{x.status.replaceAll("_"," ")}</span></Link>; })}
-              {(inspections ?? []).slice(0,3).map((x) => { const a = Array.isArray(x.assets) ? x.assets[0] : x.assets; return <Link key={x.id} href={`/${locale}/ops/inspections/${x.id}`} className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-zinc-50"><div><p className="text-sm font-semibold capitalize text-zinc-800">{x.inspection_type.replaceAll("_"," ")}</p><p className="mt-1 text-xs text-zinc-400">Inspection · {a?.name ?? "Asset"}</p></div><span className="text-xs font-semibold capitalize text-zinc-500">{x.status.replaceAll("_"," ")}</span></Link>; })}
-              {(projects ?? []).slice(0,3).map((x) => { const a = Array.isArray(x.assets) ? x.assets[0] : x.assets; return <Link key={x.id} href={`/${locale}/ops/projects/${x.id}`} className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-zinc-50"><div><p className="text-sm font-semibold text-zinc-800">{x.name}</p><p className="mt-1 text-xs text-zinc-400">Project · {a?.name ?? "Asset"} · {x.progress_percent}%</p></div><span className="text-xs font-semibold capitalize text-zinc-500">{x.status.replaceAll("_"," ")}</span></Link>; })}
-            </div> : <div className="min-h-48 flex items-center justify-center text-sm text-zinc-400">No operational activity yet.</div>}
+              {(workOrders ?? []).slice(0,4).map((x) => { const a = Array.isArray(x.assets) ? x.assets[0] : x.assets; return <Link key={x.id} href={`/${locale}/ops/work-orders/${x.id}`} className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-zinc-50"><div><p className="text-sm font-semibold text-zinc-800">{x.title}</p><p className="mt-1 text-xs text-zinc-400">{ui.workOrder} · {a?.name ?? ui.asset} · {x.priority}</p></div><span className="text-xs font-semibold capitalize text-zinc-500">{x.status.replaceAll("_"," ")}</span></Link>; })}
+              {(inspections ?? []).slice(0,3).map((x) => { const a = Array.isArray(x.assets) ? x.assets[0] : x.assets; return <Link key={x.id} href={`/${locale}/ops/inspections/${x.id}`} className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-zinc-50"><div><p className="text-sm font-semibold capitalize text-zinc-800">{x.inspection_type.replaceAll("_"," ")}</p><p className="mt-1 text-xs text-zinc-400">{ui.inspection} · {a?.name ?? ui.asset}</p></div><span className="text-xs font-semibold capitalize text-zinc-500">{x.status.replaceAll("_"," ")}</span></Link>; })}
+              {(projects ?? []).slice(0,3).map((x) => { const a = Array.isArray(x.assets) ? x.assets[0] : x.assets; return <Link key={x.id} href={`/${locale}/ops/projects/${x.id}`} className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-zinc-50"><div><p className="text-sm font-semibold text-zinc-800">{x.name}</p><p className="mt-1 text-xs text-zinc-400">{ui.project} · {a?.name ?? ui.asset} · {x.progress_percent}%</p></div><span className="text-xs font-semibold capitalize text-zinc-500">{x.status.replaceAll("_"," ")}</span></Link>; })}
+            </div> : <div className="min-h-48 flex items-center justify-center text-sm text-zinc-400">{ui.noActivity}</div>}
           </div>
 
           <div className="rounded-2xl border border-[var(--kram-border)] bg-white">
-            <div className="border-b border-zinc-100 px-5 py-4"><h2 className="text-base font-bold">Financial & reporting</h2></div>
+            <div className="border-b border-zinc-100 px-5 py-4"><h2 className="text-base font-bold">{ui.financial}</h2></div>
             <div className="grid gap-3 p-5 sm:grid-cols-2">
-              <Link href={`/${locale}/ops/expenses`} className="rounded-xl border border-zinc-100 p-4 hover:bg-zinc-50"><div className="flex items-center gap-2"><Receipt size={16} className="text-[var(--kram-orange)]"/><span className="text-sm font-bold">Expenses</span></div><p className="mt-2 text-xs text-zinc-400">{expenseSummary}</p></Link>
-              <Link href={`/${locale}/ops/reports`} className="rounded-xl border border-zinc-100 p-4 hover:bg-zinc-50"><div className="flex items-center gap-2"><FileText size={16} className="text-[var(--kram-orange)]"/><span className="text-sm font-bold">Reports</span></div><p className="mt-2 text-xs text-zinc-400">{reports?.length ?? 0} reports linked to client assets</p></Link>
+              <Link href={`/${locale}/ops/expenses`} className="rounded-xl border border-zinc-100 p-4 hover:bg-zinc-50"><div className="flex items-center gap-2"><Receipt size={16} className="text-[var(--kram-orange)]"/><span className="text-sm font-bold">{ui.expense}</span></div><p className="mt-2 text-xs text-zinc-400">{expenseSummary}</p></Link>
+              <Link href={`/${locale}/ops/reports`} className="rounded-xl border border-zinc-100 p-4 hover:bg-zinc-50"><div className="flex items-center gap-2"><FileText size={16} className="text-[var(--kram-orange)]"/><span className="text-sm font-bold">{ui.reports}</span></div><p className="mt-2 text-xs text-zinc-400">{reports?.length ?? 0} {ui.linkedReports}</p></Link>
             </div>
           </div>
         </div>
 
         <div className="space-y-5">
           <div className="rounded-2xl border border-[var(--kram-border)] bg-white">
-            <div className="border-b border-zinc-100 px-5 py-4"><h2 className="text-base font-bold text-zinc-950">{t.assets.title}</h2><p className="mt-1 text-xs text-zinc-400">Assets registered to this client.</p></div>
-            {assets?.length ? <div className="divide-y divide-zinc-100">{assets.map((asset) => <Link key={asset.id} href={`/${locale}/ops/assets/${asset.id}`} className="flex items-center justify-between gap-3 px-5 py-4 hover:bg-zinc-50/70"><div className="min-w-0"><p className="truncate text-sm font-bold text-zinc-900">{asset.name}</p><p className="mt-0.5 text-xs text-zinc-400">{asset.reference_code} · {[asset.city,asset.country_code].filter(Boolean).join(", ") || "—"}</p></div><span className="rounded-full border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-[11px] font-semibold capitalize text-zinc-600">{asset.status}</span></Link>)}</div> : <div className="p-7 text-center"><Building2 size={20} className="mx-auto text-zinc-300"/><p className="mt-3 text-sm font-semibold text-zinc-700">No assets linked to this client yet.</p><Link href={`/${locale}/ops/assets/new`} className="mt-3 inline-flex text-xs font-bold text-[var(--kram-orange)]">Create an asset</Link></div>}
+            <div className="border-b border-zinc-100 px-5 py-4"><h2 className="text-base font-bold text-zinc-950">{ui.assets}</h2><p className="mt-1 text-xs text-zinc-400">{ui.assetsDesc}</p></div>
+            {assets?.length ? <div className="divide-y divide-zinc-100">{assets.map((asset) => <Link key={asset.id} href={`/${locale}/ops/assets/${asset.id}`} className="flex items-center justify-between gap-3 px-5 py-4 hover:bg-zinc-50/70"><div className="min-w-0"><p className="truncate text-sm font-bold text-zinc-900">{asset.name}</p><p className="mt-0.5 text-xs text-zinc-400">{asset.reference_code} · {[asset.city,asset.country_code].filter(Boolean).join(", ") || "—"}</p></div><span className="rounded-full border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-[11px] font-semibold capitalize text-zinc-600">{asset.status}</span></Link>)}</div> : <div className="p-7 text-center"><Building2 size={20} className="mx-auto text-zinc-300"/><p className="mt-3 text-sm font-semibold text-zinc-700">{ui.noAssets}</p><Link href={`/${locale}/ops/assets/new`} className="mt-3 inline-flex text-xs font-bold text-[var(--kram-orange)]">{ui.createAsset}</Link></div>}
           </div>
 
-          <div className="rounded-2xl border border-[var(--kram-border)] bg-white p-6"><h2 className="text-base font-bold text-zinc-950">Notes</h2><p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-zinc-600">{client.notes || "No notes have been recorded for this client."}</p><div className="mt-6 border-t border-zinc-100 pt-5"><p className="text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-400">Record</p><p className="mt-2 text-xs text-zinc-500">Created {new Date(client.created_at).toLocaleString(locale)}</p><p className="mt-1 text-xs text-zinc-500">Updated {new Date(client.updated_at).toLocaleString(locale)}</p></div></div>
+          <div className="rounded-2xl border border-[var(--kram-border)] bg-white p-6"><div><h2 className="text-base font-bold text-zinc-950">{ui.notes}</h2><p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-zinc-600">{client.notes || ui.noNotes}</p></div><div className="mt-6 border-t border-zinc-100 pt-5"><p className="text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-400">{ui.record}</p><p className="mt-2 text-xs text-zinc-500">{ui.created} {new Date(client.created_at).toLocaleString(locale)}</p><p className="mt-1 text-xs text-zinc-500">{ui.updated} {new Date(client.updated_at).toLocaleString(locale)}</p></div></div>
         </div>
       </section>
     </div>
