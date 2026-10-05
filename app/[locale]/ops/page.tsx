@@ -2,6 +2,7 @@ import { AlertTriangle, ArrowUpRight, Building2, CheckCircle2, ClipboardList, Cl
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { copy, isLocale, type Locale } from "@/lib/i18n";
+import { opsLabels, labelFromMap } from "@/lib/ops-labels";
 import { createClient } from "@/lib/supabase/server";
 
 async function countRows(supabase: Awaited<ReturnType<typeof createClient>>, table: string, filters?: (query: any) => any) {
@@ -14,7 +15,7 @@ async function countRows(supabase: Awaited<ReturnType<typeof createClient>>, tab
 export default async function OpsDashboard({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const t = copy[locale as Locale];
+  const t = copy[locale as Locale]; const labels = opsLabels(locale as Locale);
   const supabase = await createClient();
   const { data: claims } = await supabase.auth.getClaims();
   const userId = claims?.claims?.sub;
