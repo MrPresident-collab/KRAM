@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Activity, Building2, ClipboardCheck, ClipboardList, FileText, FolderKanban, LayoutDashboard, Users, Wallet, Wrench, Settings, ShieldCheck } from "lucide-react";
