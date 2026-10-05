@@ -82,7 +82,6 @@ export async function transitionWorkOrder(
     .eq("organization_id", current.organization_id);
 
   if (updateError) return { success: false, message: "The work order could not be updated." };
-  await writeAudit(supabase,{organizationId:current.organization_id,branchId:current.branch_id,actorId:userId,action:"work_order.status_changed",entityType:"work_order",entityId:current.id,summary:`Work order moved from ${current.status} to ${parsed.data.status}`,metadata:{from:current.status,to:parsed.data.status,note:parsed.data.note||null}});
 
   const { error: historyError } = await supabase
     .from("work_order_updates")
@@ -96,8 +95,11 @@ export async function transitionWorkOrder(
     });
 
   if (historyError) {
-    return { success: false, message: "The status changed, but its history could not be recorded." };
+    await supabase.from("work_orders").update({ status: current.status, updated_at: new Date().toISOString() }).eq("id", current.id).eq("organization_id", current.organization_id);
+    return { success: false, message: "The status change was rolled back because its history could not be recorded." };
   }
+
+  await writeAudit(supabase,{organizationId:current.organization_id,branchId:current.branch_id,actorId:userId,action:"work_order.status_changed",entityType:"work_order",entityId:current.id,summary:`Work order moved from ${current.status} to ${parsed.data.status}`,metadata:{from:current.status,to:parsed.data.status,note:parsed.data.note||null}});
 
   revalidatePath("/fr/ops/work-orders");
   revalidatePath("/en/ops/work-orders");
