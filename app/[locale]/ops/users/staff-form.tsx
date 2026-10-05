@@ -18,7 +18,7 @@ const roles = [
 export function StaffForm({ locale }: { locale: Locale }) {
   const t=copy[locale];
   const [open,setOpen]=useState(false); const [pending,setPending]=useState(false); const [error,setError]=useState(""); const [success,setSuccess]=useState("");
-  const [name,setName]=useState(""); const [email,setEmail]=useState(""); const [jobTitle,setJobTitle]=useState(""); const [role,setRole]=useState("operations"); const [scope,setScope]=useState("branch");
+  const [name,setName]=useState(""); const [email,setEmail]=useState(""); const [jobTitle,setJobTitle]=useState(""); const [role,setRole]=useState("operations"); const [scope,setScope]=useState("branch"); const [countryId,setCountryId]=useState(""); const [branchId,setBranchId]=useState("");
   const [countries,setCountries]=useState<{id:string;name:string;code:string}[]>([]);
   const [branches,setBranches]=useState<{id:string;name:string;city:string}[]>([]);
   const supabase=createClient();
@@ -30,10 +30,10 @@ export function StaffForm({ locale }: { locale: Locale }) {
     ]);
     setCountries(c??[]); setBranches(b??[]);
   }
-  function openForm(){setError("");setSuccess("");setOpen(true);void loadLocations();}
+  function openForm(){setError("");setSuccess("");setOpen(true);setCountryId("");setBranchId("");void loadLocations();}
   async function submit(e:React.FormEvent){
     e.preventDefault(); setPending(true); setError(""); setSuccess("");
-    const res=await fetch("/api/ops/staff",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fullName:name,email,jobTitle,role,scopeLevel:scope,countryId:scope==="country"?document.getElementById("staff-country")?.getAttribute("data-value")||null:null,branchId:scope==="branch"?document.getElementById("staff-branch")?.getAttribute("data-value")||null:null})});
+    const res=await fetch("/api/ops/staff",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fullName:name,email,jobTitle,role,scopeLevel:scope,countryId:scope==="country"?countryId:null,branchId:scope==="branch"?branchId:null})});
     const body=await res.json().catch(()=>({}));
     if(!res.ok){setError(body.error??t.error);setPending(false);return;}
     setSuccess(t.success);setPending(false);setName("");setEmail("");setJobTitle("");
@@ -47,8 +47,8 @@ export function StaffForm({ locale }: { locale: Locale }) {
       <label><span className="mb-1.5 block text-xs font-semibold">{t.function}</span><input value={jobTitle} onChange={e=>setJobTitle(e.target.value)} required placeholder="e.g. Finance Officer" className="w-full rounded-xl border border-zinc-200 px-3.5 py-3 text-sm"/></label>
       <label><span className="mb-1.5 block text-xs font-semibold">{t.role}</span><select value={role} onChange={e=>setRole(e.target.value)} className="w-full rounded-xl border border-zinc-200 bg-white px-3.5 py-3 text-sm">{roles.map(([v,l])=><option key={v} value={v}>{l}</option>)}</select></label>
       <label><span className="mb-1.5 block text-xs font-semibold">{t.scope}</span><select value={scope} onChange={e=>setScope(e.target.value)} className="w-full rounded-xl border border-zinc-200 bg-white px-3.5 py-3 text-sm"><option value="global">{t.global}</option><option value="country">{t.countryScope}</option><option value="branch">{t.branchScope}</option></select></label>
-      {scope==="country"&&<label><span className="mb-1.5 block text-xs font-semibold">{t.country}</span><select id="staff-country" data-value="" onChange={e=>e.currentTarget.setAttribute("data-value",e.target.value)} required className="w-full rounded-xl border border-zinc-200 bg-white px-3.5 py-3 text-sm"><option value="">{t.select}</option>{countries.map(c=><option key={c.id} value={c.id}>{c.name} ({c.code})</option>)}</select></label>}
-      {scope==="branch"&&<label><span className="mb-1.5 block text-xs font-semibold">{t.branch}</span><select id="staff-branch" data-value="" onChange={e=>e.currentTarget.setAttribute("data-value",e.target.value)} required className="w-full rounded-xl border border-zinc-200 bg-white px-3.5 py-3 text-sm"><option value="">{t.select}</option>{branches.map(b=><option key={b.id} value={b.id}>{b.name} — {b.city}</option>)}</select></label>}
+      {scope==="country"&&<label><span className="mb-1.5 block text-xs font-semibold">{t.country}</span><select id="staff-country" value={countryId} onChange={e=>setCountryId(e.target.value)} required className="w-full rounded-xl border border-zinc-200 bg-white px-3.5 py-3 text-sm"><option value="">{t.select}</option>{countries.map(c=><option key={c.id} value={c.id}>{c.name} ({c.code})</option>)}</select></label>}
+      {scope==="branch"&&<label><span className="mb-1.5 block text-xs font-semibold">{t.branch}</span><select id="staff-branch" value={branchId} onChange={e=>setBranchId(e.target.value)} required className="w-full rounded-xl border border-zinc-200 bg-white px-3.5 py-3 text-sm"><option value="">{t.select}</option>{branches.map(b=><option key={b.id} value={b.id}>{b.name} — {b.city}</option>)}</select></label>}
       {error&&<p className="sm:col-span-2 rounded-xl bg-red-50 px-3 py-3 text-xs font-medium text-red-700">{error}</p>}
       {success&&<p className="sm:col-span-2 rounded-xl bg-orange-50 px-3 py-3 text-xs font-medium text-[var(--kram-orange)]">{success}</p>}
       <div className="sm:col-span-2 flex justify-end gap-2 border-t border-zinc-100 pt-5"><button type="button" onClick={()=>setOpen(false)} className="rounded-xl border border-zinc-200 px-4 py-2.5 text-sm font-semibold">{t.cancel}</button><button disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-[var(--kram-charcoal)] px-4 py-2.5 text-sm font-bold text-white">{pending&&<Loader2 size={15} className="animate-spin"/>}{pending?t.saving:t.save}</button></div>
