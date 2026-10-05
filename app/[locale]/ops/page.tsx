@@ -1,13 +1,21 @@
-import { AlertTriangle, ArrowUpRight, Building2, CheckCircle2, ClipboardList, Clock3, FileCheck2, Plus, ShieldCheck, Users } from "lucide-react";
+import { ArrowUpRight, Building2, CheckCircle2, ClipboardList, Clock3, FileCheck2, Plus, ShieldCheck, Users } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { copy, isLocale, type Locale } from "@/lib/i18n";
-import { opsLabels, labelFromMap } from "@/lib/ops-labels";
 import { createClient } from "@/lib/supabase/server";
 
-async function countRows(supabase: Awaited<ReturnType<typeof createClient>>, table: string, filters?: (query: any) => any) {
+type CountFilter =
+  | { column: string; operator: "eq"; value: string }
+  | { column: string; operator: "not"; value: string };
+
+async function countRows(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  table: string,
+  filter?: CountFilter,
+) {
   let query = supabase.from(table).select("id", { count: "exact", head: true });
-  if (filters) query = filters(query);
+  if (filter?.operator === "eq") query = query.eq(filter.column, filter.value);
+  if (filter?.operator === "not") query = query.not(filter.column, "in", filter.value);
   const { count } = await query;
   return count ?? 0;
 }
@@ -15,7 +23,7 @@ async function countRows(supabase: Awaited<ReturnType<typeof createClient>>, tab
 export default async function OpsDashboard({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const t = copy[locale as Locale]; const labels = opsLabels(locale as Locale);
+
   const supabase = await createClient();
   const { data: claims } = await supabase.auth.getClaims();
   const userId = claims?.claims?.sub;
@@ -36,12 +44,12 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
   const [assets, clients, openOrders, approvals, activeOrders, attentionAssets, inspections, providers] = await Promise.all([
     countRows(supabase, "assets"),
     countRows(supabase, "clients"),
-    countRows(supabase, "work_orders", q => q.not("status", "in", "(closed,verified,completed)")),
-    countRows(supabase, "approvals", q => q.eq("status", "pending")),
-    countRows(supabase, "work_orders", q => q.eq("status", "in_progress")),
-    countRows(supabase, "assets", q => q.eq("status", "attention")),
-    countRows(supabase, "inspections", q => q.eq("status", "scheduled")),
-    countRows(supabase, "service_providers", q => q.eq("verification_status", "verified")),
+    countRows(supabase, "work_orders", { column: "status", operator: "not", value: "(closed,verified,completed)" }),
+    countRows(supabase, "approvals", { column: "status", operator: "eq", value: "pending" }),
+    countRows(supabase, "work_orders", { column: "status", operator: "eq", value: "in_progress" }),
+    countRows(supabase, "assets", { column: "status", operator: "eq", value: "attention" }),
+    countRows(supabase, "inspections", { column: "status", operator: "eq", value: "scheduled" }),
+    countRows(supabase, "service_providers", { column: "verification_status", operator: "eq", value: "verified" }),
   ]);
 
   const fr = locale === "fr"; const pt = locale === "pt";
