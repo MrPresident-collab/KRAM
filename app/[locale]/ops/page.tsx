@@ -53,7 +53,7 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
   ]);
 
   const fr = locale === "fr"; const pt = locale === "pt";
-  const labels = {
+  const dashboardLabels = {
     eyebrow: pt ? "Centro de operações" : fr ? "Centre des opérations" : "Operations console",
     description: pt ? "O estado operacional da sua área autorizada, com foco no que exige ação." : fr ? "L’état opérationnel de votre périmètre autorisé, centré sur ce qui nécessite une action." : "The operational state of your authorized scope, focused on what needs action.",
     create: pt ? "Nova ordem" : fr ? "Nouvel ordre" : "New work order",
