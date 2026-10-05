@@ -10,6 +10,8 @@ const dictionaries: Record<Locale, {
   inspectionStatuses: Labels;
   inspectionTypes: Labels;
   projectStatuses: Labels;
+  projectTypes: Labels;
+  milestoneStatuses: Labels;
   expenseStatuses: Labels;
   providerStatuses: Labels;
   verificationStatuses: Labels;
@@ -24,6 +26,8 @@ const dictionaries: Record<Locale, {
     inspectionStatuses: { scheduled:"Planifiée", in_progress:"En cours", completed:"Terminée", report_ready:"Rapport prêt", closed:"Clôturée" },
     inspectionTypes: { initial:"Initiale", routine:"Routinière", technical:"Technique", pre_handover:"Avant remise", emergency:"Urgence", other:"Autre" },
     projectStatuses: { planning:"Planification", mobilization:"Mobilisation", in_progress:"En cours", on_hold:"En pause", completed:"Terminé", closed:"Clôturé" },
+    projectTypes: { construction:"Construction", renovation:"Rénovation", fit_out:"Aménagement", maintenance_program:"Programme de maintenance", other:"Autre" },
+    milestoneStatuses: { pending:"En attente", in_progress:"En cours", completed:"Terminé", blocked:"Bloqué" },
     expenseStatuses: { requested:"Demandée", approved:"Approuvée", paid:"Payée", verified:"Vérifiée", rejected:"Rejetée" },
     providerStatuses: { prospect:"Prospect", active:"Actif", suspended:"Suspendu", archived:"Archivé" },
     verificationStatuses: { pending:"En attente", verified:"Vérifié", rejected:"Rejeté" },
@@ -38,6 +42,8 @@ const dictionaries: Record<Locale, {
     inspectionStatuses: { scheduled:"Scheduled", in_progress:"In progress", completed:"Completed", report_ready:"Report ready", closed:"Closed" },
     inspectionTypes: { initial:"Initial", routine:"Routine", technical:"Technical", pre_handover:"Pre-handover", emergency:"Emergency", other:"Other" },
     projectStatuses: { planning:"Planning", mobilization:"Mobilization", in_progress:"In progress", on_hold:"On hold", completed:"Completed", closed:"Closed" },
+    projectTypes: { construction:"Construction", renovation:"Renovation", fit_out:"Fit-out", maintenance_program:"Maintenance program", other:"Other" },
+    milestoneStatuses: { pending:"Pending", in_progress:"In progress", completed:"Completed", blocked:"Blocked" },
     expenseStatuses: { requested:"Requested", approved:"Approved", paid:"Paid", verified:"Verified", rejected:"Rejected" },
     providerStatuses: { prospect:"Prospect", active:"Active", suspended:"Suspended", archived:"Archived" },
     verificationStatuses: { pending:"Pending", verified:"Verified", rejected:"Rejected" },
@@ -52,6 +58,8 @@ const dictionaries: Record<Locale, {
     inspectionStatuses: { scheduled:"Agendada", in_progress:"Em curso", completed:"Concluída", report_ready:"Relatório pronto", closed:"Encerrada" },
     inspectionTypes: { initial:"Inicial", routine:"Rotina", technical:"Técnica", pre_handover:"Antes da entrega", emergency:"Emergência", other:"Outra" },
     projectStatuses: { planning:"Planeamento", mobilization:"Mobilização", in_progress:"Em curso", on_hold:"Em pausa", completed:"Concluído", closed:"Encerrado" },
+    projectTypes: { construction:"Construção", renovation:"Renovação", fit_out:"Acabamentos", maintenance_program:"Programa de manutenção", other:"Outro" },
+    milestoneStatuses: { pending:"Pendente", in_progress:"Em curso", completed:"Concluído", blocked:"Bloqueado" },
     expenseStatuses: { requested:"Solicitada", approved:"Aprovada", paid:"Paga", verified:"Verificada", rejected:"Rejeitada" },
     providerStatuses: { prospect:"Potencial", active:"Ativo", suspended:"Suspenso", archived:"Arquivado" },
     verificationStatuses: { pending:"Pendente", verified:"Verificado", rejected:"Rejeitado" },
