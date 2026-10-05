@@ -12,8 +12,8 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ l
   const supabase = await createClient();
 
   const [{ data: client, error }, { data: assets }] = await Promise.all([
-    supabase.from("clients").select("id,full_name,email,primary_phone,alternative_phone,residency_country,residency_city,residency_address,preferred_language,preferred_contact_method,notes,created_at,updated_at,client_authorized_contacts(*)").eq("id", id).maybeSingle(),
-    supabase.from("assets").select("id,name,reference_code,type,status,city,country_code").eq("client_id", id).order("created_at", { ascending: false }),
+    supabase.from("clients").select("id,full_name,email,primary_phone,alternative_phone,residency_country,residency_city,residency_address,preferred_language,preferred_contact_method,notes,created_at,updated_at").eq("id", id).maybeSingle().eq("id", id).maybeSingle(),
+    supabase.from("assets").select("id,name,reference_code,type,status,city,country_code").eq("client_id", id).order("created_at", { ascending: false }),\n    supabase.from("client_authorized_contacts").select("full_name,relationship,primary_phone,alternative_phone,email,residency_country,residency_city,residency_address,preferred_language,preferred_contact_method,same_as_client").eq("client_id", id).eq("status","active").maybeSingle(),
   ]);
 
   if (error || !client) notFound();
@@ -97,6 +97,34 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ l
         <SummaryMetric icon={FolderKanban} label={ui.activeProjects} value={String(activeProjects)} />
       </section>
 
+      <section className="grid gap-5 lg:grid-cols-3">
+        <InfoCard title={ui.contactDetails}>
+          <InfoRow label={t.clients.email} value={client.email} />
+          <InfoRow label={ui.primaryPhone} value={client.primary_phone} />
+          <InfoRow label={ui.alternativePhone} value={client.alternative_phone} />
+        </InfoCard>
+        <InfoCard title={ui.residency}>
+          <InfoRow label={ui.country} value={client.residency_country} />
+          <InfoRow label={ui.city} value={client.residency_city} />
+          <InfoRow label={ui.address} value={client.residency_address} />
+        </InfoCard>
+        <InfoCard title={ui.preferences}>
+          <InfoRow label={ui.language} value={ui.languageValues[client.preferred_language as keyof typeof ui.languageValues] ?? client.preferred_language} />
+          <InfoRow label={ui.contactMethod} value={ui.methodValues[client.preferred_contact_method as keyof typeof ui.methodValues] ?? client.preferred_contact_method} />
+        </InfoCard>
+      </section>
+      <section className="rounded-2xl border border-[var(--kram-border)] bg-white p-6">
+        <div className="flex items-start justify-between gap-4"><div><h2 className="text-base font-bold text-zinc-950">{ui.trusted}</h2><p className="mt-1 text-xs text-zinc-400">{trustedContact?.relationship || "—"}</p></div></div>
+        {trustedContact ? <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <InfoRow label={t.clients.name} value={trustedContact.full_name} />
+          <InfoRow label={t.clients.email} value={trustedContact.email} />
+          <InfoRow label={ui.primaryPhone} value={trustedContact.primary_phone} />
+          <InfoRow label={ui.alternativePhone} value={trustedContact.alternative_phone} />
+          <InfoRow label={ui.country} value={trustedContact.residency_country} />
+          <InfoRow label={ui.city} value={trustedContact.residency_city} />
+          <InfoRow label={ui.address} value={trustedContact.residency_address} />
+        </div> : <p className="mt-4 text-sm text-zinc-400">—</p>}
+      </section>
       <section className="grid gap-5 xl:grid-cols-[1.5fr_1fr]">
         <div className="space-y-5">
           <div className="rounded-2xl border border-[var(--kram-border)] bg-white">
@@ -134,6 +162,12 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ l
 }
 
 
+function InfoCard({title,children}:{title:string;children:React.ReactNode}) {
+ return <div className="rounded-2xl border border-[var(--kram-border)] bg-white p-5"><h2 className="text-sm font-bold text-zinc-950">{title}</h2><div className="mt-4 space-y-3">{children}</div></div>;
+}
+function InfoRow({label,value}:{label:string;value:string|null|undefined}) {
+ return <div><p className="text-[10px] font-bold uppercase tracking-[0.12em] text-zinc-400">{label}</p><p className="mt-1 text-sm font-semibold text-zinc-800">{value || "—"}</p></div>;
+}
 function SummaryMetric({icon:Icon,label,value}:{icon:typeof Building2;label:string;value:string}) {
  return <div className="rounded-2xl border border-[var(--kram-border)] bg-white p-5"><Icon size={17} className="text-[var(--kram-orange)]"/><p className="mt-3 text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-400">{label}</p><p className="mt-2 text-2xl font-bold text-zinc-950">{value}</p></div>;
 }
