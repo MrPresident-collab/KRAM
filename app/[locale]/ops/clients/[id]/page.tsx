@@ -11,7 +11,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ l
   const supabase = await createClient();
 
   const [{ data: client, error }, { data: assets }] = await Promise.all([
-    supabase.from("clients").select("id,full_name,email,phone,notes,created_at,updated_at").eq("id", id).maybeSingle(),
+    supabase.from("clients").select("id,full_name,email,primary_phone,alternative_phone,residency_country,residency_city,residency_address,preferred_language,preferred_contact_method,notes,created_at,updated_at").eq("id", id).maybeSingle(),
     supabase.from("assets").select("id,name,reference_code,type,status,city,country_code").eq("client_id", id).order("created_at", { ascending: false }),
   ]);
 
@@ -79,7 +79,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ l
           <div className="border-b border-zinc-100 p-6 md:border-b-0 md:border-r">
             <Phone size={17} className="text-[var(--kram-orange)]" />
             <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-400">{t.clients.phone}</p>
-            <p className="mt-1 text-sm font-semibold text-zinc-800">{client.phone || "—"}</p>
+            <p className="mt-1 text-sm font-semibold text-zinc-800">{client.primary_phone || "—"}</p>
           </div>
           <div className="p-6">
             <UserRound size={17} className="text-[var(--kram-orange)]" />
