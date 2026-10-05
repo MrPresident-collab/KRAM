@@ -76,10 +76,10 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
   };
 
   const metrics = [
-    { label: labels.assets, value: assets, note: pt ? "Registo de ativos" : fr ? "Registre des actifs" : "Asset registry", icon: Building2 },
-    { label: labels.openOrders, value: openOrders, note: pt ? "Trabalho ainda aberto" : fr ? "Travail encore ouvert" : "Work still open", icon: ClipboardList },
-    { label: labels.awaiting, value: approvals, note: pt ? "Decisão necessária" : fr ? "Décision requise" : "Decision required", icon: Clock3, accent: approvals > 0 },
-    { label: labels.active, value: activeOrders, note: pt ? "Intervenções em curso" : fr ? "Interventions en cours" : "Active interventions", icon: CheckCircle2 },
+    { label: dashboardLabels.assets, value: assets, note: pt ? "Registo de ativos" : fr ? "Registre des actifs" : "Asset registry", icon: Building2 },
+    { label: dashboardLabels.openOrders, value: openOrders, note: pt ? "Trabalho ainda aberto" : fr ? "Travail encore ouvert" : "Work still open", icon: ClipboardList },
+    { label: dashboardLabels.awaiting, value: approvals, note: pt ? "Decisão necessária" : fr ? "Décision requise" : "Decision required", icon: Clock3, accent: approvals > 0 },
+    { label: dashboardLabels.active, value: activeOrders, note: pt ? "Intervenções em curso" : fr ? "Interventions en cours" : "Active interventions", icon: CheckCircle2 },
   ];
 
   const attentionTotal = approvals + attentionAssets + inspections;
@@ -89,13 +89,13 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
       <div className="absolute right-[-80px] top-[-120px] h-80 w-80 rounded-full bg-[var(--kram-orange)] opacity-10 blur-3xl" />
       <div className="relative flex flex-col justify-between gap-7 lg:flex-row lg:items-end">
         <div>
-          <div className="mb-3 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.2em] text-[var(--kram-orange)]"><span className="h-1.5 w-1.5 rounded-full bg-[var(--kram-orange)]" />{labels.eyebrow}</div>
+          <div className="mb-3 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.2em] text-[var(--kram-orange)]"><span className="h-1.5 w-1.5 rounded-full bg-[var(--kram-orange)]" />{dashboardLabels.eyebrow}</div>
           <h1 className="text-3xl font-black tracking-[-.055em] md:text-[42px]">{contextLabel}</h1>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-white/55">{labels.description}</p>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-white/55">{dashboardLabels.description}</p>
         </div>
         <div className="flex gap-2">
-          <Link href={`/${locale}/ops/work-orders/new`} className="inline-flex items-center gap-2 rounded-xl bg-[var(--kram-orange)] px-4 py-2.5 text-xs font-bold text-white hover:bg-[#df6816]"><Plus size={15}/>{labels.create}</Link>
-          <Link href={`/${locale}/ops/assets`} className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2.5 text-xs font-bold text-white hover:bg-white/10">{labels.assets}<ArrowUpRight size={14}/></Link>
+          <Link href={`/${locale}/ops/work-orders/new`} className="inline-flex items-center gap-2 rounded-xl bg-[var(--kram-orange)] px-4 py-2.5 text-xs font-bold text-white hover:bg-[#df6816]"><Plus size={15}/>{dashboardLabels.create}</Link>
+          <Link href={`/${locale}/ops/assets`} className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2.5 text-xs font-bold text-white hover:bg-white/10">{dashboardLabels.assets}<ArrowUpRight size={14}/></Link>
         </div>
       </div>
     </section>
@@ -112,27 +112,27 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
     <section className="grid gap-5 xl:grid-cols-[1.4fr_.6fr]">
       <div className="rounded-2xl border border-[var(--kram-border)] bg-white">
         <div className="flex items-center justify-between border-b border-[var(--kram-border)] px-6 py-5">
-          <div><h2 className="text-[15px] font-black tracking-[-.02em] text-[var(--kram-deep)]">{labels.attention}</h2><p className="mt-1 text-xs text-[var(--kram-metal)]">{labels.attentionDesc}</p></div>
+          <div><h2 className="text-[15px] font-black tracking-[-.02em] text-[var(--kram-deep)]">{dashboardLabels.attention}</h2><p className="mt-1 text-xs text-[var(--kram-metal)]">{dashboardLabels.attentionDesc}</p></div>
           <div className="rounded-full border border-[var(--kram-border)] px-2.5 py-1 text-[10px] font-black text-[var(--kram-charcoal)]">{attentionTotal}</div>
         </div>
         <div className="divide-y divide-[var(--kram-border)]">
           {[
-            { label: labels.approvals, value: approvals, route: "approvals" },
-            { label: labels.attentionAssets, value: attentionAssets, route: "assets" },
-            { label: labels.scheduled, value: inspections, route: "inspections" },
+            { label: dashboardLabels.approvals, value: approvals, route: "approvals" },
+            { label: dashboardLabels.attentionAssets, value: attentionAssets, route: "assets" },
+            { label: dashboardLabels.scheduled, value: inspections, route: "inspections" },
           ].map(({ label, value, route }) => <Link href={`/${locale}/ops/${route}`} key={label} className="flex items-center justify-between px-6 py-4 hover:bg-[var(--kram-bg)]"><div className="flex items-center gap-3"><span className={`h-2 w-2 rounded-full ${value > 0 ? "bg-[var(--kram-orange)]" : "bg-[var(--kram-soft-metal)]"}`}/><span className="text-sm font-semibold text-[var(--kram-charcoal)]">{label}</span></div><span className="min-w-7 rounded-full bg-[var(--kram-bg)] px-2.5 py-1 text-center text-xs font-black text-[var(--kram-metal)]">{value}</span></Link>)}
         </div>
       </div>
       <div className="rounded-2xl bg-[var(--kram-charcoal)] p-6 text-white">
-        <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[var(--kram-orange)]">{labels.network}</p>
-        <div className="mt-3 flex items-end justify-between gap-4"><div><p className="text-4xl font-black tracking-[-.06em]">{providers}</p><p className="mt-1 text-xs text-white/50">{labels.verified}</p></div><ShieldCheck size={24} className="text-[var(--kram-orange)]"/></div>
-        <div className="mt-7 flex items-center justify-between border-t border-white/10 pt-5"><div><p className="text-[10px] uppercase tracking-[.14em] text-white/35">{labels.clients}</p><p className="mt-1 text-lg font-black">{clients}</p><p className="text-[10px] text-white/40">{labels.owners}</p></div><Link href={`/${locale}/ops/providers`} className="rounded-xl border border-white/15 px-3 py-2 text-xs font-bold hover:bg-white/10">{labels.viewNetwork}</Link></div>
+        <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[var(--kram-orange)]">{dashboardLabels.network}</p>
+        <div className="mt-3 flex items-end justify-between gap-4"><div><p className="text-4xl font-black tracking-[-.06em]">{providers}</p><p className="mt-1 text-xs text-white/50">{dashboardLabels.verified}</p></div><ShieldCheck size={24} className="text-[var(--kram-orange)]"/></div>
+        <div className="mt-7 flex items-center justify-between border-t border-white/10 pt-5"><div><p className="text-[10px] uppercase tracking-[.14em] text-white/35">{dashboardLabels.clients}</p><p className="mt-1 text-lg font-black">{clients}</p><p className="text-[10px] text-white/40">{dashboardLabels.owners}</p></div><Link href={`/${locale}/ops/providers`} className="rounded-xl border border-white/15 px-3 py-2 text-xs font-bold hover:bg-white/10">{dashboardLabels.viewNetwork}</Link></div>
       </div>
     </section>
 
     <section className="grid gap-3 md:grid-cols-2">
-      <div className="rounded-2xl border border-[var(--kram-border)] bg-white p-5"><div className="flex items-center gap-2 text-[var(--kram-metal)]"><Users size={16}/><span className="text-[10px] font-bold uppercase tracking-[.15em]">{labels.clients}</span></div><div className="mt-4 text-2xl font-black tracking-[-.05em]">{clients}</div><p className="mt-1 text-xs text-[var(--kram-metal)]">{labels.owners}</p></div>
-      <div className="rounded-2xl border border-[var(--kram-border)] bg-white p-5"><div className="flex items-center gap-2 text-[var(--kram-metal)]"><FileCheck2 size={16}/><span className="text-[10px] font-bold uppercase tracking-[.15em]">{labels.evidence}</span></div><div className="mt-4 text-2xl font-black tracking-[-.05em]">{inspections}</div><p className="mt-1 text-xs text-[var(--kram-metal)]">{labels.scheduledShort}</p></div>
+      <div className="rounded-2xl border border-[var(--kram-border)] bg-white p-5"><div className="flex items-center gap-2 text-[var(--kram-metal)]"><Users size={16}/><span className="text-[10px] font-bold uppercase tracking-[.15em]">{dashboardLabels.clients}</span></div><div className="mt-4 text-2xl font-black tracking-[-.05em]">{clients}</div><p className="mt-1 text-xs text-[var(--kram-metal)]">{dashboardLabels.owners}</p></div>
+      <div className="rounded-2xl border border-[var(--kram-border)] bg-white p-5"><div className="flex items-center gap-2 text-[var(--kram-metal)]"><FileCheck2 size={16}/><span className="text-[10px] font-bold uppercase tracking-[.15em]">{dashboardLabels.evidence}</span></div><div className="mt-4 text-2xl font-black tracking-[-.05em]">{inspections}</div><p className="mt-1 text-xs text-[var(--kram-metal)]">{dashboardLabels.scheduledShort}</p></div>
     </section>
   </div>;
 }
