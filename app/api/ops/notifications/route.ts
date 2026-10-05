@@ -11,16 +11,13 @@ export async function GET() {
   if (error || !userId) return NextResponse.json({ notifications: [] }, { status: 401 });
 
   const { data: limitResult } = await supabase.rpc("consume_api_rate_limit", {
-    p_bucket_key: "ops-notifications:user:" + userId,
+    p_bucket_key: userId + ":ops-notifications",
     p_limit: LIMIT,
     p_window_seconds: WINDOW_SECONDS,
   });
   const rate = Array.isArray(limitResult) ? limitResult[0] : limitResult;
   if (rate && rate.allowed === false) {
-    return NextResponse.json({ error: "Too many requests. Please try again shortly." }, {
-      status: 429,
-      headers: { "Retry-After": String(rate.retry_after_seconds ?? WINDOW_SECONDS) }
-    });
+    return NextResponse.json({ error: "Too many requests. Please try again shortly." }, { status: 429, headers: { "Retry-After": String(rate.retry_after_seconds ?? WINDOW_SECONDS) } });
   }
 
   const [approvals, activity] = await Promise.all([
