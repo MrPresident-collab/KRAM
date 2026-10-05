@@ -1,2 +1,31 @@
-import Link from "next/link";import{ArrowLeft}from"lucide-react";import{notFound}from"next/navigation";import{createClient}from"@/lib/supabase/server";import{copy,isLocale,type Locale}from"@/lib/i18n";import{AssetCreateForm}from"../asset-create-form";
-export default async function NewAssetPage({params}:{params:Promise<{locale:string}>}){const{locale}=await params;if(!isLocale(locale))notFound();const t=copy[locale as Locale];const supabase=await createClient();const{data:clients}=await supabase.from("clients").select("id,full_name").order("full_name");return <div className="mx-auto max-w-4xl space-y-7"><Link href={`/${locale}/ops/assets`} className="inline-flex items-center gap-2 text-sm font-semibold text-zinc-500 hover:text-zinc-900"><ArrowLeft size={15}/>{t.common.back}</Link><section><p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--kram-orange)]">{t.nav.assets}</p><h1 className="mt-2 text-3xl font-bold tracking-[-0.045em] text-zinc-950">{t.assets.formTitle}</h1><p className="mt-2 text-sm text-zinc-500">{t.assets.formDescription}</p></section><AssetCreateForm locale={locale as Locale} clients={clients??[]}/></div>}
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+import { notFound } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { copy, isLocale, type Locale } from "@/lib/i18n";
+import { AssetCreateForm } from "../asset-create-form";
+
+export default async function NewAssetPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  if (!isLocale(locale)) notFound();
+  const t = copy[locale as Locale];
+  const supabase = await createClient();
+
+  const [{ data: clients }, { data: countries }, { data: branches }] = await Promise.all([
+    supabase.from("clients").select("id,full_name").order("full_name"),
+    supabase.from("countries").select("id,name,code").order("name"),
+    supabase.from("branches").select("id,country_id,name,city").eq("is_active", true).order("name"),
+  ]);
+
+  return (
+    <div className="mx-auto max-w-4xl space-y-7">
+      <Link href={`/${locale}/ops/assets`} className="inline-flex items-center gap-2 text-sm font-semibold text-zinc-500 hover:text-zinc-900"><ArrowLeft size={15}/>{t.common.back}</Link>
+      <section>
+        <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--kram-orange)]">{t.nav.assets}</p>
+        <h1 className="mt-2 text-3xl font-bold tracking-[-0.045em] text-zinc-950">{t.assets.formTitle}</h1>
+        <p className="mt-2 text-sm text-zinc-500">{t.assets.formDescription}</p>
+      </section>
+      <AssetCreateForm locale={locale as Locale} clients={clients ?? []} countries={countries ?? []} branches={branches ?? []}/>
+    </div>
+  );
+}
