@@ -7,7 +7,7 @@ const getMessages=(value:FormDataEntryValue|null)=>messages[(typeof value==="str
 const schema=z.object({locale:z.enum(["fr","en","pt"]).default("en"),assetId:z.string().uuid(),name:z.string().trim().min(3).max(180),projectType:z.enum(["construction","renovation","fit_out","maintenance_program","other"]),startDate:z.string().optional(),targetEndDate:z.string().optional(),budget:z.coerce.number().nonnegative().optional(),description:z.string().trim().max(4000).optional()});
 export async function createProject(_prev:ProjectActionState,fd:FormData):Promise<ProjectActionState>{const parsed=schema.safeParse({locale:fd.get("locale"),assetId:fd.get("assetId"),name:fd.get("name"),projectType:fd.get("projectType"),startDate:fd.get("startDate")||undefined,targetEndDate:fd.get("targetEndDate")||undefined,budget:fd.get("budget")||undefined,description:fd.get("description")||undefined});if(!parsed.success)return{success:false,message:getMessages(fd.get("locale")).required};const s=await createClient();const{data:c}=await s.auth.getClaims();const uid=c?.claims?.sub;if(!uid)return{success:false,message:getMessages(parsed.data.locale).session};const{data:m}=await s.from("organization_members").select("organization_id,role").eq("user_id",uid).limit(1).maybeSingle();if(!m||!["owner","admin","regional_admin","operations"].includes(m.role))return{success:false,message:getMessages(parsed.data.locale).unauthorizedCreate};const{data:a}=await s.from("assets").select("id,organization_id,branch_id").eq("id",parsed.data.assetId).eq("organization_id",m.organization_id).maybeSingle();if(!a)return{success:false,message:getMessages(parsed.data.locale).asset};const{data:p,error}=await s.from("projects").insert({organization_id:m.organization_id,asset_id:a.id,branch_id:a.branch_id,name:parsed.data.name,project_type:parsed.data.projectType,start_date:parsed.data.startDate||null,target_end_date:parsed.data.targetEndDate||null,budget:parsed.data.budget??null,description:parsed.data.description||null,created_by:uid}).select("id").single();if(error||!p)return{success:false,message:getMessages(parsed.data.locale).createError};
  await writeAudit(s,{organizationId:m.organization_id,branchId:a.branch_id,actorId:uid,action:"project.created",entityType:"project",entityId:p.id,summary:"Project created",metadata:{name:parsed.data.name,projectType:parsed.data.projectType}});revalidatePath("/fr/ops/projects");revalidatePath("/en/ops/projects");revalidatePath("/pt/ops/projects");return{success:true,message:getMessages(parsed.data.locale).created};}
-export async function addProjectUpdate(_prev:ProjectActionState,fd:FormData):Promise<ProjectActionState>{const parsed=z.object({locale:z.enum(["fr","en","pt"]).default("en"),projectId:z.string().uuid(),title:z.string().trim().min(2).max(180),summary:z.string().trim().max(3000).optional(),progress:z.coerce.number().int().min(0).max(100),issue:z.string().trim().max(2000).optional()}).safeParse({locale:fd.get("locale"),projectId:fd.get("projectId"),title:fd.get("title"),summary:fd.get("summary")||undefined,progress:fd.get("progress"),issue:fd.get("issue")||undefined});if(!parsed.success)return{success:false,message:getMessages(fd.get("locale")).updateRequired};const s=await createClient();const{data:c}=await s.auth.getClaims();const uid=c?.claims?.sub;if(!uid)return{success:false,message:"Your session is no longer valid."};const{data:m}=await s.from("organization_members").select("organization_id,role").eq("user_id",uid).limit(1).maybeSingle();if(!m||!["owner","admin","regional_admin","operations"].includes(m.role))return{success:false,message:getMessages(parsed.data.locale).unauthorizedUpdate};const{data:p}=await s.from("projects").select("id,organization_id,branch_id").eq("id",parsed.data.projectId).eq("organization_id",m.organization_id).maybeSingle();if(!p)return{success:false,message:getMessages(parsed.data.locale).notFound};const{error}=await s.from("project_updates").insert({project_id:p.id,organization_id:p.organization_id,actor_id:uid,title:parsed.data.title,summary:parsed.data.summary||null,progress_percent:parsed.data.progress,issue:parsed.data.issue||null});if(error)return{success:false,message:getMessages(parsed.data.locale).updateError};
+export async function addProjectUpdate(_prev:ProjectActionState,fd:FormData):Promise<ProjectActionState>{const parsed=z.object({locale:z.enum(["fr","en","pt"]).default("en"),projectId:z.string().uuid(),title:z.string().trim().min(2).max(180),summary:z.string().trim().max(3000).optional(),progress:z.coerce.number().int().min(0).max(100),issue:z.string().trim().max(2000).optional()}).safeParse({locale:fd.get("locale"),projectId:fd.get("projectId"),title:fd.get("title"),summary:fd.get("summary")||undefined,progress:fd.get("progress"),issue:fd.get("issue")||undefined});if(!parsed.success)return{success:false,message:getMessages(fd.get("locale")).updateRequired};const s=await createClient();const{data:c}=await s.auth.getClaims();const uid=c?.claims?.sub;if(!uid)return{success:false,message:getMessages(parsed.data.locale).session};const{data:m}=await s.from("organization_members").select("organization_id,role").eq("user_id",uid).limit(1).maybeSingle();if(!m||!["owner","admin","regional_admin","operations"].includes(m.role))return{success:false,message:getMessages(parsed.data.locale).unauthorizedUpdate};const{data:p}=await s.from("projects").select("id,organization_id,branch_id").eq("id",parsed.data.projectId).eq("organization_id",m.organization_id).maybeSingle();if(!p)return{success:false,message:getMessages(parsed.data.locale).notFound};const{error}=await s.from("project_updates").insert({project_id:p.id,organization_id:p.organization_id,actor_id:uid,title:parsed.data.title,summary:parsed.data.summary||null,progress_percent:parsed.data.progress,issue:parsed.data.issue||null});if(error)return{success:false,message:getMessages(parsed.data.locale).updateError};
  await writeAudit(s,{organizationId:p.organization_id,branchId:p.branch_id,actorId:uid,action:"project.updated",entityType:"project",entityId:p.id,summary:"Project update recorded",metadata:{progress:parsed.data.progress,title:parsed.data.title}});await s.from("projects").update({progress_percent:parsed.data.progress,updated_at:new Date().toISOString()}).eq("id",p.id).eq("organization_id",p.organization_id);revalidatePath("/fr/ops/projects/"+p.id);revalidatePath("/en/ops/projects/"+p.id);revalidatePath("/pt/ops/projects/"+p.id);revalidatePath("/fr/ops/projects");revalidatePath("/en/ops/projects");revalidatePath("/pt/ops/projects");return{success:true,message:getMessages(parsed.data.locale).updated};}
 
 
@@ -23,6 +23,7 @@ const milestoneSchema=z.object({
 
 export async function createProjectMilestone(_prev:ProjectActionState,fd:FormData):Promise<ProjectActionState>{
  const parsed=milestoneSchema.safeParse({
+  locale:fd.get("locale"),
   projectId:fd.get("projectId"),
   name:fd.get("name"),
   dueDate:fd.get("dueDate")||undefined,
@@ -41,7 +42,7 @@ export async function createProjectMilestone(_prev:ProjectActionState,fd:FormDat
   return{success:false,message:getMessages(parsed.data.locale).unauthorizedMilestone};
 
  const{data:p}=await s.from("projects").select("id,organization_id,branch_id").eq("id",parsed.data.projectId).eq("organization_id",m.organization_id).maybeSingle();
- if(!p)return{success:false,message:"Project not found."};
+ if(!p)return{success:false,message:getMessages(parsed.data.locale).notFound};
 
  const{error}=await s.from("project_milestones").insert({
   project_id:p.id,
@@ -61,12 +62,14 @@ export async function createProjectMilestone(_prev:ProjectActionState,fd:FormDat
 
 export async function updateProjectMilestone(_prev:ProjectActionState,fd:FormData):Promise<ProjectActionState>{
  const parsed=z.object({
+  locale:z.enum(["fr","en","pt"]).default("en"),
   milestoneId:z.string().uuid(),
   projectId:z.string().uuid(),
   status:z.enum(["pending","in_progress","completed","blocked"]),
   progress:z.coerce.number().int().min(0).max(100),
   notes:z.string().trim().max(2000).optional(),
  }).safeParse({
+  locale:fd.get("locale"),
   milestoneId:fd.get("milestoneId"),
   projectId:fd.get("projectId"),
   status:fd.get("status"),
@@ -83,7 +86,7 @@ export async function updateProjectMilestone(_prev:ProjectActionState,fd:FormDat
   return{success:false,message:getMessages(parsed.data.locale).milestoneUpdateUnauthorized};
 
  const{data:project}=await s.from("projects").select("id,organization_id,branch_id").eq("id",parsed.data.projectId).eq("organization_id",m.organization_id).maybeSingle();
- if(!project)return{success:false,message:"Project not found."};
+ if(!project)return{success:false,message:getMessages(parsed.data.locale).notFound};
 
  const{error}=await s.from("project_milestones").update({
   status:parsed.data.status,
