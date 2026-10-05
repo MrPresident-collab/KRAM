@@ -405,3 +405,68 @@ export const opsUi = {
 export function getOpsUi(locale: Locale) {
   return opsUi[locale];
 }
+
+
+export const detailUi = {
+  fr: {
+    client: {
+      contactDetails:"Coordonnées", primaryPhone:"Téléphone principal", alternativePhone:"Téléphone alternatif",
+      residency:"Résidence", country:"Pays", city:"Ville", address:"Adresse", preferences:"Préférences",
+      language:"Langue préférée", contactMethod:"Mode de contact préféré",
+      trusted:"Personne de confiance / représentant autorisé", relationship:"Lien avec le client",
+      clientOperations:"Opérations du client", clientOperationsDesc:"Activité récente sur les actifs de ce client.",
+      financial:"Finance & rapports", linkedReports:"rapports liés aux actifs du client",
+      assets:"Actifs du client", assetsDesc:"Actifs enregistrés pour ce client.",
+      noAssets:"Aucun actif n’est encore lié à ce client.", createAsset:"Créer un actif",
+      notes:"Notes", noNotes:"Aucune note n’a été enregistrée pour ce client.",
+      record:"Dossier", created:"Créé", updated:"Mis à jour", openWorkOrders:"Ordres de travail ouverts",
+      activeInspections:"Inspections actives", activeProjects:"Projets actifs", asset:"Actif",
+      workOrder:"Ordre de travail", inspection:"Inspection", project:"Projet", recent:"Récent",
+      noActivity:"Aucune activité opérationnelle pour le moment.", expense:"Dépenses", reports:"Rapports",
+      back:"Retour aux clients", languageValues:{fr:"Français",en:"Anglais",pt:"Portugais"},
+      methodValues:{whatsapp:"WhatsApp",email:"E-mail",phone:"Téléphone"}
+    }
+  },
+  en: {
+    client: {
+      contactDetails:"Contact details", primaryPhone:"Primary phone", alternativePhone:"Alternative phone",
+      residency:"Residency", country:"Country", city:"City", address:"Address", preferences:"Preferences",
+      language:"Preferred language", contactMethod:"Preferred contact method",
+      trusted:"Trusted person / authorised representative", relationship:"Relationship to client",
+      clientOperations:"Client operations", clientOperationsDesc:"Recent activity across this client’s assets.",
+      financial:"Financial & reporting", linkedReports:"reports linked to client assets",
+      assets:"Client assets", assetsDesc:"Assets registered to this client.",
+      noAssets:"No assets are linked to this client yet.", createAsset:"Create an asset",
+      notes:"Notes", noNotes:"No notes have been recorded for this client.",
+      record:"Record", created:"Created", updated:"Updated", openWorkOrders:"Open work orders",
+      activeInspections:"Active inspections", activeProjects:"Active projects", asset:"Asset",
+      workOrder:"Work order", inspection:"Inspection", project:"Project", recent:"Recent",
+      noActivity:"No operational activity yet.", expense:"Expenses", reports:"Reports",
+      back:"Back to clients", languageValues:{fr:"French",en:"English",pt:"Portuguese"},
+      methodValues:{whatsapp:"WhatsApp",email:"Email",phone:"Phone"}
+    }
+  },
+  pt: {
+    client: {
+      contactDetails:"Dados de contacto", primaryPhone:"Número principal", alternativePhone:"Número alternativo",
+      residency:"Residência", country:"País", city:"Cidade", address:"Morada", preferences:"Preferências",
+      language:"Idioma preferido", contactMethod:"Meio de contacto preferido",
+      trusted:"Pessoa de confiança / representante autorizado", relationship:"Relação com o cliente",
+      clientOperations:"Operações do cliente", clientOperationsDesc:"Atividade recente nos ativos deste cliente.",
+      financial:"Finanças e relatórios", linkedReports:"relatórios ligados aos ativos do cliente",
+      assets:"Ativos do cliente", assetsDesc:"Ativos registados para este cliente.",
+      noAssets:"Ainda não há ativos ligados a este cliente.", createAsset:"Criar um ativo",
+      notes:"Notas", noNotes:"Ainda não foram registadas notas para este cliente.",
+      record:"Registo", created:"Criado", updated:"Atualizado", openWorkOrders:"Ordens de trabalho abertas",
+      activeInspections:"Inspeções ativas", activeProjects:"Projetos ativos", asset:"Ativo",
+      workOrder:"Ordem de trabalho", inspection:"Inspeção", project:"Projeto", recent:"Recente",
+      noActivity:"Ainda não há atividade operacional.", expense:"Despesas", reports:"Relatórios",
+      back:"Voltar aos clientes", languageValues:{fr:"Francês",en:"Inglês",pt:"Português"},
+      methodValues:{whatsapp:"WhatsApp",email:"E-mail",phone:"Telefone"}
+    }
+  }
+} as const;
+
+export function getDetailUi(locale: Locale) {
+  return detailUi[locale];
+}
