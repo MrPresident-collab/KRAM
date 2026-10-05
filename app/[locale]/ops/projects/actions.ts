@@ -35,7 +35,7 @@ export async function createProjectMilestone(_prev:ProjectActionState,fd:FormDat
 
  const s=await createClient();
  const{data:c}=await s.auth.getClaims();const uid=c?.claims?.sub;
- if(!uid)return{success:false,message:"Your session is no longer valid."};
+ if(!uid)return{success:false,message:getMessages(parsed.data.locale).session};
 
  const{data:m}=await s.from("organization_members").select("organization_id,role").eq("user_id",uid).limit(1).maybeSingle();
  if(!m||!["owner","admin","regional_admin","operations"].includes(m.role))
@@ -79,7 +79,7 @@ export async function updateProjectMilestone(_prev:ProjectActionState,fd:FormDat
  if(!parsed.success)return{success:false,message:getMessages(fd.get("locale")).invalidMilestone};
 
  const s=await createClient();const{data:c}=await s.auth.getClaims();const uid=c?.claims?.sub;
- if(!uid)return{success:false,message:"Your session is no longer valid."};
+ if(!uid)return{success:false,message:getMessages(parsed.data.locale).session};
 
  const{data:m}=await s.from("organization_members").select("organization_id,role").eq("user_id",uid).limit(1).maybeSingle();
  if(!m||!["owner","admin","regional_admin","operations"].includes(m.role))
