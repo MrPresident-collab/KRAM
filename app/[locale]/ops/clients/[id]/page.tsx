@@ -3,11 +3,12 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, Building2, Mail, Phone, UserRound, ClipboardList, ClipboardCheck, FolderKanban, Receipt, FileText, Plus } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { copy, isLocale, type Locale, getDetailUi } from "@/lib/i18n";
+import { opsLabels, labelFromMap } from "@/lib/ops-labels";
 
 export default async function ClientDetailPage({ params }: { params: Promise<{ locale: string; id: string }> }) {
   const { locale, id } = await params;
   if (!isLocale(locale)) notFound();
-  const t = copy[locale as Locale];
+  const t = copy[locale as Locale]; const labels = opsLabels(locale as Locale);
   const ui = getDetailUi(locale as Locale).client;
   const supabase = await createClient();
 
@@ -133,7 +134,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ l
               <Link href={`/${locale}/ops/assets/new`} className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--kram-charcoal)] px-2.5 py-1.5 text-[11px] font-bold text-white"><Plus size={13}/> Asset</Link>
             </div>
             {(workOrders?.length || inspections?.length || projects?.length) ? <div className="divide-y divide-zinc-100">
-              {(workOrders ?? []).slice(0,4).map((x) => { const a = Array.isArray(x.assets) ? x.assets[0] : x.assets; return <Link key={x.id} href={`/${locale}/ops/work-orders/${x.id}`} className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-zinc-50"><div><p className="text-sm font-semibold text-zinc-800">{x.title}</p><p className="mt-1 text-xs text-zinc-400">{ui.workOrder} · {a?.name ?? ui.asset} · {x.priority}</p></div><span className="text-xs font-semibold capitalize text-zinc-500">{x.status.replaceAll("_"," ")}</span></Link>; })}
+              {(workOrders ?? []).slice(0,4).map((x) => { const a = Array.isArray(x.assets) ? x.assets[0] : x.assets; return <Link key={x.id} href={`/${locale}/ops/work-orders/${x.id}`} className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-zinc-50"><div><p className="text-sm font-semibold text-zinc-800">{x.title}</p><p className="mt-1 text-xs text-zinc-400">{ui.workOrder} · {a?.name ?? ui.asset} · {labelFromMap(locale as Locale, labels.workOrderPriorities, x.priority)}</p></div><span className="text-xs font-semibold capitalize text-zinc-500">{x.status.replaceAll("_"," ")}</span></Link>; })}
               {(inspections ?? []).slice(0,3).map((x) => { const a = Array.isArray(x.assets) ? x.assets[0] : x.assets; return <Link key={x.id} href={`/${locale}/ops/inspections/${x.id}`} className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-zinc-50"><div><p className="text-sm font-semibold capitalize text-zinc-800">{x.inspection_type.replaceAll("_"," ")}</p><p className="mt-1 text-xs text-zinc-400">{ui.inspection} · {a?.name ?? ui.asset}</p></div><span className="text-xs font-semibold capitalize text-zinc-500">{x.status.replaceAll("_"," ")}</span></Link>; })}
               {(projects ?? []).slice(0,3).map((x) => { const a = Array.isArray(x.assets) ? x.assets[0] : x.assets; return <Link key={x.id} href={`/${locale}/ops/projects/${x.id}`} className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-zinc-50"><div><p className="text-sm font-semibold text-zinc-800">{x.name}</p><p className="mt-1 text-xs text-zinc-400">{ui.project} · {a?.name ?? ui.asset} · {x.progress_percent}%</p></div><span className="text-xs font-semibold capitalize text-zinc-500">{x.status.replaceAll("_"," ")}</span></Link>; })}
             </div> : <div className="min-h-48 flex items-center justify-center text-sm text-zinc-400">{ui.noActivity}</div>}
