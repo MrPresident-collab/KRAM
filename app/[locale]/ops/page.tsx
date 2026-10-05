@@ -93,7 +93,7 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
 
     <section className="grid gap-px overflow-hidden rounded-2xl border border-[var(--kram-border)] bg-[var(--kram-border)] sm:grid-cols-2 xl:grid-cols-4">
       {metrics.map(({ label, value, note, icon: Icon, accent }) => <div key={label} className="bg-white p-5">
-        <div className="flex items-center justify-between"><div className={`grid h-9 w-9 place-items-center rounded-lg ${accent ? "bg-[var(--kram-orange-soft)] text-[var(--kram-orange)]" : "bg-[var(--kram-bg)] text-[var(--kram-metal)]"}`}><Icon size={17}/></div>{accent&&<span className="text-[9px] font-bold uppercase tracking-[.14em] text-[var(--kram-orange)]">Action</span>}</div>
+        <div className="flex items-center justify-between"><div className={`grid h-9 w-9 place-items-center rounded-lg ${accent ? "bg-[var(--kram-orange-soft)] text-[var(--kram-orange)]" : "bg-[var(--kram-bg)] text-[var(--kram-metal)]"}`}><Icon size={17}/></div>{accent&&<span className="text-[9px] font-bold uppercase tracking-[.14em] text-[var(--kram-orange)]">{pt?"Ação":fr?"Action":"Action"}</span>}</div>
         <div className="mt-5 text-3xl font-black tracking-[-.06em] text-[var(--kram-deep)]">{value}</div>
         <div className="mt-1 text-[13px] font-bold text-[var(--kram-charcoal)]">{label}</div>
         <div className="mt-1 text-[11px] text-[var(--kram-metal)]">{note}</div>
