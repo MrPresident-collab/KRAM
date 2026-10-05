@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Activity, Building2, ClipboardCheck, ClipboardList, FileText, FolderKanban, LayoutDashboard, Users, Wallet, Wrench, Settings, ShieldCheck, PanelLeftClose, X } from "lucide-react";
+import { Activity, Building2, MessageSquare, ClipboardCheck, ClipboardList, FileText, FolderKanban, LayoutDashboard, Users, Wallet, Wrench, Settings, ShieldCheck, PanelLeftClose, X } from "lucide-react";
 import { KramBrand } from "@/components/brand/kram-brand";
 import type { Locale } from "@/lib/i18n";
 import { copy } from "@/lib/i18n";
@@ -21,6 +21,7 @@ export function OpsSidebar({ locale, collapsed = false, mobileOpen = false, onCl
       { href: "/" + locale + "/ops/projects", label: t.nav.projects, icon: FolderKanban },
       { href: "/" + locale + "/ops/maintenance", label: t.nav.maintenance, icon: Wrench }
     ] },
+    { label: locale === "fr" ? "Communication" : locale === "pt" ? "Comunicação" : "Communication", items: [{ href: "/" + locale + "/ops/communications", label: locale === "fr" ? "Conversations" : locale === "pt" ? "Conversas" : "Conversations", icon: MessageSquare }] },
     { label: t.nav.assets, items: [
       { href: "/" + locale + "/ops/assets", label: t.nav.allAssets, icon: Building2 },
       { href: "/" + locale + "/ops/clients", label: t.nav.clients, icon: Users }
