@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Search, UserRound, Command } from "lucide-react";
+import { Bell, Search, Command } from "lucide-react";
 import type { Locale } from "@/lib/i18n";
 import { UserMenu } from "@/components/ops/user-menu";
 
@@ -20,9 +20,6 @@ export function OpsHeader({ locale, user }: Props) {
         <button type="button" aria-label="Notifications" className="relative rounded-xl border border-[var(--kram-border)] bg-white p-2.5 text-[var(--kram-charcoal)] transition hover:bg-[var(--kram-bg)]">
           <Bell size={17} />
           <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-[var(--kram-orange)]" />
-        </button>
-        <button type="button" aria-label="Account" className="hidden rounded-xl border border-transparent p-2 text-[var(--kram-metal)] hover:bg-white sm:block">
-          <UserRound size={18} />
         </button>
         <UserMenu locale={locale} user={user} />
       </div>
