@@ -9,7 +9,7 @@ export default async function ClientsPage({ params }: { params: Promise<{ locale
   if (!isLocale(locale)) notFound();
   const t = copy[locale as Locale];
   const supabase = await createClient();
-  const { data: clients, error } = await supabase.from("clients").select("id, full_name, email, phone, created_at").order("created_at", { ascending: false }).limit(50);
+  const { data: clients, error } = await supabase.from("clients").select("id, full_name, email, primary_phone, created_at").order("created_at", { ascending: false }).limit(50);
   const rows = clients ?? [];
 
   return <div className="space-y-7">
@@ -43,7 +43,7 @@ export default async function ClientsPage({ params }: { params: Promise<{ locale
           <tbody className="divide-y divide-zinc-100">{rows.map((client) => <tr key={client.id} className="group hover:bg-zinc-50/60">
             <td className="px-5 py-4"><Link href={`/${locale}/ops/clients/${client.id}`} className="block"><div className="font-semibold text-zinc-900 group-hover:text-[var(--kram-orange)]">{client.full_name}</div><div className="mt-0.5 text-xs text-zinc-400">{client.id.slice(0, 8).toUpperCase()}</div></Link></td>
             <td className="px-5 py-4 text-sm text-zinc-600">{client.email || "—"}</td>
-            <td className="px-5 py-4 text-sm text-zinc-600">{client.phone || "—"}</td>
+            <td className="px-5 py-4 text-sm text-zinc-600">{client.primary_phone || "—"}</td>
             <td className="px-5 py-4 text-sm text-zinc-500">{new Date(client.created_at).toLocaleDateString(locale)}</td>
             <td className="px-4 py-4 text-right"><Link href={`/${locale}/ops/clients/${client.id}`} aria-label={client.full_name}><ArrowRight size={16} className="ml-auto text-zinc-300 transition group-hover:text-zinc-700" /></Link></td>
           </tr>)}</tbody>
