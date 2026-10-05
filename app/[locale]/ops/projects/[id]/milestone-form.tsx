@@ -11,7 +11,7 @@ const labels={
 export function MilestoneCreateForm({locale,projectId}:{locale:Locale;projectId:string}){
  const[state,action,pending]=useActionState<ProjectActionState,FormData>(createProjectMilestone,{success:false,message:""});const t=labels[locale];const statuses=opsLabels(locale).milestoneStatuses;
  return <form action={action} className="space-y-4 rounded-2xl border border-zinc-100 bg-zinc-50/60 p-4">
-  <input type="hidden" name="projectId" value={projectId}/>
+  <input type="hidden" name="locale" value={locale}/><input type="hidden" name="projectId" value={projectId}/>
   <label className="block"><span className="mb-1.5 block text-xs font-semibold">{t.name}</span><input name="name" required className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm"/></label>
   <div className="grid gap-3 sm:grid-cols-3">
    <label><span className="mb-1.5 block text-xs font-semibold">{t.due}</span><input name="dueDate" type="date" className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm"/></label>
@@ -27,7 +27,7 @@ export function MilestoneCreateForm({locale,projectId}:{locale:Locale;projectId:
 export function MilestoneEditor({locale,projectId,milestone}:{locale:Locale;projectId:string;milestone:{id:string;status:string;progress_percent:number;notes:string|null}}){
  const[state,action,pending]=useActionState<ProjectActionState,FormData>(updateProjectMilestone,{success:false,message:""});const t=labels[locale];const statuses=opsLabels(locale).milestoneStatuses;
  return <form action={action} className="border-t border-zinc-100 px-5 py-4">
-  <input type="hidden" name="projectId" value={projectId}/><input type="hidden" name="milestoneId" value={milestone.id}/>
+  <input type="hidden" name="locale" value={locale}/><input type="hidden" name="projectId" value={projectId}/><input type="hidden" name="milestoneId" value={milestone.id}/>
   <div className="grid gap-3 sm:grid-cols-[1fr_140px_140px_auto] sm:items-end">
    <label><span className="mb-1.5 block text-[10px] font-bold uppercase tracking-[0.12em] text-zinc-400">{t.status}</span><select name="status" defaultValue={milestone.status} className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2 text-xs">{Object.entries(statuses).map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label>
    <label><span className="mb-1.5 block text-[10px] font-bold uppercase tracking-[0.12em] text-zinc-400">{t.progress}</span><input name="progress" type="number" min="0" max="100" defaultValue={milestone.progress_percent} className="w-full rounded-xl border border-zinc-200 px-3 py-2 text-xs"/></label>
