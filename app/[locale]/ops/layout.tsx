@@ -14,12 +14,23 @@ export default async function OpsLayout({ children, params }: Readonly<{ childre
 
   const [{ data: profile }, { data: membership }] = await Promise.all([
     supabase.from("profiles").select("full_name,job_title,avatar_url").eq("id", userId).maybeSingle(),
-    supabase.from("organization_members").select("role,scope_level").eq("user_id", userId).order("created_at", { ascending: true }).limit(1).maybeSingle(),
+    supabase.from("organization_members").select("role,scope_level,country_id,branch_id").eq("user_id", userId).order("created_at", { ascending: true }).limit(1).maybeSingle(),
   ]);
+
+  let workspaceLabel = "KRAM";
+  if (membership?.scope_level === "country" && membership.country_id) {
+    const { data } = await supabase.from("countries").select("name").eq("id", membership.country_id).maybeSingle();
+    workspaceLabel = data?.name ? `${data.name} Overview` : "Country Overview";
+  } else if (membership?.scope_level === "branch" && membership.branch_id) {
+    const { data } = await supabase.from("branches").select("name").eq("id", membership.branch_id).maybeSingle();
+    workspaceLabel = data?.name ? `${data.name} Overview` : "Branch Overview";
+  } else {
+    workspaceLabel = locale === "fr" ? "Vue globale" : locale === "pt" ? "Visão global" : "Global overview";
+  }
 
   const email = typeof claims.claims.email === "string" ? claims.claims.email : "—";
   const name = profile?.full_name?.trim() || email.split("@")[0] || "KRAM User";
   const user = { name, email, role: membership?.role ?? "viewer", scope: membership?.scope_level ?? "global", jobTitle: profile?.job_title ?? null, avatarUrl: profile?.avatar_url ?? null };
 
-  return <div className="min-h-screen"><OpsSidebar locale={locale as Locale} scope={user.scope} /><div className="lg:pl-64"><OpsHeader locale={locale as Locale} user={user} /><main className="mx-auto max-w-[1600px] px-5 py-7 lg:px-8">{children}</main></div></div>;
+  return <div className="min-h-screen"><OpsSidebar locale={locale as Locale} scope={user.scope} workspaceLabel={workspaceLabel} /><div className="lg:pl-[252px]"><OpsHeader locale={locale as Locale} user={user} /><main className="mx-auto max-w-[1600px] px-5 py-7 lg:px-8">{children}</main></div></div>;
 }
