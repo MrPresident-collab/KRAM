@@ -1,16 +1,33 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
+const WINDOW_SECONDS = 60;
+const LIMIT = 30;
+
 export async function GET(request: Request) {
   const supabase = await createClient();
   const { data: claims, error: claimsError } = await supabase.auth.getClaims();
-  if (claimsError || !claims?.claims?.sub) return NextResponse.json({ results: [] }, { status: 401 });
+  const userId = claims?.claims?.sub;
+  if (claimsError || !userId) return NextResponse.json({ results: [] }, { status: 401 });
+
+  const { data: limitResult } = await supabase.rpc("consume_api_rate_limit", {
+    p_bucket_key: "ops-search:user:" + userId,
+    p_limit: LIMIT,
+    p_window_seconds: WINDOW_SECONDS,
+  });
+  const rate = Array.isArray(limitResult) ? limitResult[0] : limitResult;
+  if (rate && rate.allowed === false) {
+    return NextResponse.json({ error: "Too many requests. Please try again shortly." }, {
+      status: 429,
+      headers: { "Retry-After": String(rate.retry_after_seconds ?? WINDOW_SECONDS) }
+    });
+  }
 
   const url = new URL(request.url);
   const q = url.searchParams.get("q")?.trim() || "";
-  if (q.length < 2) return NextResponse.json({ results: [] });
+  if (q.length < 2 || q.length > 100) return NextResponse.json({ results: [] });
 
-  const pattern = "%" + q.replace(/[%_]/g, "\\$&") + "%";
+  const pattern = "%" + q.replace(/[%_]/g, "\$&") + "%";
   const [assets, clients, workOrders, projects, inspections, providers, reports, documents] = await Promise.all([
     supabase.from("assets").select("id,name,reference_code").or("name.ilike." + pattern + ",reference_code.ilike." + pattern).limit(6),
     supabase.from("clients").select("id,full_name,email").or("full_name.ilike." + pattern + ",email.ilike." + pattern).limit(6),
@@ -33,5 +50,5 @@ export async function GET(request: Request) {
     ...(documents.data ?? []).map(x => ({ type: "Document", title: x.file_name, meta: x.document_type, href: "/ops/documents" })),
   ].slice(0, 30);
 
-  return NextResponse.json({ results });
+  return NextResponse.json({ results }, { headers: { "Cache-Control": "private, no-store" } });
 }
