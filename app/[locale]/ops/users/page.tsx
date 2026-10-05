@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { Users, ShieldCheck, Globe2, Building2 } from "lucide-react";
 import { isLocale, type Locale, copy, getOpsUi } from "@/lib/i18n";
+import { opsLabels, labelFromMap } from "@/lib/ops-labels";
 import { createClient } from "@/lib/supabase/server";
 import { StaffForm } from "./staff-form";
 
@@ -9,7 +10,7 @@ const roleLabels = { owner:"Owner", admin:"Administrator", regional_admin:"Regio
 export default async function UsersPage({ params }: { params: Promise<{ locale:string }> }) {
   const { locale }=await params;
   if(!isLocale(locale)) notFound();
-  const t=copy[locale as Locale];
+  const t=copy[locale as Locale]; const labels = opsLabels(locale as Locale);
   const supabase=await createClient();
   const { data: claims }=await supabase.auth.getClaims();
   const userId=claims?.claims?.sub;
