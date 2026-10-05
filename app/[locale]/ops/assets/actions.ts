@@ -54,7 +54,7 @@ export async function createAssetRecord(_prev: AssetActionState, formData: FormD
 
   if (!country) return { success: false, message: "The selected country is not available to your KRAM scope." };
 
-  let branchId: string | null = parsed.data.branchId || null;
+  const branchId: string | null = parsed.data.branchId || null;
   if (branchId) {
     const { data: branch } = await supabase
       .from("branches")
