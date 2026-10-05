@@ -205,3 +205,203 @@ export const copy: Record<Locale, any> = {
 export function isLocale(value: string): value is Locale {
   return locales.includes(value as Locale);
 }
+
+
+export const opsUi = {
+  fr: {
+    header: {
+      searchPlaceholder: "Rechercher dans KRAM…", notifications: "Notifications", activeNotifications: "Notifications actives",
+      noNewActivity: "Aucune nouvelle activité", nothingAttention: "Rien ne nécessite votre attention pour le moment.",
+      openNavigation: "Ouvrir la navigation", toggleSidebar: "Basculer la barre latérale",
+      searchHint: "Rechercher des actifs, clients, ordres de travail, projets, inspections, prestataires, rapports ou documents.",
+      noResults: "Aucun enregistrement KRAM correspondant.", searchRecords: "Rechercher dans les opérations KRAM…"
+    },
+    activity: {
+      eyebrow: "Système", title: "Activité", description: "Journal chronologique des changements opérationnels dans KRAM.",
+      events: "Événements", today: "Aujourd’hui", eventTypes: "Types d’événements", empty: "Aucune activité enregistrée.",
+      emptyDesc: "Les nouvelles actions opérationnelles apparaîtront automatiquement ici.", user: "Utilisateur KRAM"
+    },
+    approvals: {
+      eyebrow: "Finance", title: "Approbations", description: "Examinez les coûts opérationnels et autres demandes dans votre périmètre autorisé.",
+      pending: "En attente", decided: "Approuvées / traitées", total: "Demandes totales",
+      pendingTitle: "Approbations en attente", pendingDesc: "Demandes nécessitant une décision opérationnelle.",
+      review: "Examiner", request: "Demande d’approbation", operationalCost: "Coût opérationnel",
+      decisionHistory: "Historique des décisions", noPending: "Aucune approbation n’attend de révision.",
+      noDecisions: "Aucune décision d’approbation enregistrée.", approved: "Approuvée", rejected: "Rejetée",
+      noDecisionDate: "Aucune date de décision"
+    },
+    expensesPage: {
+      eyebrow: "Finance", title: "Dépenses", description: "Suivez les coûts opérationnels de la demande à la vérification.",
+      newExpense: "Nouvelle dépense", totalRecorded: "Total enregistré", requested: "Demandées", approved: "Approuvées", paid: "Payées",
+      register: "Registre des dépenses", noAsset: "Aucun actif", noWorkOrder: "Aucun ordre de travail",
+      empty: "Aucune dépense", emptyDesc: "Les coûts opérationnels apparaîtront ici."
+    },
+    reportsPage: {
+      eyebrow: "Documents", title: "Rapports", description: "Rapports opérationnels et documents prêts à être transmis aux clients.",
+      newReport: "Nouveau rapport", total: "Total des rapports", draftReview: "Brouillons / révision",
+      publishedSent: "Publiés / envoyés", register: "Registre des rapports", noAsset: "Aucun actif", empty: "Aucun rapport",
+      emptyDesc: "Les rapports apparaîtront ici au fur et à mesure que les opérations KRAM sont documentées."
+    },
+    usersPage: {
+      scopeTitle: "Portée", staffAccounts: "Comptes du personnel", administrators: "Administrateurs", countries: "Pays utilisés",
+      function: "Fonction", role: "Rôle KRAM", staff: "Personnel", unknown: "Utilisateur inconnu",
+      accessMissing: "L’accès KRAM n’est pas configuré", accessMissingDesc: "Votre compte est authentifié, mais n’est affecté à aucune organisation KRAM.",
+      noStaff: "Aucun compte du personnel n’a encore été configuré.", manage: "Gérer les accès",
+      staffDescription: "Gérez l’identité du personnel KRAM, le rôle d’autorisation et la portée géographique."
+    },
+    workOrdersPage: {
+      eyebrow: "Opérations", title: "Ordres de travail", description: "Contrôlez les demandes, interventions et travaux terrain dans le réseau KRAM.",
+      new: "Nouvel ordre de travail", open: "Ouverts", pending: "En attente", inProgress: "En cours",
+      activeRequests: "Demandes actives", awaitingAction: "En attente d’action", activeInterventions: "Interventions actives",
+      queue: "File opérationnelle", queueDesc: "Chaque intervention reste rattachée à un actif.",
+      empty: "Aucun ordre de travail", emptyDesc: "Créez la première demande opérationnelle pour la voir apparaître ici.",
+      create: "Créer un ordre de travail"
+    },
+    communications: {
+      eyebrow: "Communication", title: "Conversations clients",
+      description: "Centralisez les échanges clients, le contexte opérationnel et les notes internes sans transformer KRAM en messagerie d’équipe générique.",
+      search: "Rechercher des conversations", select: "Sélectionnez une conversation",
+      selectDesc: "Choisissez une conversation à gauche pour afficher son historique et répondre.",
+      general: "Communication générale", client: "Client", internal: "Interne", clientVisible: "Visible par le client",
+      send: "Envoyer", messagePlaceholder: "Écrire un message…", internalNote: "Note interne",
+      clientMessage: "Message client", communicationSeparation: "La communication client est conservée séparément de l’activité d’audit interne.",
+      noConversations: "Aucune conversation pour le moment.", newConversation: "Nouvelle conversation"
+    },
+    commonOps: {
+      noData: "Aucune donnée", review: "Examiner", status: "Statut", priority: "Priorité", created: "Créé", requested: "Demandé le",
+      noDate: "Sans date", yes: "Oui", no: "Non"
+    }
+  },
+  en: {
+    header: {
+      searchPlaceholder: "Search KRAM…", notifications: "Notifications", activeNotifications: "Active notifications",
+      noNewActivity: "No new activity", nothingAttention: "Nothing requires attention right now.",
+      openNavigation: "Open navigation", toggleSidebar: "Toggle sidebar",
+      searchHint: "Search assets, clients, work orders, projects, inspections, providers, reports or documents.",
+      noResults: "No matching KRAM records.", searchRecords: "Search KRAM operations…"
+    },
+    activity: {
+      eyebrow: "System", title: "Activity", description: "A chronological audit trail of operational changes across KRAM.",
+      events: "Events", today: "Today", eventTypes: "Event types", empty: "No activity recorded yet.",
+      emptyDesc: "New operational actions will appear here automatically.", user: "KRAM user"
+    },
+    approvals: {
+      eyebrow: "Finance", title: "Approvals", description: "Review operational costs and other approval requests within your authorized scope.",
+      pending: "Pending", decided: "Approved / decided", total: "Total requests",
+      pendingTitle: "Pending approvals", pendingDesc: "Requests requiring an operational decision.",
+      review: "Review", request: "Approval request", operationalCost: "Operational cost",
+      decisionHistory: "Decision history", noPending: "No approvals are waiting for review.",
+      noDecisions: "No approval decisions recorded yet.", approved: "Approved", rejected: "Rejected",
+      noDecisionDate: "No decision date"
+    },
+    expensesPage: {
+      eyebrow: "Finance", title: "Expenses", description: "Track operational costs from request through verification.",
+      newExpense: "New expense", totalRecorded: "Total recorded", requested: "Requested", approved: "Approved", paid: "Paid",
+      register: "Expense register", noAsset: "No asset", noWorkOrder: "No work order",
+      empty: "No expenses yet", emptyDesc: "Operational costs will appear here."
+    },
+    reportsPage: {
+      eyebrow: "Documents", title: "Reports", description: "Operational reports and client-ready records generated from KRAM activity.",
+      newReport: "New report", total: "Total reports", draftReview: "Draft / review",
+      publishedSent: "Published / sent", register: "Report register", noAsset: "No asset", empty: "No reports yet",
+      emptyDesc: "Reports will appear here as KRAM operations are documented."
+    },
+    usersPage: {
+      scopeTitle: "Scope", staffAccounts: "Staff accounts", administrators: "Administrators", countries: "Countries in use",
+      function: "Function", role: "KRAM role", staff: "Staff", unknown: "Unknown user",
+      accessMissing: "KRAM access is not configured", accessMissingDesc: "Your account is authenticated, but it is not assigned to a KRAM organization.",
+      noStaff: "No staff accounts have been configured yet.", manage: "Manage access",
+      staffDescription: "Manage KRAM staff identity, authorization role and geographic scope."
+    },
+    workOrdersPage: {
+      eyebrow: "Operations", title: "Work Orders", description: "Control requests, interventions and field work across the KRAM network.",
+      new: "New work order", open: "Open", pending: "Pending", inProgress: "In progress",
+      activeRequests: "Active requests", awaitingAction: "Awaiting action", activeInterventions: "Active interventions",
+      queue: "Operations queue", queueDesc: "Every intervention stays attached to an asset.",
+      empty: "No work orders yet", emptyDesc: "Create the first operational request and it will appear here.",
+      create: "Create work order"
+    },
+    communications: {
+      eyebrow: "Communication", title: "Client conversations",
+      description: "Keep client communication, operational context and internal notes together without turning KRAM into a generic team chat.",
+      search: "Search conversations", select: "Select a conversation",
+      selectDesc: "Choose a client conversation from the left to view its history and reply.",
+      general: "General communication", client: "Client", internal: "Internal", clientVisible: "Client-visible",
+      send: "Send", messagePlaceholder: "Write a message…", internalNote: "Internal note",
+      clientMessage: "Client message", communicationSeparation: "Client communication is kept separate from internal audit activity.",
+      noConversations: "No conversations yet.", newConversation: "New conversation"
+    },
+    commonOps: {
+      noData: "No data", review: "Review", status: "Status", priority: "Priority", created: "Created", requested: "Requested",
+      noDate: "No date", yes: "Yes", no: "No"
+    }
+  },
+  pt: {
+    header: {
+      searchPlaceholder: "Pesquisar no KRAM…", notifications: "Notificações", activeNotifications: "Notificações ativas",
+      noNewActivity: "Nenhuma atividade nova", nothingAttention: "Nada requer a sua atenção neste momento.",
+      openNavigation: "Abrir navegação", toggleSidebar: "Alternar barra lateral",
+      searchHint: "Pesquisar ativos, clientes, ordens de trabalho, projetos, inspeções, prestadores, relatórios ou documentos.",
+      noResults: "Nenhum registo KRAM correspondente.", searchRecords: "Pesquisar nas operações KRAM…"
+    },
+    activity: {
+      eyebrow: "Sistema", title: "Atividade", description: "Registo cronológico das alterações operacionais no KRAM.",
+      events: "Eventos", today: "Hoje", eventTypes: "Tipos de evento", empty: "Ainda não há atividade registada.",
+      emptyDesc: "As novas ações operacionais aparecerão aqui automaticamente.", user: "Utilizador KRAM"
+    },
+    approvals: {
+      eyebrow: "Finanças", title: "Aprovações", description: "Analise custos operacionais e outros pedidos dentro do seu âmbito autorizado.",
+      pending: "Pendentes", decided: "Aprovadas / decididas", total: "Pedidos totais",
+      pendingTitle: "Aprovações pendentes", pendingDesc: "Pedidos que requerem uma decisão operacional.",
+      review: "Analisar", request: "Pedido de aprovação", operationalCost: "Custo operacional",
+      decisionHistory: "Histórico de decisões", noPending: "Não há aprovações a aguardar análise.",
+      noDecisions: "Ainda não há decisões de aprovação registadas.", approved: "Aprovada", rejected: "Rejeitada",
+      noDecisionDate: "Sem data de decisão"
+    },
+    expensesPage: {
+      eyebrow: "Finanças", title: "Despesas", description: "Acompanhe custos operacionais desde o pedido até à verificação.",
+      newExpense: "Nova despesa", totalRecorded: "Total registado", requested: "Solicitadas", approved: "Aprovadas", paid: "Pagas",
+      register: "Registo de despesas", noAsset: "Sem ativo", noWorkOrder: "Sem ordem de trabalho",
+      empty: "Ainda não há despesas", emptyDesc: "Os custos operacionais aparecerão aqui."
+    },
+    reportsPage: {
+      eyebrow: "Documentos", title: "Relatórios", description: "Relatórios operacionais e registos prontos para o cliente gerados pela atividade do KRAM.",
+      newReport: "Novo relatório", total: "Total de relatórios", draftReview: "Rascunho / revisão",
+      publishedSent: "Publicados / enviados", register: "Registo de relatórios", noAsset: "Sem ativo", empty: "Ainda não há relatórios",
+      emptyDesc: "Os relatórios aparecerão aqui à medida que as operações KRAM forem documentadas."
+    },
+    usersPage: {
+      scopeTitle: "Âmbito", staffAccounts: "Contas do pessoal", administrators: "Administradores", countries: "Países em uso",
+      function: "Função", role: "Função KRAM", staff: "Pessoal", unknown: "Utilizador desconhecido",
+      accessMissing: "O acesso KRAM não está configurado", accessMissingDesc: "A sua conta está autenticada, mas não está atribuída a uma organização KRAM.",
+      noStaff: "Ainda não foram configuradas contas do pessoal.", manage: "Gerir acessos",
+      staffDescription: "Gira a identidade do pessoal KRAM, a função de autorização e o âmbito geográfico."
+    },
+    workOrdersPage: {
+      eyebrow: "Operações", title: "Ordens de trabalho", description: "Controle pedidos, intervenções e trabalhos no terreno em toda a rede KRAM.",
+      new: "Nova ordem de trabalho", open: "Abertas", pending: "Pendentes", inProgress: "Em curso",
+      activeRequests: "Pedidos ativos", awaitingAction: "A aguardar ação", activeInterventions: "Intervenções ativas",
+      queue: "Fila de operações", queueDesc: "Cada intervenção permanece ligada a um ativo.",
+      empty: "Ainda não há ordens de trabalho", emptyDesc: "Crie o primeiro pedido operacional para o ver aqui.",
+      create: "Criar ordem de trabalho"
+    },
+    communications: {
+      eyebrow: "Comunicação", title: "Conversas com clientes",
+      description: "Mantenha a comunicação com o cliente, o contexto operacional e as notas internas juntos sem transformar o KRAM numa aplicação de chat genérica.",
+      search: "Pesquisar conversas", select: "Selecione uma conversa",
+      selectDesc: "Escolha uma conversa à esquerda para ver o histórico e responder.",
+      general: "Comunicação geral", client: "Cliente", internal: "Interno", clientVisible: "Visível para o cliente",
+      send: "Enviar", messagePlaceholder: "Escrever uma mensagem…", internalNote: "Nota interna",
+      clientMessage: "Mensagem do cliente", communicationSeparation: "A comunicação com o cliente é mantida separada da atividade de auditoria interna.",
+      noConversations: "Ainda não há conversas.", newConversation: "Nova conversa"
+    },
+    commonOps: {
+      noData: "Sem dados", review: "Analisar", status: "Estado", priority: "Prioridade", created: "Criado", requested: "Solicitado",
+      noDate: "Sem data", yes: "Sim", no: "Não"
+    }
+  }
+} as const;
+
+export function getOpsUi(locale: Locale) {
+  return opsUi[locale];
+}
