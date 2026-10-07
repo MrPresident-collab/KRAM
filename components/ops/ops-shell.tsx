@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useSyncExternalStore, useState } from "react";
+import { useSyncExternalStore, useState } from "react";
 import { OpsHeader } from "@/components/ops/header";
 import { OpsSidebar } from "@/components/ops/sidebar";
 import type { Locale } from "@/lib/i18n";
