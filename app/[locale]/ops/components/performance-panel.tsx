@@ -15,7 +15,10 @@ export function PerformancePanel({ locale, trend, status }: { locale: string; tr
     completed: locale === "fr" ? "Terminées" : locale === "pt" ? "Concluídas" : "Completed",
     inspections: locale === "fr" ? "Inspections" : locale === "pt" ? "Inspeções" : "Inspections",
     health: locale === "fr" ? "État des ordres" : locale === "pt" ? "Estado das ordens" : "Work-order health",
-    empty: locale === "fr" ? "Pas assez de données pour afficher une tendance." : locale === "pt" ? "Dados insuficientes para apresentar uma tendência." : "Not enough data to show a trend.",
+    empty: locale === "fr" ? "Aucune activité opérationnelle enregistrée sur cette période." : locale === "pt" ? "Não há atividade operacional registada neste período." : "No operational activity recorded for this period.",
+    emptyHint: locale === "fr" ? "Les tendances apparaîtront lorsque des ordres ou inspections seront créés." : locale === "pt" ? "As tendências aparecerão quando forem criadas ordens ou inspeções." : "Trends will appear once work orders or inspections are created.",
+    noOrders: locale === "fr" ? "Aucun ordre de travail" : locale === "pt" ? "Nenhuma ordem de trabalho" : "No work orders yet",
+    noOrdersHint: locale === "fr" ? "Créez votre premier ordre pour commencer à suivre l’état opérationnel." : locale === "pt" ? "Crie a sua primeira ordem para começar a acompanhar o estado operacional." : "Create your first work order to start tracking operational health.",
     period: locale === "fr" ? "Période" : locale === "pt" ? "Período" : "Period",
   };
 
@@ -35,7 +38,7 @@ export function PerformancePanel({ locale, trend, status }: { locale: string; tr
         </div>
       </div>
       <div className="px-6 pb-5 pt-6">
-        {visibleTrend.length < 2 ? <div className="grid h-56 place-items-center rounded-xl bg-[var(--kram-bg)] text-center text-xs text-[var(--kram-metal)]">{labels.empty}</div> :
+        {visibleTrend.length < 2 || maxTrend === 0 ? <div className="grid h-56 place-items-center rounded-xl bg-[var(--kram-bg)] px-6 text-center"><div><p className="text-sm font-bold text-[var(--kram-deep)]">{labels.empty}</p><p className="mt-1 text-xs text-[var(--kram-metal)]">{labels.emptyHint}</p></div></div> :
         <div className="relative h-56">
           <div className="absolute inset-0 flex flex-col justify-between">{[0,1,2,3].map(line=><span key={line} className="border-t border-dashed border-[var(--kram-border)]"/>)}</div>
           <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full overflow-visible">
@@ -49,7 +52,7 @@ export function PerformancePanel({ locale, trend, status }: { locale: string; tr
     </div>
     <div className="rounded-2xl border border-[var(--kram-border)] bg-white">
       <div className="border-b border-[var(--kram-border)] px-6 py-5"><h2 className="text-[15px] font-black tracking-[-.02em] text-[var(--kram-deep)]">{labels.health}</h2></div>
-      <div className="space-y-5 px-6 py-6">{status.map(item=><div key={item.label}><div className="mb-2 flex items-center justify-between gap-3 text-xs"><span className="font-semibold text-[var(--kram-charcoal)]">{item.label}</span><span className="font-black text-[var(--kram-deep)]">{item.value}</span></div><div className="h-2 overflow-hidden rounded-full bg-[var(--kram-bg)]"><div className="h-full rounded-full bg-[var(--kram-orange)]" style={{width:`${(item.value/maxStatus)*100}%`}}/></div></div>)}</div>
+      <div className="space-y-5 px-6 py-6">{status.length === 0 ? <div className="rounded-xl bg-[var(--kram-bg)] px-5 py-8 text-center"><p className="text-sm font-bold text-[var(--kram-deep)]">{labels.noOrders}</p><p className="mt-1 text-xs leading-5 text-[var(--kram-metal)]">{labels.noOrdersHint}</p></div> : status.map(item=><div key={item.label}><div className="mb-2 flex items-center justify-between gap-3 text-xs"><span className="font-semibold text-[var(--kram-charcoal)]">{item.label}</span><span className="font-black text-[var(--kram-deep)]">{item.value}</span></div><div className="h-2 overflow-hidden rounded-full bg-[var(--kram-bg)]"><div className="h-full rounded-full bg-[var(--kram-orange)]" style={{width:`${(item.value/maxStatus)*100}%`}}/></div></div>)}</div>
     </div>
   </section>;
 }
