@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FileText, Plus, ArrowRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { copy, getOpsUi, isLocale, type Locale } from "@/lib/i18n";
+import { getOpsUi, isLocale, type Locale } from "@/lib/i18n";
 
 export default async function ReportsPage({params}:{params:Promise<{locale:string}>}){
  const{locale}=await params;if(!isLocale(locale))notFound(); const ui=getOpsUi(locale as Locale);const s=await createClient();
