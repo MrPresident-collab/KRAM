@@ -1,4 +1,4 @@
-import { ArrowUpRight, Building2, CheckCircle2, ClipboardList, Clock3, FileCheck2, Plus, ShieldCheck, Users } from "lucide-react";
+import { ArrowUpRight, FileCheck2, ShieldCheck, Users } from "lucide-react";
 import { PerformancePanel } from "./components/performance-panel";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -42,12 +42,15 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
     if (data?.name) contextLabel = data.name + (locale === "fr" ? " — Vue d’ensemble" : locale === "pt" ? " — Visão geral" : " — Overview");
   }
 
+
   const trendStart = new Date();
   trendStart.setUTCHours(0, 0, 0, 0);
   trendStart.setUTCDate(trendStart.getUTCDate() - 29);
-  const [{ data: trendOrders }, { data: trendInspections }] = await Promise.all([
-    supabase.from("work_orders").select("created_at,status").is("deleted_at", null).gte("created_at", trendStart.toISOString()).order("created_at", { ascending: true }),
+
+  const [{ data: trendOrders }, { data: trendInspections }, { data: responseUpdates }] = await Promise.all([
+    supabase.from("work_orders").select("id,created_at,status").is("deleted_at", null).gte("created_at", trendStart.toISOString()).order("created_at", { ascending: true }),
     supabase.from("inspections").select("created_at,status").is("deleted_at", null).gte("created_at", trendStart.toISOString()).order("created_at", { ascending: true }),
+    supabase.from("work_order_updates").select("work_order_id,created_at").gte("created_at", trendStart.toISOString()).order("created_at", { ascending: true }),
   ]);
 
   const trend = Array.from({ length: 30 }, (_, index) => {
@@ -71,6 +74,21 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
     };
   });
 
+  const responseMap = new Map<string, string>();
+  for (const update of responseUpdates ?? []) {
+    if (!responseMap.has(update.work_order_id)) responseMap.set(update.work_order_id, update.created_at);
+  }
+  const responseHours = (trendOrders ?? [])
+    .map(order => {
+      const firstUpdate = responseMap.get(order.id);
+      if (!firstUpdate) return null;
+      return (new Date(firstUpdate).getTime() - new Date(order.created_at).getTime()) / 3600000;
+    })
+    .filter((value): value is number => value !== null && value >= 0);
+  const averageResponseHours = responseHours.length
+    ? responseHours.reduce((sum, value) => sum + value, 0) / responseHours.length
+    : null;
+
   const statusCounts = await Promise.all(
     ["open", "in_progress", "completed", "verified", "closed"].map(async status => ({
       status,
@@ -78,31 +96,35 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
     })),
   );
 
-  const [assets, clients, openOrders, approvals, activeOrders, attentionAssets, inspections, providers] = await Promise.all([
+  const [assets, clients, openOrders, approvals, attentionAssets, inspections, pendingProviders] = await Promise.all([
     countRows(supabase, "assets"),
     countRows(supabase, "clients"),
     countRows(supabase, "work_orders", { column: "status", operator: "not", value: "(closed,verified,completed)" }),
     countRows(supabase, "approvals", { column: "status", operator: "eq", value: "pending" }),
-    countRows(supabase, "work_orders", { column: "status", operator: "eq", value: "in_progress" }),
     countRows(supabase, "assets", { column: "status", operator: "eq", value: "attention" }),
     countRows(supabase, "inspections", { column: "status", operator: "eq", value: "scheduled" }),
-    countRows(supabase, "service_providers", { column: "verification_status", operator: "eq", value: "verified" }),
+    countRows(supabase, "service_providers", { column: "verification_status", operator: "eq", value: "pending" }),
   ]);
+
 
   const fr = locale === "fr"; const pt = locale === "pt";
   const dashboardLabels = {
-    eyebrow: pt ? "Indicadores-chave" : fr ? "Indicateurs clés" : "Key indicators",
-    description: pt ? "Indicadores reais do seu perímetro autorizado." : fr ? "Indicateurs réels de votre périmètre autorisé." : "Real indicators for your authorized scope.",
-    create: pt ? "Nova ordem" : fr ? "Nouvel ordre" : "New work order",
-    assets: pt ? "Ativos" : fr ? "Actifs" : "Assets",
-    openOrders: pt ? "Ordens abertas" : fr ? "Ordres ouverts" : "Open work orders",
-    awaiting: pt ? "Aguardando aprovação" : fr ? "En attente d’approbation" : "Awaiting approval",
-    active: pt ? "Em execução" : fr ? "En cours" : "In progress",
-    attention: pt ? "Fila de atenção" : fr ? "File d’attention" : "Attention queue",
+    title: pt ? "Desempenho operacional" : fr ? "Performance opérationnelle" : "Operations Performance",
+    scope: pt ? "Global" : fr ? "Global" : "Global",
+    period: pt ? "Últimos 30 dias" : fr ? "30 derniers jours" : "Last 30 days",
+    open: pt ? "Ordens abertas" : fr ? "Ordres ouverts" : "Open WOs",
+    completed: pt ? "Concluídas" : fr ? "Terminées" : "Completed",
+    response: pt ? "Primeira resposta" : fr ? "Première réponse" : "First response",
+    overdue: pt ? "Em atraso" : fr ? "En retard" : "Overdue",
+    notTracked: pt ? "Não monitorizado" : fr ? "Non suivi" : "Not tracked",
+    responseNote: pt ? "média até à primeira atualização" : fr ? "moyenne jusqu’à la première mise à jour" : "average to first update",
+    attention: pt ? "Necessita atenção" : fr ? "Nécessite une attention" : "Needs Attention",
     attentionDesc: pt ? "Itens que exigem decisão, verificação ou intervenção." : fr ? "Éléments nécessitant une décision, vérification ou intervention." : "Items requiring a decision, verification or intervention.",
     approvals: pt ? "Aprovações pendentes" : fr ? "Approbations en attente" : "Pending approvals",
-    attentionAssets: pt ? "Ativos com atenção" : fr ? "Actifs à surveiller" : "Assets needing attention",
-    scheduled: pt ? "Inspeções agendadas" : fr ? "Inspections planifiées" : "Scheduled inspections",
+    attentionAssets: pt ? "Ativos que precisam de atenção" : fr ? "Actifs nécessitant une attention" : "Assets requiring attention",
+    scheduled: pt ? "Inspeções pendentes" : fr ? "Inspections en attente" : "Pending inspections",
+    providers: pt ? "Prestadores aguardando verificação" : fr ? "Prestataires en attente de vérification" : "Providers awaiting verification",
+    health: pt ? "Saúde operacional" : fr ? "Santé opérationnelle" : "Operational Health",
     network: pt ? "Rede de campo" : fr ? "Réseau terrain" : "Field network",
     verified: pt ? "prestadores verificados" : fr ? "prestataires vérifiés" : "verified providers",
     viewNetwork: pt ? "Abrir rede" : fr ? "Ouvrir le réseau" : "Open network",
@@ -112,13 +134,6 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
     scheduledShort: pt ? "agendadas" : fr ? "planifiées" : "scheduled",
   };
 
-  const metrics = [
-    { label: dashboardLabels.assets, value: assets, note: pt ? "Registo de ativos" : fr ? "Registre des actifs" : "Asset registry", icon: Building2 },
-    { label: dashboardLabels.openOrders, value: openOrders, note: pt ? "Trabalho ainda aberto" : fr ? "Travail encore ouvert" : "Work still open", icon: ClipboardList },
-    { label: dashboardLabels.awaiting, value: approvals, note: pt ? "Decisão necessária" : fr ? "Décision requise" : "Decision required", icon: Clock3, accent: approvals > 0 },
-    { label: dashboardLabels.active, value: activeOrders, note: pt ? "Intervenções em curso" : fr ? "Interventions en cours" : "Active interventions", icon: CheckCircle2 },
-  ];
-
   const healthLabels: Record<string, string> = {
     open: pt ? "Abertas" : fr ? "Ouvertes" : "Open",
     in_progress: pt ? "Em execução" : fr ? "En cours" : "In progress",
@@ -127,36 +142,23 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
     closed: pt ? "Fechadas" : fr ? "Fermées" : "Closed",
   };
   const status = statusCounts.filter(item => item.count > 0).map(item => ({ label: healthLabels[item.status], value: item.count }));
-  const attentionTotal = approvals + attentionAssets + inspections;
+  const attentionTotal = approvals + attentionAssets + inspections + pendingProviders;
 
   return <div className="space-y-6 pb-10">
     <section className="rounded-2xl border border-[var(--kram-border)] bg-white">
       <div className="flex flex-col gap-4 border-b border-[var(--kram-border)] px-5 py-4 sm:flex-row sm:items-center sm:justify-between md:px-6">
         <div>
-          <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[.18em] text-[var(--kram-orange)]"><span className="h-1.5 w-1.5 rounded-full bg-[var(--kram-orange)]" />{dashboardLabels.eyebrow}</div>
-          <div className="mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-            <h1 className="text-xl font-black tracking-[-.04em] text-[var(--kram-deep)] md:text-2xl">{contextLabel}</h1>
-            <span className="text-xs text-[var(--kram-metal)]">{dashboardLabels.description}</span>
-          </div>
-        </div>
-        <Link href={"/" + locale + "/ops/work-orders/new"} className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[var(--kram-orange)] px-4 py-2.5 text-xs font-bold text-white hover:bg-[#df6816]"><Plus size={15}/>{dashboardLabels.create}</Link>
-      </div>
-      <div className="grid gap-px bg-[var(--kram-border)] sm:grid-cols-2 xl:grid-cols-4">
-        {metrics.map(({ label, value, note, icon: Icon, accent }) => <div key={label} className="min-h-[142px] bg-white p-5">
-          <div className="flex items-center justify-between">
-            <div className={accent ? "grid h-8 w-8 place-items-center rounded-lg bg-[var(--kram-orange-soft)] text-[var(--kram-orange)]" : "grid h-8 w-8 place-items-center rounded-lg bg-[var(--kram-bg)] text-[var(--kram-metal)]"}><Icon size={16}/></div>
-            {accent && <span className="text-[9px] font-bold uppercase tracking-[.14em] text-[var(--kram-orange)]">{pt ? "Ação" : fr ? "Action" : "Action"}</span>}
-          </div>
-          <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-3xl font-black tracking-[-.06em] text-[var(--kram-deep)]">{value}</span>
-            <span className="text-[11px] font-medium text-[var(--kram-metal)]">{note}</span>
-          </div>
-          <div className="mt-0.5 text-[13px] font-bold text-[var(--kram-charcoal)]">{label}</div>
-        </div>)}
-      </div>
-    </section>
-
-    <PerformancePanel locale={locale} trend={trend} status={status} />
+          <div className
+  return <div className="space-y-6 pb-10">
+    <PerformancePanel
+      locale={locale}
+      contextLabel={contextLabel}
+      trend={trend}
+      status={status}
+      openOrders={openOrders}
+      averageResponseHours={averageResponseHours}
+      labels={dashboardLabels}
+    />
 
     <section className="grid gap-5 xl:grid-cols-[1.4fr_.6fr]">
       <div className="rounded-2xl border border-[var(--kram-border)] bg-white">
@@ -167,14 +169,16 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
         <div className="divide-y divide-[var(--kram-border)]">
           {[
             { label: dashboardLabels.approvals, value: approvals, route: "approvals" },
-            { label: dashboardLabels.attentionAssets, value: attentionAssets, route: "assets" },
             { label: dashboardLabels.scheduled, value: inspections, route: "inspections" },
-          ].map(({ label, value, route }) => <Link href={`/${locale}/ops/${route}`} key={label} className="flex items-center justify-between px-6 py-4 hover:bg-[var(--kram-bg)]"><div className="flex items-center gap-3"><span className={`h-2 w-2 rounded-full ${value > 0 ? "bg-[var(--kram-orange)]" : "bg-[var(--kram-soft-metal)]"}`}/><span className="text-sm font-semibold text-[var(--kram-charcoal)]">{label}</span></div><span className="min-w-7 rounded-full bg-[var(--kram-bg)] px-2.5 py-1 text-center text-xs font-black text-[var(--kram-metal)]">{value}</span></Link>)}
+            { label: dashboardLabels.providers, value: pendingProviders, route: "providers" },
+            { label: dashboardLabels.attentionAssets, value: attentionAssets, route: "assets" },
+          ].filter(item => item.value > 0).map(({ label, value, route }) => <Link href={`/${locale}/ops/${route}`} key={label} className="flex items-center justify-between px-6 py-4 hover:bg-[var(--kram-bg)]"><div className="flex items-center gap-3"><span className="h-2 w-2 rounded-full bg-[var(--kram-orange)]"/><span className="text-sm font-semibold text-[var(--kram-charcoal)]">{label}</span></div><span className="min-w-7 rounded-full bg-[var(--kram-bg)] px-2.5 py-1 text-center text-xs font-black text-[var(--kram-metal)]">{value}</span><ArrowUpRight size={14} className="text-[var(--kram-soft-metal)]"/></Link>)}
+          {!attentionTotal && <div className="px-6 py-8 text-center text-xs text-[var(--kram-metal)]">{locale === "fr" ? "Aucune action requise." : locale === "pt" ? "Nenhuma ação necessária." : "Nothing needs attention."}</div>}
         </div>
       </div>
       <div className="rounded-2xl bg-[var(--kram-charcoal)] p-6 text-white">
         <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[var(--kram-orange)]">{dashboardLabels.network}</p>
-        <div className="mt-3 flex items-end justify-between gap-4"><div><p className="text-4xl font-black tracking-[-.06em]">{providers}</p><p className="mt-1 text-xs text-white/50">{dashboardLabels.verified}</p></div><ShieldCheck size={24} className="text-[var(--kram-orange)]"/></div>
+        <div className="mt-3 flex items-end justify-between gap-4"><div><p className="text-4xl font-black tracking-[-.06em]">{pendingProviders}</p><p className="mt-1 text-xs text-white/50">{dashboardLabels.providers}</p></div><ShieldCheck size={24} className="text-[var(--kram-orange)]"/></div>
         <div className="mt-7 flex items-center justify-between border-t border-white/10 pt-5"><div><p className="text-[10px] uppercase tracking-[.14em] text-white/35">{dashboardLabels.clients}</p><p className="mt-1 text-lg font-black">{clients}</p><p className="text-[10px] text-white/40">{dashboardLabels.owners}</p></div><Link href={`/${locale}/ops/providers`} className="rounded-xl border border-white/15 px-3 py-2 text-xs font-bold hover:bg-white/10">{dashboardLabels.viewNetwork}</Link></div>
       </div>
     </section>
