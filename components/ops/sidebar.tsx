@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Activity, Building2, MessageSquare, ClipboardCheck, ClipboardList, FileText, FolderKanban, LayoutDashboard, Users, Wallet, Wrench, Settings, ShieldCheck, PanelLeftClose, X } from "lucide-react";
+import { Activity, Building2, MessageSquare, ClipboardCheck, ClipboardList, FileText, FolderKanban, LayoutDashboard, UsersRound, Wallet, Wrench, Settings, ShieldCheck, PanelLeftClose, UserRoundCog, Files, HardHat, BadgeCheck, X } from "lucide-react";
 import { KramBrand } from "@/components/brand/kram-brand";
 import type { Locale } from "@/lib/i18n";
 import { copy } from "@/lib/i18n";
@@ -17,27 +17,27 @@ export function OpsSidebar({ locale, collapsed = false, mobileOpen = false, onCl
     { label: "", items: [{ href: "/" + locale + "/ops", label: overview, icon: LayoutDashboard }] },
     { label: t.nav.operations, items: [
       { href: "/" + locale + "/ops/work-orders", label: t.nav.workOrders, icon: ClipboardList },
-      { href: "/" + locale + "/ops/inspections", label: t.nav.inspections, icon: ClipboardCheck },
+      { href: "/" + locale + "/ops/inspections", label: t.nav.inspections, icon: BadgeCheck },
       { href: "/" + locale + "/ops/projects", label: t.nav.projects, icon: FolderKanban },
       { href: "/" + locale + "/ops/maintenance", label: t.nav.maintenance, icon: Wrench }
     ] },
     { label: locale === "fr" ? "Communication" : locale === "pt" ? "Comunicação" : "Communication", items: [{ href: "/" + locale + "/ops/communications", label: locale === "fr" ? "Conversations" : locale === "pt" ? "Conversas" : "Conversations", icon: MessageSquare }] },
     { label: t.nav.assets, items: [
       { href: "/" + locale + "/ops/assets", label: t.nav.allAssets, icon: Building2 },
-      { href: "/" + locale + "/ops/clients", label: t.nav.clients, icon: Users }
+      { href: "/" + locale + "/ops/clients", label: t.nav.clients, icon: UsersRound }
     ] },
-    { label: t.nav.network, items: [{ href: "/" + locale + "/ops/providers", label: t.nav.providers, icon: ShieldCheck }] },
+    { label: t.nav.network, items: [{ href: "/" + locale + "/ops/providers", label: t.nav.providers, icon: HardHat }] },
     { label: t.nav.finance, items: [
       { href: "/" + locale + "/ops/expenses", label: t.nav.expenses, icon: Wallet },
-      { href: "/" + locale + "/ops/approvals", label: t.nav.approvals, icon: ClipboardCheck }
+      { href: "/" + locale + "/ops/approvals", label: t.nav.approvals, icon: ShieldCheck }
     ] },
     { label: t.nav.documents, items: [
       { href: "/" + locale + "/ops/reports", label: t.nav.reports, icon: FileText },
-      { href: "/" + locale + "/ops/documents", label: t.nav.documents, icon: FileText }
+      { href: "/" + locale + "/ops/documents", label: t.nav.documents, icon: Files }
     ] },
     { label: t.nav.system, items: [
       { href: "/" + locale + "/ops/activity", label: t.nav.activity, icon: Activity },
-      { href: "/" + locale + "/ops/users", label: t.nav.usersRoles, icon: Users },
+      { href: "/" + locale + "/ops/users", label: t.nav.usersRoles, icon: UserRoundCog },
       { href: "/" + locale + "/ops/settings", label: t.nav.settings, icon: Settings }
     ] }
   ];
