@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
-import type { Locale } from "@/lib/i18n";
 
 type ModuleCopy = {
   eyebrow: string;
@@ -20,12 +19,10 @@ type ModuleCopy = {
 };
 
 export function OpsModulePage({
-  locale,
   copy,
   icon: Icon,
   actionHref,
 }: {
-  locale: Locale;
   copy: ModuleCopy;
   icon: LucideIcon;
   actionHref?: string;
