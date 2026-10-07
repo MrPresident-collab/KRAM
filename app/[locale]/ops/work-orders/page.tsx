@@ -10,7 +10,7 @@ const priorityLabels={low:"Low",normal:"Normal",high:"High",urgent:"Urgent"} as 
 
 export default async function WorkOrdersPage({params}:{params:Promise<{locale:string}>}){
  const {locale}=await params;if(!isLocale(locale))notFound(); const ui=copy[locale as Locale]; const page=getOpsUi(locale as Locale).workOrdersPage; const t=ui;const supabase=await createClient();
- const {data:orders}=await supabase.from("work_orders").select("id,title,category,priority,status,estimated_cost,created_at,assets(id,name,reference_code)").order("created_at",{ascending:false});
+ const {data:orders}=await supabase.from("work_orders").select("id,title,category,priority,status,estimated_cost,created_at,assets(id,name,reference_code)").is("deleted_at",null).order("created_at",{ascending:false});
  const all=orders??[];
  const open=all.filter(o=>!["closed","verified"].includes(o.status)).length;
  const pending=all.filter(o=>["draft","pending_approval"].includes(o.status)).length;
