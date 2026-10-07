@@ -34,6 +34,7 @@ export async function createBranch(_previous: BranchActionState, formData: FormD
     .from("organization_members")
     .select("organization_id")
     .eq("user_id", userId)
+    .eq("status", "active")
     .eq("scope_level", "global")
     .in("role", ["owner", "admin"])
     .limit(1)
