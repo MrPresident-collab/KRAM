@@ -4,13 +4,13 @@ import {Loader2,Save} from "lucide-react";
 import {createProvider} from "../actions";
 import type {Locale} from "@/lib/i18n";
 
-type Branch={id:string;name:string;city:string};
+type Branch={id:string;name:string;city:string}; type Service={id:string;code:string;name_en:string;name_fr:string;name_pt:string};
 const labels={
  fr:{name:"Nom",phone:"Téléphone",email:"E-mail",specialty:"Spécialité",coverage:"Zone de couverture",branch:"Agence",select:"Sélectionner une agence",notes:"Notes",save:"Ajouter le prestataire",saving:"Ajout..."},
  en:{name:"Name",phone:"Phone",email:"Email",specialty:"Specialty",coverage:"Coverage",branch:"Branch",select:"Select a branch",notes:"Notes",save:"Add provider",saving:"Adding..."},
  pt:{name:"Nome",phone:"Telefone",email:"E-mail",specialty:"Especialidade",coverage:"Cobertura",branch:"Sucursal",select:"Selecionar uma sucursal",notes:"Notas",save:"Adicionar prestador",saving:"A adicionar..."}
 } as const;
-export function ProviderCreateForm({locale,branches}:{locale:Locale;branches:Branch[]}){
+export function ProviderCreateForm({locale,branches,services}:{locale:Locale;branches:Branch[];services:Service[]}){
  const t=labels[locale];
  const[state,action,pending]=useActionState(createProvider,{success:false,message:""});
  return <form action={action} className="space-y-5 rounded-2xl border border-[var(--kram-border)] bg-white p-6 shadow-sm">
