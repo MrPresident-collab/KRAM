@@ -39,6 +39,7 @@ export async function createAssetRecord(_prev: AssetActionState, formData: FormD
     .from("organization_members")
     .select("organization_id")
     .eq("user_id", userId)
+    .eq("status", "active")
     .order("created_at", { ascending: true })
     .limit(1)
     .maybeSingle();
