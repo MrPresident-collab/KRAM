@@ -1,10 +1,11 @@
 "use client";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { Loader2, Save } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { createExpense, type ExpenseActionState } from "../actions"; import type {Locale} from "@/lib/i18n";
 
 export function ExpenseCreateForm({assets,workOrders,projects,providers,defaultCurrency,locale}:{assets:{id:string;name:string;reference_code:string}[];workOrders:{id:string;title:string}[];projects:{id:string;name:string}[];providers:{id:string;name:string}[];defaultCurrency:string;locale:Locale}){
- const[state,action,pending]=useActionState<ExpenseActionState,FormData>(createExpense,{success:false,message:""});
+ const[state,action,pending]=useActionState<ExpenseActionState,FormData>(createExpense,{success:false,message:""}); const router=useRouter(); useEffect(()=>{if(state.success) router.push(`/${locale}/ops/expenses`);},[state.success,locale,router]);
  return <form action={action} className="space-y-5 rounded-2xl border border-[var(--kram-border)] bg-white p-6">
   <div className="grid gap-5 md:grid-cols-2">
    <Field label="Description" name="description" required placeholder="Plumbing materials"/>
