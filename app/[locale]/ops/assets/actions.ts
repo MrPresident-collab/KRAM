@@ -67,7 +67,7 @@ export async function createAssetRecord(_prev: AssetActionState, formData: FormD
     if (!branch || branch.country_id !== country.id) return { success: false, message: "The selected branch does not belong to that country." };
   }
 
-  const referenceCode = `KRAM-${country.code.toUpperCase()}-${crypto.randomUUID().replaceAll("-", "").slice(0, 8).toUpperCase()}`;
+  const referenceCode = `${country.code.toUpperCase()}-${crypto.randomUUID().replaceAll("-", "").slice(0, 4).toUpperCase()}`;
 
   const { error } = await supabase.from("assets").insert({
     organization_id: membership.organization_id,
