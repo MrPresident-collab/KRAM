@@ -103,7 +103,7 @@ export async function POST(request: Request) {
   });
   if (profileError) {
     await admin.auth.admin.deleteUser(newUserId);
-    return NextResponse.json({ error: "The staff profile could not be created." }, { status: 500 });
+    return NextResponse.json({ error: `The staff profile could not be created: ${profileError.message}` }, { status: 500 });
   }
 
   const { error: membershipError } = await admin.from("organization_members").insert({
@@ -117,7 +117,7 @@ export async function POST(request: Request) {
   });
   if (membershipError) {
     await admin.auth.admin.deleteUser(newUserId);
-    return NextResponse.json({ error: "The staff authorization could not be created." }, { status: 500 });
+    return NextResponse.json({ error: `The staff authorization could not be created: ${membershipError.message}` }, { status: 500 });
   }
 
   await writeAudit(admin, {
