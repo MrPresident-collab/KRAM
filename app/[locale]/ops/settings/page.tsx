@@ -2,11 +2,13 @@ import Link from "next/link";
 import { Bell, Globe2, GitBranch, Languages, ShieldCheck, ChevronRight } from "lucide-react";
 import { notFound } from "next/navigation";
 import { isLocale, type Locale, copy } from "@/lib/i18n";
+import { createClient } from "@/lib/supabase/server";
+import { SettingsPreferences } from "./preferences";
 
 export default async function SettingsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const t = copy[locale as Locale];
+  const t = copy[locale as Locale]; const supabase=await createClient(); const {data:claims}=await supabase.auth.getClaims(); const uid=claims?.claims?.sub; const {data:membership}=uid?await supabase.from("organization_members").select("organization_id").eq("user_id",uid).eq("status","active").limit(1).maybeSingle():{data:null}; const {data:organization}=membership?await supabase.from("organizations").select("default_currency").eq("id",membership.organization_id).maybeSingle():{data:null};
   const items = [
     { href: `/${locale}/ops/settings/countries`, icon: Globe2, title: t.settings.countries, desc: t.settings.countriesDesc },
     { href: `/${locale}/ops/settings/branches`, icon: GitBranch, title: t.settings.branches, desc: t.settings.branchesDesc },
@@ -35,7 +37,7 @@ export default async function SettingsPage({ params }: { params: Promise<{ local
     <section>
       <p className="mb-3 text-[10px] font-bold uppercase tracking-[.16em] text-[var(--kram-soft-metal)]">{locale === "fr" ? "Préférences" : locale === "pt" ? "Preferências" : "Preferences"}</p>
       <div className="divide-y divide-[var(--kram-border)] overflow-hidden rounded-2xl border border-[var(--kram-border)] bg-white">
-        <div className="flex items-center gap-4 px-5 py-5 md:px-6"><span className="grid h-10 w-10 place-items-center rounded-xl bg-[var(--kram-bg)] text-[var(--kram-charcoal)]"><Bell size={18}/></span><div><p className="text-sm font-bold text-[var(--kram-deep)]">{locale === "fr" ? "Notifications" : locale === "pt" ? "Notificações" : "Notifications"}</p><p className="mt-1 text-xs text-[var(--kram-metal)]">{locale === "fr" ? "Les alertes KRAM apparaîtront dans le centre de notifications." : locale === "pt" ? "Os alertas KRAM aparecerão no centro de notificações." : "KRAM alerts will appear in the notification center."}</p></div></div>
+        <div className="flex items-center gap-4 px-5 py-5 md:px-6"><span className="grid h-10 w-10 place-items-center rounded-xl bg-[var(--kram-bg)] text-[var(--kram-charcoal)]"><Bell size={18}/></span><div><p className="text-sm font-bold text-[var(--kram-deep)]">{locale === "fr" ? "Centre de notifications" : locale === "pt" ? "Centro de notificações" : "Notification center"}</p><p className="mt-1 text-xs text-[var(--kram-metal)]">{locale === "fr" ? "Les alertes KRAM apparaîtront dans le centre de notifications." : locale === "pt" ? "Os alertas KRAM aparecerão no centro de notificações." : "KRAM alerts will appear in the notification center."}</p></div></div>
       </div>
     </section>
   </div>;
