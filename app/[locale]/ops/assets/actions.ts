@@ -84,7 +84,7 @@ export async function createAssetRecord(_prev: AssetActionState, formData: FormD
 
   if (error) {
     if (error.code === "23505") return { success: false, message: "KRAM could not generate a unique reference. Please try again." };
-    return { success: false, message: "The asset could not be created." };
+    return { success: false, message: `The asset could not be created: ${error.message}` };
   }
 
   revalidatePath("/fr/ops/assets");
