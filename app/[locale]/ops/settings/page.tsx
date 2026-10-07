@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Bell, Globe2, GitBranch, Languages, ShieldCheck, Users, ChevronRight } from "lucide-react";
+import { Bell, Globe2, GitBranch, Languages, ShieldCheck, ChevronRight } from "lucide-react";
 import { notFound } from "next/navigation";
 import { isLocale, type Locale, copy } from "@/lib/i18n";
 
