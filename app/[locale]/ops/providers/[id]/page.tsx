@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ShieldCheck, Phone, Mail, MapPin, BriefcaseBusiness } from "lucide-react";
+import { ArrowLeft, Phone, Mail, MapPin, BriefcaseBusiness } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { copy, isLocale, type Locale } from "@/lib/i18n";
 import { ProviderVerificationForm } from "./verification-form";
