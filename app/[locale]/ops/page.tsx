@@ -42,6 +42,42 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
     if (data?.name) contextLabel = data.name + (locale === "fr" ? " — Vue d’ensemble" : locale === "pt" ? " — Visão geral" : " — Overview");
   }
 
+  const trendStart = new Date();
+  trendStart.setUTCHours(0, 0, 0, 0);
+  trendStart.setUTCDate(trendStart.getUTCDate() - 13);
+  const [{ data: trendOrders }, { data: trendInspections }] = await Promise.all([
+    supabase.from("work_orders").select("created_at,status").is("deleted_at", null).gte("created_at", trendStart.toISOString()).order("created_at", { ascending: true }),
+    supabase.from("inspections").select("created_at,status").is("deleted_at", null).gte("created_at", trendStart.toISOString()).order("created_at", { ascending: true }),
+  ]);
+
+  const trend = Array.from({ length: 14 }, (_, index) => {
+    const day = new Date(trendStart);
+    day.setUTCDate(trendStart.getUTCDate() + index);
+    const next = new Date(day);
+    next.setUTCDate(day.getUTCDate() + 1);
+    const orders = (trendOrders ?? []).filter(row => {
+      const created = new Date(row.created_at);
+      return created >= day && created < next;
+    });
+    const inspectionsForDay = (trendInspections ?? []).filter(row => {
+      const created = new Date(row.created_at);
+      return created >= day && created < next;
+    });
+    return {
+      label: day.toLocaleDateString(locale === "fr" ? "fr-FR" : locale === "pt" ? "pt-PT" : "en-GB", { day: "2-digit", month: "short", timeZone: "UTC" }),
+      created: orders.length,
+      completed: orders.filter(row => ["closed", "verified", "completed"].includes(row.status)).length,
+      inspections: inspectionsForDay.length,
+    };
+  });
+
+  const statusCounts = await Promise.all(
+    ["open", "in_progress", "completed", "verified", "closed"].map(async status => ({
+      status,
+      count: await countRows(supabase, "work_orders", { column: "status", operator: "eq", value: status }),
+    })),
+  );
+
   const [assets, clients, openOrders, approvals, activeOrders, attentionAssets, inspections, providers] = await Promise.all([
     countRows(supabase, "assets"),
     countRows(supabase, "clients"),
@@ -83,6 +119,14 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
     { label: dashboardLabels.active, value: activeOrders, note: pt ? "Intervenções em curso" : fr ? "Interventions en cours" : "Active interventions", icon: CheckCircle2 },
   ];
 
+  const healthLabels: Record<string, string> = {
+    open: pt ? "Abertas" : fr ? "Ouvertes" : "Open",
+    in_progress: pt ? "Em execução" : fr ? "En cours" : "In progress",
+    completed: pt ? "Concluídas" : fr ? "Terminées" : "Completed",
+    verified: pt ? "Verificadas" : fr ? "Vérifiées" : "Verified",
+    closed: pt ? "Fechadas" : fr ? "Fermées" : "Closed",
+  };
+  const status = statusCounts.filter(item => item.count > 0).map(item => ({ label: healthLabels[item.status], value: item.count }));
   const attentionTotal = approvals + attentionAssets + inspections;
 
   return <div className="space-y-6 pb-10">
@@ -109,6 +153,8 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
         <div className="mt-1 text-[11px] text-[var(--kram-metal)]">{note}</div>
       </div>)}
     </section>
+
+    <PerformancePanel locale={locale} trend={trend} status={status} />
 
     <section className="grid gap-5 xl:grid-cols-[1.4fr_.6fr]">
       <div className="rounded-2xl border border-[var(--kram-border)] bg-white">
