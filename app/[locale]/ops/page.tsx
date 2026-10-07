@@ -145,11 +145,6 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
   const attentionTotal = approvals + attentionAssets + inspections + pendingProviders;
 
   return <div className="space-y-6 pb-10">
-    <section className="rounded-2xl border border-[var(--kram-border)] bg-white">
-      <div className="flex flex-col gap-4 border-b border-[var(--kram-border)] px-5 py-4 sm:flex-row sm:items-center sm:justify-between md:px-6">
-        <div>
-          <div className
-  return <div className="space-y-6 pb-10">
     <PerformancePanel
       locale={locale}
       contextLabel={contextLabel}
@@ -163,7 +158,10 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
     <section className="grid gap-5 xl:grid-cols-[1.4fr_.6fr]">
       <div className="rounded-2xl border border-[var(--kram-border)] bg-white">
         <div className="flex items-center justify-between border-b border-[var(--kram-border)] px-6 py-5">
-          <div><h2 className="text-[15px] font-black tracking-[-.02em] text-[var(--kram-deep)]">{dashboardLabels.attention}</h2><p className="mt-1 text-xs text-[var(--kram-metal)]">{dashboardLabels.attentionDesc}</p></div>
+          <div>
+            <h2 className="text-[15px] font-black tracking-[-.02em] text-[var(--kram-deep)]">{dashboardLabels.attention}</h2>
+            <p className="mt-1 text-xs text-[var(--kram-metal)]">{dashboardLabels.attentionDesc}</p>
+          </div>
           <div className="rounded-full border border-[var(--kram-border)] px-2.5 py-1 text-[10px] font-black text-[var(--kram-charcoal)]">{attentionTotal}</div>
         </div>
         <div className="divide-y divide-[var(--kram-border)]">
@@ -172,14 +170,27 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
             { label: dashboardLabels.scheduled, value: inspections, route: "inspections" },
             { label: dashboardLabels.providers, value: pendingProviders, route: "providers" },
             { label: dashboardLabels.attentionAssets, value: attentionAssets, route: "assets" },
-          ].filter(item => item.value > 0).map(({ label, value, route }) => <Link href={`/${locale}/ops/${route}`} key={label} className="flex items-center justify-between px-6 py-4 hover:bg-[var(--kram-bg)]"><div className="flex items-center gap-3"><span className="h-2 w-2 rounded-full bg-[var(--kram-orange)]"/><span className="text-sm font-semibold text-[var(--kram-charcoal)]">{label}</span></div><span className="min-w-7 rounded-full bg-[var(--kram-bg)] px-2.5 py-1 text-center text-xs font-black text-[var(--kram-metal)]">{value}</span><ArrowUpRight size={14} className="text-[var(--kram-soft-metal)]"/></Link>)}
+          ].filter(item => item.value > 0).map(({ label, value, route }) => (
+            <Link href={`/${locale}/ops/${route}`} key={label} className="flex items-center justify-between px-6 py-4 hover:bg-[var(--kram-bg)]">
+              <div className="flex items-center gap-3"><span className="h-2 w-2 rounded-full bg-[var(--kram-orange)]"/><span className="text-sm font-semibold text-[var(--kram-charcoal)]">{label}</span></div>
+              <span className="min-w-7 rounded-full bg-[var(--kram-bg)] px-2.5 py-1 text-center text-xs font-black text-[var(--kram-metal)]">{value}</span>
+              <ArrowUpRight size={14} className="text-[var(--kram-soft-metal)]"/>
+            </Link>
+          ))}
           {!attentionTotal && <div className="px-6 py-8 text-center text-xs text-[var(--kram-metal)]">{locale === "fr" ? "Aucune action requise." : locale === "pt" ? "Nenhuma ação necessária." : "Nothing needs attention."}</div>}
         </div>
       </div>
+
       <div className="rounded-2xl bg-[var(--kram-charcoal)] p-6 text-white">
         <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[var(--kram-orange)]">{dashboardLabels.network}</p>
-        <div className="mt-3 flex items-end justify-between gap-4"><div><p className="text-4xl font-black tracking-[-.06em]">{pendingProviders}</p><p className="mt-1 text-xs text-white/50">{dashboardLabels.providers}</p></div><ShieldCheck size={24} className="text-[var(--kram-orange)]"/></div>
-        <div className="mt-7 flex items-center justify-between border-t border-white/10 pt-5"><div><p className="text-[10px] uppercase tracking-[.14em] text-white/35">{dashboardLabels.clients}</p><p className="mt-1 text-lg font-black">{clients}</p><p className="text-[10px] text-white/40">{dashboardLabels.owners}</p></div><Link href={`/${locale}/ops/providers`} className="rounded-xl border border-white/15 px-3 py-2 text-xs font-bold hover:bg-white/10">{dashboardLabels.viewNetwork}</Link></div>
+        <div className="mt-3 flex items-end justify-between gap-4">
+          <div><p className="text-4xl font-black tracking-[-.06em]">{pendingProviders}</p><p className="mt-1 text-xs text-white/50">{dashboardLabels.providers}</p></div>
+          <ShieldCheck size={24} className="text-[var(--kram-orange)]"/>
+        </div>
+        <div className="mt-7 flex items-center justify-between border-t border-white/10 pt-5">
+          <div><p className="text-[10px] uppercase tracking-[.14em] text-white/35">{dashboardLabels.clients}</p><p className="mt-1 text-lg font-black">{clients}</p><p className="text-[10px] text-white/40">{dashboardLabels.owners}</p></div>
+          <Link href={`/${locale}/ops/providers`} className="rounded-xl border border-white/15 px-3 py-2 text-xs font-bold hover:bg-white/10">{dashboardLabels.viewNetwork}</Link>
+        </div>
       </div>
     </section>
 
