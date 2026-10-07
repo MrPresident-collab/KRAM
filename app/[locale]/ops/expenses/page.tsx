@@ -2,10 +2,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, Plus, Receipt } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { copy, isLocale, type Locale } from "@/lib/i18n";
+import { copy, getOpsUi, isLocale, type Locale } from "@/lib/i18n";
 
 export default async function ExpensesPage({ params }: { params: Promise<{ locale: string }> }) {
- const { locale }=await params;if(!isLocale(locale))notFound();const t=copy[locale as Locale]; const ui=t;const supabase=await createClient();
+ const { locale }=await params;if(!isLocale(locale))notFound();const t=copy[locale as Locale]; const ui=getOpsUi(locale as Locale);const supabase=await createClient();
  const {data:rows}=await supabase.from("expenses").select("id,description,category,amount,currency,status,expense_date,assets(id,name,reference_code),work_orders(id,title)").order("expense_date",{ascending:false}).order("created_at",{ascending:false});
  const all=rows??[];const requested=all.filter(x=>x.status==="requested").length;const approved=all.filter(x=>x.status==="approved").length;const paid=all.filter(x=>x.status==="paid").length;const total=all.reduce((n,x)=>n+Number(x.amount||0),0);
  return <div className="space-y-7"><section className="flex flex-col justify-between gap-5 md:flex-row md:items-end"><div><p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--kram-orange)]">{t.nav.finance}</p><div className="mt-2 flex items-center gap-3"><div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--kram-charcoal)] text-white"><Receipt size={19}/></div><h1 className="text-3xl font-bold tracking-[-0.045em] text-zinc-950">{ui.expensesPage.title}</h1></div><p className="mt-3 text-sm leading-6 text-zinc-500">{ui.expensesPage.description}</p></div><Link href={"/"+locale+"/ops/expenses/new"} className="inline-flex items-center gap-2 rounded-xl bg-[var(--kram-orange)] px-4 py-2.5 text-sm font-bold text-white"><Plus size={16}/> {ui.expensesPage.newExpense}</Link></section>
