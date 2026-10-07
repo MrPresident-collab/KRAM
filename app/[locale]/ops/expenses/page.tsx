@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { ArrowRight, Plus, Receipt } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { copy, isLocale, type Locale } from "@/lib/i18n";
-import { opsLabels, labelFromMap } from "@/lib/ops-labels";
 
 export default async function ExpensesPage({ params }: { params: Promise<{ locale: string }> }) {
  const { locale }=await params;if(!isLocale(locale))notFound();const t=copy[locale as Locale]; const ui=t;const supabase=await createClient();
