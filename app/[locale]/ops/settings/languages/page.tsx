@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Check, ChevronLeft } from "lucide-react";
 import { notFound } from "next/navigation";
-import { isLocale, type Locale } from "@/lib/i18n";
+import { isLocale } from "@/lib/i18n";
 
 const options = [
   { code: "fr", label: "Français", native: "Français" },
