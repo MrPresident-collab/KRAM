@@ -10,7 +10,7 @@ export default async function ClientsPage({ params }: { params: Promise<{ locale
   if (!isLocale(locale)) notFound();
   const t = copy[locale as Locale];
   const supabase = await createClient();
-  const { data: clients, error } = await supabase.from("clients").select("id, full_name, email, primary_phone, created_at").order("created_at", { ascending: false }).limit(50);
+  const { data: clients, error } = await supabase.from("clients").select("id, full_name, email, primary_phone, created_at").order("created_at", { ascending: false });
   const rows = clients ?? [];
 
   return <div className="space-y-7">
