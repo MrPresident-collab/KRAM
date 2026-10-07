@@ -37,7 +37,7 @@ export async function createAssetRecord(_prev: AssetActionState, formData: FormD
 
   const { data: membership } = await supabase
     .from("organization_members")
-    .select("organization_id")
+    .select("organization_id,role,scope_level,country_id,branch_id")
     .eq("user_id", userId)
     .eq("status", "active")
     .order("created_at", { ascending: true })
@@ -54,6 +54,9 @@ export async function createAssetRecord(_prev: AssetActionState, formData: FormD
     .maybeSingle();
 
   if (!country) return { success: false, message: "The selected country is not available to your KRAM scope." };
+
+  if (membership.scope_level === "branch" && parsed.data.branchId !== membership.branch_id) return { success: false, message: "The selected branch is outside your scope." };
+  if (membership.scope_level === "country" && country.id !== membership.country_id) return { success: false, message: "The selected country is outside your scope." };
 
   const branchId: string | null = parsed.data.branchId || null;
   if (branchId) {
