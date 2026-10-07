@@ -82,7 +82,9 @@ export async function POST(request: Request) {
   if (actor.scope_level === "branch" && actor.role === "admin" && parsed.data.role === "admin" && targetBranchId !== actor.branch_id) return NextResponse.json({ error: "You cannot assign an administrator outside your branch." }, { status: 403 });
 
   const rate = await supabase.rpc("consume_api_rate_limit", { p_bucket_key: `${userId}:user:staff-invite`, p_limit: 10, p_window_seconds: 60 });
-  if (rate.error || !rate.data?.[0]?.allowed) return NextResponse.json({ error: "Too many staff invitations. Please try again shortly." }, { status: 429 });
+  if (rate.error) return NextResponse.json({ error: `Staff invitation rate-limit check failed: ${rate.error.message}` }, { status: 500 });
+  const rateRow = Array.isArray(rate.data) ? rate.data[0] : rate.data;
+  if (!rateRow?.allowed) return NextResponse.json({ error: "Too many staff invitations. Please try again shortly." }, { status: 429 });
 
   const admin = createAdminClient();
   const appUrl = process.env.KRAM_APP_URL || new URL(request.url).origin;
