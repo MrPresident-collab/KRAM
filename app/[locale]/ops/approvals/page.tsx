@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, CheckCircle2, Clock3, ShieldCheck, XCircle } from "lucide-react";
 import { isLocale, type Locale, getOpsUi } from "@/lib/i18n";
-import { opsLabels, labelFromMap } from "@/lib/ops-labels";
 import { createClient } from "@/lib/supabase/server";
 
 type ApprovalExpense = { id: string; description: string | null; amount: number | string | null; currency: string | null; expense_date: string | null; assets?: { name: string } | { name: string }[] | null; projects?: { name: string } | { name: string }[] | null; work_orders?: { title: string } | { title: string }[] | null };
