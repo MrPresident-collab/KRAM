@@ -20,7 +20,7 @@ export async function createProvider(_prev:ProviderActionState,fd:FormData):Prom
  if(!parsed.success)return{success:false,message:"Please complete the required provider fields."};
  const s=await createClient();const{data:c}=await s.auth.getClaims();const uid=c?.claims?.sub;
  if(!uid)return{success:false,message:"Your session is no longer valid."};
- const{data:m}=await s.from("organization_members").select("organization_id,role").eq("user_id",uid).limit(1).maybeSingle();
+ const{data:m}=await s.from("organization_members").select("organization_id,role").eq("user_id",uid).eq("status","active").limit(1).maybeSingle();
  if(!m||!["owner","admin","regional_admin","operations"].includes(m.role))return{success:false,message:"You are not authorized to add service providers."};
 	 const branchId=parsed.data.branchId||null;
  if(branchId){const{data:b}=await s.from("branches").select("id").eq("id",branchId).eq("organization_id",m.organization_id).maybeSingle();if(!b)return{success:false,message:"The selected branch is not accessible."}}
