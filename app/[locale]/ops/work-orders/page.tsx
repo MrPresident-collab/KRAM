@@ -3,13 +3,13 @@ import { notFound } from "next/navigation";
 import { ClipboardList, Plus, ArrowRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { isLocale, type Locale } from "@/lib/i18n";
-import { copy } from "@/lib/i18n";
+import { copy, getOpsUi } from "@/lib/i18n";
 
 const statusLabels={draft:"Draft",pending_approval:"Pending approval",approved:"Approved",assigned:"Assigned",in_progress:"In progress",awaiting_evidence:"Awaiting evidence",completed:"Completed",verified:"Verified",closed:"Closed"} as const;
 const priorityLabels={low:"Low",normal:"Normal",high:"High",urgent:"Urgent"} as const;
 
 export default async function WorkOrdersPage({params}:{params:Promise<{locale:string}>}){
- const {locale}=await params;if(!isLocale(locale))notFound(); const ui=copy[locale as Locale]; const page=ui.workOrdersPage ?? copy.en.workOrdersPage; const t=ui;const supabase=await createClient();
+ const {locale}=await params;if(!isLocale(locale))notFound(); const ui=copy[locale as Locale]; const page=getOpsUi(locale as Locale).workOrdersPage; const t=ui;const supabase=await createClient();
  const {data:orders}=await supabase.from("work_orders").select("id,title,category,priority,status,estimated_cost,created_at,assets(id,name,reference_code)").order("created_at",{ascending:false});
  const all=orders??[];
  const open=all.filter(o=>!["closed","verified"].includes(o.status)).length;
