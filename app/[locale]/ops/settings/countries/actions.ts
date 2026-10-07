@@ -23,6 +23,7 @@ export async function createCountry(_previousState: CountryActionState, formData
   const { data: membership, error: membershipError } = await supabase.from("organization_members")
     .select("organization_id")
     .eq("user_id", userId)
+    .eq("status", "active")
     .eq("role", "owner")
     .eq("scope_level", "global")
     .limit(1)
