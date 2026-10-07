@@ -1,10 +1,9 @@
 "use client";
 import { useActionState } from "react";
 import { Loader2, Save } from "lucide-react";
-import type { Locale } from "@/lib/i18n";
 import { createExpense, type ExpenseActionState } from "../actions";
 
-export function ExpenseCreateForm({locale,assets,workOrders,projects,providers}:{locale:Locale;assets:{id:string;name:string;reference_code:string}[];workOrders:{id:string;title:string}[];projects:{id:string;name:string}[];providers:{id:string;name:string}[]}){
+export function ExpenseCreateForm({assets,workOrders,projects,providers}:{assets:{id:string;name:string;reference_code:string}[];workOrders:{id:string;title:string}[];projects:{id:string;name:string}[];providers:{id:string;name:string}[]}){
  const[state,action,pending]=useActionState<ExpenseActionState,FormData>(createExpense,{success:false,message:""});
  return <form action={action} className="space-y-5 rounded-2xl border border-[var(--kram-border)] bg-white p-6">
   <div className="grid gap-5 md:grid-cols-2">
