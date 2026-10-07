@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Plus, Search, Users } from "lucide-react";
+import { Plus } from "lucide-react";
 import { ClientsSearch } from "./clients-search";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -25,6 +25,6 @@ export default async function ClientsPage({ params }: { params: Promise<{ locale
       </Link>
     </section>
 
-    <ClientsSearch locale={locale as Locale} clients={rows} error={error?.message ?? null} />>
+    <ClientsSearch locale={locale as Locale} clients={rows} error={error?.message ?? null} />
   </div>;
 }
