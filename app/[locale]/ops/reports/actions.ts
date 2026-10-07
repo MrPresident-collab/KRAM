@@ -30,7 +30,7 @@ export async function createReport(_prev:ReportActionState,fd:FormData):Promise<
 
  const{data:m}=await supabase.from("organization_members")
   .select("organization_id,role")
-  .eq("user_id",uid).limit(1).maybeSingle();
+  .eq("user_id",uid).eq("status","active").limit(1).maybeSingle();
 
  if(!m||!["owner","admin","regional_admin","operations","finance"].includes(m.role))
   return{success:false,message:"You are not authorized to create reports."};
