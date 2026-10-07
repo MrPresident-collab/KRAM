@@ -130,24 +130,30 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
   const attentionTotal = approvals + attentionAssets + inspections;
 
   return <div className="space-y-6 pb-10">
-    <section className="rounded-2xl border border-[var(--kram-border)] bg-white p-5 md:p-6">
-      <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+    <section className="rounded-2xl border border-[var(--kram-border)] bg-white">
+      <div className="flex flex-col gap-4 border-b border-[var(--kram-border)] px-5 py-4 sm:flex-row sm:items-center sm:justify-between md:px-6">
         <div>
           <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[.18em] text-[var(--kram-orange)]"><span className="h-1.5 w-1.5 rounded-full bg-[var(--kram-orange)]" />{dashboardLabels.eyebrow}</div>
-          <h1 className="mt-2 text-2xl font-black tracking-[-.045em] text-[var(--kram-deep)] md:text-3xl">{contextLabel}</h1>
-          <p className="mt-1 text-xs text-[var(--kram-metal)]">{dashboardLabels.description}</p>
+          <div className="mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <h1 className="text-xl font-black tracking-[-.04em] text-[var(--kram-deep)] md:text-2xl">{contextLabel}</h1>
+            <span className="text-xs text-[var(--kram-metal)]">{dashboardLabels.description}</span>
+          </div>
         </div>
-        <Link href={"/" + locale + "/ops/work-orders/new"} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--kram-orange)] px-4 py-2.5 text-xs font-bold text-white hover:bg-[#df6816]"><Plus size={15}/>{dashboardLabels.create}</Link>
+        <Link href={"/" + locale + "/ops/work-orders/new"} className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[var(--kram-orange)] px-4 py-2.5 text-xs font-bold text-white hover:bg-[#df6816]"><Plus size={15}/>{dashboardLabels.create}</Link>
       </div>
-    </section>
-
-    <section className="grid gap-px overflow-hidden rounded-2xl border border-[var(--kram-border)] bg-[var(--kram-border)] sm:grid-cols-2 xl:grid-cols-4">
-      {metrics.map(({ label, value, note, icon: Icon, accent }) => <div key={label} className="bg-white p-5">
-        <div className="flex items-center justify-between"><div className={`grid h-9 w-9 place-items-center rounded-lg ${accent ? "bg-[var(--kram-orange-soft)] text-[var(--kram-orange)]" : "bg-[var(--kram-bg)] text-[var(--kram-metal)]"}`}><Icon size={17}/></div>{accent&&<span className="text-[9px] font-bold uppercase tracking-[.14em] text-[var(--kram-orange)]">{pt?"Ação":fr?"Action":"Action"}</span>}</div>
-        <div className="mt-5 text-3xl font-black tracking-[-.06em] text-[var(--kram-deep)]">{value}</div>
-        <div className="mt-1 text-[13px] font-bold text-[var(--kram-charcoal)]">{label}</div>
-        <div className="mt-1 text-[11px] text-[var(--kram-metal)]">{note}</div>
-      </div>)}
+      <div className="grid gap-px bg-[var(--kram-border)] sm:grid-cols-2 xl:grid-cols-4">
+        {metrics.map(({ label, value, note, icon: Icon, accent }) => <div key={label} className="min-h-[142px] bg-white p-5">
+          <div className="flex items-center justify-between">
+            <div className={accent ? "grid h-8 w-8 place-items-center rounded-lg bg-[var(--kram-orange-soft)] text-[var(--kram-orange)]" : "grid h-8 w-8 place-items-center rounded-lg bg-[var(--kram-bg)] text-[var(--kram-metal)]"}><Icon size={16}/></div>
+            {accent && <span className="text-[9px] font-bold uppercase tracking-[.14em] text-[var(--kram-orange)]">{pt ? "Ação" : fr ? "Action" : "Action"}</span>}
+          </div>
+          <div className="mt-3 flex items-baseline gap-2">
+            <span className="text-3xl font-black tracking-[-.06em] text-[var(--kram-deep)]">{value}</span>
+            <span className="text-[11px] font-medium text-[var(--kram-metal)]">{note}</span>
+          </div>
+          <div className="mt-0.5 text-[13px] font-bold text-[var(--kram-charcoal)]">{label}</div>
+        </div>)}
+      </div>
     </section>
 
     <PerformancePanel locale={locale} trend={trend} status={status} />
