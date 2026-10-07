@@ -1,7 +1,7 @@
 import { ArrowUpRight, Building2, CheckCircle2, ClipboardList, Clock3, FileCheck2, Plus, ShieldCheck, Users } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { copy, isLocale, type Locale } from "@/lib/i18n";
+import { isLocale } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase/server";
 
 type CountFilter =
