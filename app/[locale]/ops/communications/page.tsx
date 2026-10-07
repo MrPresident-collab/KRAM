@@ -1,7 +1,6 @@
 import { MessageSquare, Search, UserRound } from "lucide-react";
 import { getOpsUi, isLocale, type Locale } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase/server";
-import { sendMessage } from "./actions";
 export default async function CommunicationsPage({params}:{params:Promise<{locale:string}>}){ const {locale}=await params; if(!isLocale(locale)) return null; const ui=getOpsUi(locale as Locale);
  const supabase=await createClient();
  const {data:conversations}=await supabase.from("client_conversations").select("id,client_id,subject,channel,status,priority,last_message_at,clients(full_name,email)").order("last_message_at",{ascending:false,nullsFirst:false}).limit(50);
