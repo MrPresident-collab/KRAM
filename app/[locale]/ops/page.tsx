@@ -44,13 +44,13 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
 
   const trendStart = new Date();
   trendStart.setUTCHours(0, 0, 0, 0);
-  trendStart.setUTCDate(trendStart.getUTCDate() - 13);
+  trendStart.setUTCDate(trendStart.getUTCDate() - 29);
   const [{ data: trendOrders }, { data: trendInspections }] = await Promise.all([
     supabase.from("work_orders").select("created_at,status").is("deleted_at", null).gte("created_at", trendStart.toISOString()).order("created_at", { ascending: true }),
     supabase.from("inspections").select("created_at,status").is("deleted_at", null).gte("created_at", trendStart.toISOString()).order("created_at", { ascending: true }),
   ]);
 
-  const trend = Array.from({ length: 14 }, (_, index) => {
+  const trend = Array.from({ length: 30 }, (_, index) => {
     const day = new Date(trendStart);
     day.setUTCDate(trendStart.getUTCDate() + index);
     const next = new Date(day);
@@ -91,8 +91,8 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
 
   const fr = locale === "fr"; const pt = locale === "pt";
   const dashboardLabels = {
-    eyebrow: pt ? "Centro de operações" : fr ? "Centre des opérations" : "Operations console",
-    description: pt ? "O estado operacional da sua área autorizada, com foco no que exige ação." : fr ? "L’état opérationnel de votre périmètre autorisé, centré sur ce qui nécessite une action." : "The operational state of your authorized scope, focused on what needs action.",
+    eyebrow: pt ? "Indicadores-chave" : fr ? "Indicateurs clés" : "Key indicators",
+    description: pt ? "Indicadores reais do seu perímetro autorizado." : fr ? "Indicateurs réels de votre périmètre autorisé." : "Real indicators for your authorized scope.",
     create: pt ? "Nova ordem" : fr ? "Nouvel ordre" : "New work order",
     assets: pt ? "Ativos" : fr ? "Actifs" : "Assets",
     openOrders: pt ? "Ordens abertas" : fr ? "Ordres ouverts" : "Open work orders",
@@ -130,18 +130,14 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
   const attentionTotal = approvals + attentionAssets + inspections;
 
   return <div className="space-y-6 pb-10">
-    <section className="relative overflow-hidden rounded-2xl border border-[var(--kram-border)] bg-[var(--kram-deep)] px-6 py-7 text-white md:px-9 md:py-8">
-      <div className="absolute right-[-80px] top-[-120px] h-80 w-80 rounded-full bg-[var(--kram-orange)] opacity-10 blur-3xl" />
-      <div className="relative flex flex-col justify-between gap-7 lg:flex-row lg:items-end">
+    <section className="rounded-2xl border border-[var(--kram-border)] bg-white p-5 md:p-6">
+      <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <div className="mb-3 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.2em] text-[var(--kram-orange)]"><span className="h-1.5 w-1.5 rounded-full bg-[var(--kram-orange)]" />{dashboardLabels.eyebrow}</div>
-          <h1 className="text-3xl font-black tracking-[-.055em] md:text-[42px]">{contextLabel}</h1>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-white/55">{dashboardLabels.description}</p>
+          <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[.18em] text-[var(--kram-orange)]"><span className="h-1.5 w-1.5 rounded-full bg-[var(--kram-orange)]" />{dashboardLabels.eyebrow}</div>
+          <h1 className="mt-2 text-2xl font-black tracking-[-.045em] text-[var(--kram-deep)] md:text-3xl">{contextLabel}</h1>
+          <p className="mt-1 text-xs text-[var(--kram-metal)]">{dashboardLabels.description}</p>
         </div>
-        <div className="flex gap-2">
-          <Link href={`/${locale}/ops/work-orders/new`} className="inline-flex items-center gap-2 rounded-xl bg-[var(--kram-orange)] px-4 py-2.5 text-xs font-bold text-white hover:bg-[#df6816]"><Plus size={15}/>{dashboardLabels.create}</Link>
-          <Link href={`/${locale}/ops/assets`} className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2.5 text-xs font-bold text-white hover:bg-white/10">{dashboardLabels.assets}<ArrowUpRight size={14}/></Link>
-        </div>
+        <Link href={"/" + locale + "/ops/work-orders/new"} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--kram-orange)] px-4 py-2.5 text-xs font-bold text-white hover:bg-[#df6816]"><Plus size={15}/>{dashboardLabels.create}</Link>
       </div>
     </section>
 
