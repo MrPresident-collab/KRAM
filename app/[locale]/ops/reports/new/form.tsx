@@ -1,7 +1,9 @@
 "use client";
+import {useState} from "react";
 import{useActionState}from"react";import{Loader2,Save,Upload}from"lucide-react";import{createReport,type ReportActionState}from"../actions";
 type Option={id:string;name?:string;reference_code?:string;inspection_type?:string;title?:string};
 export function ReportCreateForm({assets,inspections,projects,workOrders}:{assets:Option[];inspections:Option[];projects:Option[];workOrders:Option[]}){
+ const [sourceType,setSourceType]=useState("none");
  const[state,action,pending]=useActionState<ReportActionState,FormData>(createReport,{success:false,message:""});
  return <form action={action} className="space-y-5 rounded-2xl border border-[var(--kram-border)] bg-white p-6">
  <div className="grid gap-5 md:grid-cols-2">
