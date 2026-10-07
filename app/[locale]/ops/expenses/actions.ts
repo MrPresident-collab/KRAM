@@ -107,3 +107,17 @@ export async function transitionExpense(
  }
  return{success:true,message:"Expense updated successfully."};
 }
+
+export async function moveExpenseToBin(_prev:ExpenseActionState,fd:FormData):Promise<ExpenseActionState>{
+ const id=String(fd.get("expenseId")||""); if(!z.string().uuid().safeParse(id).success)return{success:false,message:"Invalid expense."};
+ const s=await createClient(); const{data:c}=await s.auth.getClaims(); const uid=c?.claims?.sub; if(!uid)return{success:false,message:"Your session is no longer valid."};
+ const{data:m}=await s.from("organization_members").select("organization_id,role").eq("user_id",uid).eq("status","active").limit(1).maybeSingle();
+ if(!m||!["owner","admin","regional_admin"].includes(m.role))return{success:false,message:"Only administrators can move expenses to the bin."};
+ const{error}=await s.from("expenses").update({deleted_at:new Date().toISOString(),deleted_by:uid,updated_at:new Date().toISOString()}).eq("id",id).eq("organization_id",m.organization_id);
+ if(error)return{success:false,message:"The expense could not be moved to the bin."}; for(const l of["fr","en","pt"])revalidatePath("/"+l+"/ops/expenses"); return{success:true,message:"Expense moved to bin."};
+}
+export async function emptyExpenseBin(_prev:ExpenseActionState,fd:FormData):Promise<ExpenseActionState>{
+ const s=await createClient(); const{data:c}=await s.auth.getClaims(); const uid=c?.claims?.sub; if(!uid)return{success:false,message:"Your session is no longer valid."};
+ const{data:m}=await s.from("organization_members").select("organization_id,role").eq("user_id",uid).eq("status","active").limit(1).maybeSingle(); if(!m||!["owner","admin","regional_admin"].includes(m.role))return{success:false,message:"Only Global and Regional administrators can empty the bin."};
+ const{error}=await s.from("expenses").delete().eq("organization_id",m.organization_id).not("deleted_at","is",null); if(error)return{success:false,message:"The bin could not be emptied."}; for(const l of["fr","en","pt"])revalidatePath("/"+l+"/ops/expenses/bin"); return{success:true,message:"Expense bin emptied."};
+}
