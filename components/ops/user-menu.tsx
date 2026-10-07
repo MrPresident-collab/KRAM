@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronDown, LogOut, Mail, ShieldCheck, Briefcase } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -35,7 +36,7 @@ export function UserMenu({ locale, user }: { locale: Locale; user: UserIdentity 
 
   return <div className="relative">
     <button type="button" onClick={() => setOpen((value) => !value)} className="flex items-center gap-2 rounded-xl border border-[var(--kram-border)] bg-white px-2 py-1.5 text-left transition hover:bg-zinc-50" aria-expanded={open}>
-      <span className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg bg-[var(--kram-charcoal)] text-[11px] font-black text-white">{user.avatarUrl ? <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" /> : initials}</span>
+      <span className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg bg-[var(--kram-charcoal)] text-[11px] font-black text-white">{user.avatarUrl ? <Image src={user.avatarUrl} alt="" fill sizes="32px" className="object-cover" /> : initials}</span>
       <span className="hidden min-w-0 md:block">
         <span className="block max-w-36 truncate text-xs font-bold text-zinc-900">{user.name}</span>
         <span className="block max-w-40 truncate text-[10px] font-semibold text-[var(--kram-metal)]">{user.jobTitle || role} · {scope}</span>
@@ -46,7 +47,7 @@ export function UserMenu({ locale, user }: { locale: Locale; user: UserIdentity 
     {open && <><button className="fixed inset-0 z-40 cursor-default" aria-label="Close account menu" onClick={() => setOpen(false)} /><div className="absolute right-0 top-full z-50 mt-2 w-80 rounded-2xl border border-[var(--kram-border)] bg-white p-2 shadow-xl">
       <div className="rounded-xl bg-[var(--kram-background)] p-3">
         <div className="flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-xl bg-[var(--kram-charcoal)] text-xs font-black text-white">{user.avatarUrl ? <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" /> : initials}</span>
+          <span className="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-xl bg-[var(--kram-charcoal)] text-xs font-black text-white">{user.avatarUrl ? <Image src={user.avatarUrl} alt="" fill sizes="44px" className="object-cover" /> : initials}</span>
           <div className="min-w-0"><p className="truncate text-sm font-bold text-zinc-900">{user.name}</p><p className="truncate text-xs text-zinc-500">{user.email}</p></div>
         </div>
       </div>
