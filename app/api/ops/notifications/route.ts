@@ -21,7 +21,7 @@ export async function GET() {
   }
 
   const [approvals, activity] = await Promise.all([
-    supabase.from("approvals").select("id,expense_id,status,created_at").eq("status", "requested").order("created_at", { ascending: false }).limit(8),
+    supabase.from("approvals").select("id,expense_id,status,created_at").eq("status", "pending").order("created_at", { ascending: false }).limit(8),
     supabase.from("audit_logs").select("id,action,summary,created_at").order("created_at", { ascending: false }).limit(8)
   ]);
 
