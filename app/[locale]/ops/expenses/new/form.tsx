@@ -1,16 +1,16 @@
 "use client";
 import { useActionState } from "react";
 import { Loader2, Save } from "lucide-react";
-import { createExpense, type ExpenseActionState } from "../actions";
+import { createExpense, type ExpenseActionState } from "../actions"; import type {Locale} from "@/lib/i18n";
 
-export function ExpenseCreateForm({assets,workOrders,projects,providers}:{assets:{id:string;name:string;reference_code:string}[];workOrders:{id:string;title:string}[];projects:{id:string;name:string}[];providers:{id:string;name:string}[]}){
+export function ExpenseCreateForm({assets,workOrders,projects,providers,defaultCurrency,locale}:{assets:{id:string;name:string;reference_code:string}[];workOrders:{id:string;title:string}[];projects:{id:string;name:string}[];providers:{id:string;name:string}[];defaultCurrency:string;locale:Locale}){
  const[state,action,pending]=useActionState<ExpenseActionState,FormData>(createExpense,{success:false,message:""});
  return <form action={action} className="space-y-5 rounded-2xl border border-[var(--kram-border)] bg-white p-6">
   <div className="grid gap-5 md:grid-cols-2">
    <Field label="Description" name="description" required placeholder="Plumbing materials"/>
    <Field label="Category" name="category" required placeholder="Materials"/>
    <Field label="Amount" name="amount" required type="number" step="0.01" min="0"/>
-   <label><span className="mb-1.5 block text-xs font-semibold">Currency</span><select name="currency" defaultValue="USD" className="w-full rounded-xl border border-zinc-200 bg-white px-3.5 py-3 text-sm"><option>USD</option><option>EUR</option><option>GBP</option><option>CDF</option><option>AOA</option></select></label>
+   <label><span className="mb-1.5 block text-xs font-semibold">Currency</span><select name="currency" defaultValue={defaultCurrency} className="w-full rounded-xl border border-zinc-200 bg-white px-3.5 py-3 text-sm"><option>USD</option><option>EUR</option><option>GBP</option><option>CDF</option><option>AOA</option></select></label>
    <Field label="Paid to" name="paidTo" placeholder="Supplier or technician"/><Select label="Payment method" name="paymentMethod" options={["cash","bank_transfer","card","mobile_money","other"].map(x=>({value:x,label:x.replace("_"," ")}))}/>
    <Field label="Expense date" name="expenseDate" required type="date" defaultValue={new Date().toISOString().slice(0,10)}/>
    <Select label="Asset" name="assetId" options={assets.map(x=>({value:x.id,label:x.name+" · "+x.reference_code}))}/>
