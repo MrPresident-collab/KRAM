@@ -40,5 +40,6 @@ export default async function SettingsPage({ params }: { params: Promise<{ local
         <div className="flex items-center gap-4 px-5 py-5 md:px-6"><span className="grid h-10 w-10 place-items-center rounded-xl bg-[var(--kram-bg)] text-[var(--kram-charcoal)]"><Bell size={18}/></span><div><p className="text-sm font-bold text-[var(--kram-deep)]">{locale === "fr" ? "Centre de notifications" : locale === "pt" ? "Centro de notificações" : "Notification center"}</p><p className="mt-1 text-xs text-[var(--kram-metal)]">{locale === "fr" ? "Les alertes KRAM apparaîtront dans le centre de notifications." : locale === "pt" ? "Os alertas KRAM aparecerão no centro de notificações." : "KRAM alerts will appear in the notification center."}</p></div></div>
       </div>
     </section>
+      <SettingsPreferences defaultCurrency={organization?.default_currency ?? "USD"} />
   </div>;
 }
