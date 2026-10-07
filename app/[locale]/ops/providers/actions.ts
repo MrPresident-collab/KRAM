@@ -25,7 +25,7 @@ export async function createProvider(_prev:ProviderActionState,fd:FormData):Prom
 	 const branchId=parsed.data.branchId||null;
  if(branchId){const{data:b}=await s.from("branches").select("id").eq("id",branchId).eq("organization_id",m.organization_id).maybeSingle();if(!b)return{success:false,message:"The selected branch is not accessible."}}
  const{data:p,error}=await s.from("service_providers").insert({organization_id:m.organization_id,branch_id:branchId,name:parsed.data.name,phone:parsed.data.phone||null,email:parsed.data.email||null,coverage:parsed.data.coverage||null,notes:parsed.data.notes||null}).select("id").single();
- if(error||!p)return{success:false,message:"The service provider could not be added."};
+ if(error||!p)return{success:false,message:`The service provider could not be added: ${error?.message||"unknown database error"}`};
  const{error:serviceError}=await s.from("provider_services").insert({provider_id:p.id,organization_id:m.organization_id,service:parsed.data.specialty});
  if(serviceError){await s.from("service_providers").delete().eq("id",p.id);return{success:false,message:"The provider specialty could not be saved."}}
  revalidatePath("/fr/ops/providers");revalidatePath("/en/ops/providers");revalidatePath("/pt/ops/providers");
