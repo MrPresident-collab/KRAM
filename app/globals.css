@@ -11,7 +11,7 @@
   --kram-border: #deded9;
   --kram-surface: #ffffff;
   --kram-green: #2d8a63;
-  --kram-ink: #171717;
+  --kram-ink: #171717;\n}\n.dark { --kram-bg:#171717; --kram-surface:#242424; --kram-charcoal:#f3f3f0; --kram-deep:#ffffff; --kram-metal:#b7b7b3; --kram-soft-metal:#707070; --kram-border:#3a3a38; --kram-ink:#ffffff;
 }
 
 * { box-sizing: border-box; }
