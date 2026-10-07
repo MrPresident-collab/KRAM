@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { GitBranch } from "lucide-react";
 import { isLocale, type Locale, copy } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase/server";
 import { BranchForm } from "./branch-form";
