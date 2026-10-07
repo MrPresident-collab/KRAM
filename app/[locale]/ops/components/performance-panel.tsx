@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Activity, AlertTriangle, CheckCircle2, Clock3, ClipboardList, TrendingDown, TrendingUp } from "lucide-react";
+import { Activity, AlertTriangle, CheckCircle2, Clock3, ClipboardList, TrendingUp } from "lucide-react";
 
 type TrendPoint = { label: string; created: number; completed: number; inspections: number };
 type StatusPoint = { label: string; value: number };
