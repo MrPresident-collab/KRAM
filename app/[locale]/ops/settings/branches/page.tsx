@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { GitBranch } from "lucide-react";
 import { isLocale, type Locale, copy } from "@/lib/i18n";
@@ -13,7 +14,7 @@ export default async function BranchesPage({ params }: { params: Promise<{ local
   const {data:countries,error:countriesError}=await supabase.from("countries").select("id,name,code").order("name");
   const {data:branches,error}=await supabase.from("branches").select("id,name,code,city,region,is_active,countries(name,code)").order("name");
 
-  return <div className="space-y-7">
+  return <div className="space-y-7"><Link href={`/${locale}/ops/settings`} className="inline-flex items-center gap-2 text-sm font-semibold text-zinc-500 hover:text-zinc-900">← {locale === "fr" ? "Paramètres" : locale === "pt" ? "Definições" : "Settings"}</Link>
     <div className="flex items-start justify-between gap-4">
       <div><p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--kram-orange)]">{t.settings.branches}</p><h1 className="mt-2 text-3xl font-bold tracking-[-0.045em] text-zinc-950">{t.settings.branches}</h1><p className="mt-2 text-sm text-zinc-500">{t.settings.branchesDesc}</p></div>
       <BranchForm locale={locale as Locale} countries={countries??[]}/>
