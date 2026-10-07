@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Activity, Building2, MessageSquare, ClipboardList, FileText, FolderKanban, LayoutDashboard, UsersRound, Wallet, Wrench, Settings, ShieldCheck, PanelLeftClose, UserRoundCog, Files, HardHat, BadgeCheck, X } from "lucide-react";
+import { Activity, Building2, MessageSquare, ClipboardList, FileText, FolderKanban, LayoutDashboard, UsersRound, Wallet, Wrench, Settings, ShieldCheck, PanelLeftClose, UserRoundCog, Files, HardHat, BadgeCheck, Trash2, X } from "lucide-react";
 import { KramBrand } from "@/components/brand/kram-brand";
 import type { Locale } from "@/lib/i18n";
 import { copy } from "@/lib/i18n";
@@ -29,7 +29,8 @@ export function OpsSidebar({ locale, collapsed = false, mobileOpen = false, onCl
     { label: t.nav.network, items: [{ href: "/" + locale + "/ops/providers", label: t.nav.providers, icon: HardHat }] },
     { label: t.nav.finance, items: [
       { href: "/" + locale + "/ops/expenses", label: t.nav.expenses, icon: Wallet },
-      { href: "/" + locale + "/ops/approvals", label: t.nav.approvals, icon: ShieldCheck }
+      { href: "/" + locale + "/ops/approvals", label: t.nav.approvals, icon: ShieldCheck },
+      { href: "/" + locale + "/ops/expenses/bin", label: locale === "fr" ? "Corbeille" : locale === "pt" ? "Lixeira" : "Bin", icon: Trash2 }
     ] },
     { label: t.nav.documents, items: [
       { href: "/" + locale + "/ops/reports", label: t.nav.reports, icon: FileText },
