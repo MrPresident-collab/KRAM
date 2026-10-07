@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Activity, Building2, MessageSquare, ClipboardCheck, ClipboardList, FileText, FolderKanban, LayoutDashboard, UsersRound, Wallet, Wrench, Settings, ShieldCheck, PanelLeftClose, UserRoundCog, Files, HardHat, BadgeCheck, X } from "lucide-react";
+import { Activity, Building2, MessageSquare, ClipboardList, FileText, FolderKanban, LayoutDashboard, UsersRound, Wallet, Wrench, Settings, ShieldCheck, PanelLeftClose, UserRoundCog, Files, HardHat, BadgeCheck, X } from "lucide-react";
 import { KramBrand } from "@/components/brand/kram-brand";
 import type { Locale } from "@/lib/i18n";
 import { copy } from "@/lib/i18n";
