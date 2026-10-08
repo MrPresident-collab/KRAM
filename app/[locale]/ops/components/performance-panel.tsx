@@ -5,7 +5,6 @@ import {
   Building2,
   ClipboardList,
   Coins,
-  TrendingUp,
 } from "lucide-react";
 
 type AssetRow = { id: string; name: string; reference_code: string; status: string; site: string };
@@ -53,7 +52,6 @@ export function PerformancePanel({
     locale === "fr"
       ? {
           title: "Vue de gestion des actifs",
-          period: "Derniers 30 jours",
           assets: "Actifs gérés",
           attention: "Actifs à surveiller",
           spend: "Dépenses de maintenance",
@@ -68,13 +66,12 @@ export function PerformancePanel({
           noAssets: "Aucune donnée d’actif pour le moment.",
           noAttention: "Aucun actif n’a besoin d’attention pour le moment.",
           noSites: "Aucune donnée de site disponible pour le moment.",
-          noSpend: "Aucune dépense enregistrée sur les 30 derniers jours.",
+          noSpend: "Aucune dépense enregistrée.",
           noWork: "Aucun volume d’ordres enregistré.",
         }
       : locale === "pt"
         ? {
             title: "Visão geral da gestão de ativos",
-            period: "Últimos 30 dias",
             assets: "Ativos geridos",
             attention: "Ativos a vigiar",
             spend: "Despesas de manutenção",
@@ -89,12 +86,11 @@ export function PerformancePanel({
             noAssets: "Ainda não há dados de ativos.",
             noAttention: "Nenhum ativo requer atenção neste momento.",
             noSites: "Ainda não há dados de locais.",
-            noSpend: "Nenhuma despesa registada nos últimos 30 dias.",
+            noSpend: "Nenhuma despesa registada.",
             noWork: "Ainda não há volume de ordens registado.",
           }
         : {
             title: "Asset Management Overview",
-            period: "Last 30 days",
             assets: "Managed Assets",
             attention: "Assets Requiring Attention",
             spend: "Maintenance Spend",
@@ -109,7 +105,7 @@ export function PerformancePanel({
             noAssets: "No asset data yet.",
             noAttention: "No assets currently require attention.",
             noSites: "No site data available yet.",
-            noSpend: "No spend recorded in the last 30 days.",
+            noSpend: "No spend recorded yet.",
             noWork: "No work order volume recorded yet.",
           };
 
@@ -131,13 +127,13 @@ export function PerformancePanel({
       icon: Coins,
       label: labels.spend,
       value: formattedSpend || "—",
-      note: formattedSpend ? labels.period : labels.noSpend,
+      note: formattedSpend ? defaultCurrency : labels.noSpend,
     },
     {
       icon: ClipboardList,
       label: labels.open,
       value: String(openOrders),
-      note: totalCompleted ? `${completedOrders} ${labels.completed.toLowerCase()} · ${labels.period.toLowerCase()}` : labels.noWork,
+      note: totalCompleted ? `${completedOrders} ${labels.completed.toLowerCase()}` : labels.noWork,
     },
   ];
 
@@ -150,8 +146,7 @@ export function PerformancePanel({
             <h1 className="mt-2 text-2xl font-black tracking-[-0.06em] text-[var(--kram-deep)] md:text-3xl">{contextLabel}</h1>
           </div>
           <div className="inline-flex items-center gap-2 rounded-full border border-[var(--kram-border)] bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--kram-metal)]">
-            <TrendingUp size={13} className="text-[var(--kram-orange)]" />
-            {labels.period}
+
           </div>
         </div>
 
