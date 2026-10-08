@@ -27,3 +27,31 @@ export async function createClientRecord(_prev:ClientActionState,formData:FormDa
  revalidatePath("/fr/ops/clients");revalidatePath("/en/ops/clients");revalidatePath("/pt/ops/clients");
  return{success:true,message:"Client created successfully."};
 }
+
+
+export async function updateClientRecord(_prev:ClientActionState,fd:FormData):Promise<ClientActionState>{
+ const parsed=z.object({
+  clientId:z.string().uuid(),
+  fullName:z.string().trim().min(2).max(160),
+  email:z.string().trim().email().max(254).optional().or(z.literal("")),
+  primaryPhone:z.string().trim().max(40).optional().or(z.literal("")),
+  alternativePhone:z.string().trim().regex(INTERNATIONAL_PHONE_REGEX,"Use international phone format.").optional().or(z.literal("")),
+  residencyCountry:z.string().trim().max(100).optional(),
+  residencyCity:z.string().trim().max(100).optional(),
+  residencyAddress:z.string().trim().max(240).optional(),
+  preferredLanguage:z.enum(["fr","en","pt"]),
+  preferredContactMethod:z.enum(["whatsapp","email","phone"]),
+  notes:z.string().trim().max(2000).optional(),
+ }).safeParse({clientId:fd.get("clientId"),fullName:fd.get("fullName"),email:fd.get("email")||"",primaryPhone:fd.get("primaryPhone")||"",alternativePhone:fd.get("alternativePhone")||"",residencyCountry:fd.get("residencyCountry")||"",residencyCity:fd.get("residencyCity")||"",residencyAddress:fd.get("residencyAddress")||"",preferredLanguage:fd.get("preferredLanguage"),preferredContactMethod:fd.get("preferredContactMethod"),notes:fd.get("notes")||""});
+ if(!parsed.success){const issue=parsed.error.issues[0];return{success:false,message:"Please check "+(issue?.path.join(".")||"form")+": "+(issue?.message||"invalid value")};}
+ const s=await createClient();const{data:claims}=await s.auth.getClaims();const uid=claims?.claims?.sub;if(!uid)return{success:false,message:"Your session is no longer valid."};
+ const{data:m}=await s.from("organization_members").select("organization_id,role,scope_level,country_id,branch_id").eq("user_id",uid).eq("status","active").limit(1).maybeSingle();
+ if(!m||!["owner","admin","regional_admin","operations","support"].includes(m.role))return{success:false,message:"You are not authorized to edit clients."};
+ const{data:client}=await s.from("clients").select("id,branch_id").eq("id",parsed.data.clientId).eq("organization_id",m.organization_id).maybeSingle();
+ if(!client)return{success:false,message:"Client not found or outside your organization."};
+ if(m.scope_level==="branch"&&client.branch_id!==m.branch_id)return{success:false,message:"This client is outside your branch scope."};
+ const{error}=await s.from("clients").update({full_name:parsed.data.fullName,email:parsed.data.email||null,primary_phone:parsed.data.primaryPhone||null,alternative_phone:parsed.data.alternativePhone||null,residency_country:parsed.data.residencyCountry||null,residency_city:parsed.data.residencyCity||null,residency_address:parsed.data.residencyAddress||null,preferred_language:parsed.data.preferredLanguage,preferred_contact_method:parsed.data.preferredContactMethod,notes:parsed.data.notes||null,updated_at:new Date().toISOString()}).eq("id",client.id).eq("organization_id",m.organization_id);
+ if(error)return{success:false,message:"The client could not be updated: "+error.message};
+ for(const l of["fr","en","pt"]){revalidatePath("/"+l+"/ops/clients");revalidatePath("/"+l+"/ops/clients/"+client.id);revalidatePath("/"+l+"/ops/clients/"+client.id+"/edit");}
+ return{success:true,message:"Client details updated."};
+}
