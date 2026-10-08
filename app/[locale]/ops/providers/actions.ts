@@ -32,7 +32,7 @@ export async function updateProviderVerification(_prev: ProviderActionState, fd:
  const providerId=String(fd.get("providerId")??"");
  const requestedStatus=String(fd.get("verificationStatus")??"");
  const statusMap={pending:"prospect",active:"active",inactive:"suspended"} as const;
- if(!providerId || !(requestedStatus in statusMap)) return {success:false,message:"Invalid provider status."};
+ if(!providerId || !["pending","active","inactive"].includes(requestedStatus)) return {success:false,message:"Invalid provider status."};
  const nextStatus=statusMap[requestedStatus as keyof typeof statusMap];
  const s=await createClient();
  const {data:claims}=await s.auth.getClaims();
