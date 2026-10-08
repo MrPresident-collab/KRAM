@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { Check, GitBranch, Pencil, Trash2, X } from "lucide-react";
 import { deleteBranch, type BranchActionState, updateBranch } from "./actions";
 
@@ -24,6 +24,7 @@ export function BranchRow({
   const [editing, setEditing] = useState(false);
   const initial: BranchActionState = { success: false, message: "" };
   const [state, action, pending] = useActionState(updateBranch, initial);
+  useEffect(() => { if (state.success) setEditing(false); }, [state.success]);
   const [deleteState, deleteAction, deletePending] = useActionState(
     deleteBranch,
     initial,
@@ -135,7 +136,7 @@ export function BranchRow({
         </div>
       </form>
 
-      <form action={deleteAction}>
+      <form action={deleteAction} onSubmit={(e)=>{ if(!window.confirm("Remove this record? This cannot be undone if it is not referenced elsewhere.")) e.preventDefault(); }}>
         <input type="hidden" name="id" value={branch.id} />
         <button
           disabled={deletePending}
