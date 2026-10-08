@@ -6,9 +6,9 @@ import type { Locale } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase/client";
 
 const copy = {
-  fr:{create:"Ajouter un membre",name:"Nom complet",email:"E-mail professionnel",function:"Fonction",role:"Rôle KRAM",scope:"Portée",country:"Pays",branch:"Agence",save:"Envoyer l’invitation",saving:"Création...",cancel:"Annuler",global:"Global",countryScope:"Pays",branchScope:"Agence",select:"Sélectionner",success:"Invitation envoyée et accès KRAM configuré.",error:"Impossible de créer ce compte."},
-  en:{create:"Add staff member",name:"Full name",email:"Work email",function:"Function",role:"KRAM role",scope:"Scope",country:"Country",branch:"Branch",save:"Send invitation",saving:"Creating...",cancel:"Cancel",global:"Global",countryScope:"Country",branchScope:"Branch",select:"Select",success:"Invitation sent and KRAM access configured.",error:"Unable to create this account."},
-  pt:{create:"Adicionar membro",name:"Nome completo",email:"E-mail profissional",function:"Função",role:"Função KRAM",scope:"Âmbito",country:"País",branch:"Filial",save:"Enviar convite",saving:"A criar...",cancel:"Cancelar",global:"Global",countryScope:"País",branchScope:"Filial",select:"Selecionar",success:"Convite enviado e acesso KRAM configurado.",error:"Não foi possível criar esta conta."}
+  fr:{create:"Ajouter un membre",name:"Nom complet",email:"E-mail professionnel",function:"Fonction",role:"Rôle KRAM",scope:"Portée",country:"Pays",branch:"Agence",save:"Envoyer l’invitation",saving:"Création...",cancel:"Annuler",global:"Global",countryScope:"Pays",branchScope:"Agence",select:"Sélectionner",success:"Invitation envoyée. Le membre recevra un e-mail d’activation.",error:"Impossible de créer ce compte."},
+  en:{create:"Add staff member",name:"Full name",email:"Work email",function:"Function",role:"KRAM role",scope:"Scope",country:"Country",branch:"Branch",save:"Send invitation",saving:"Creating...",cancel:"Cancel",global:"Global",countryScope:"Country",branchScope:"Branch",select:"Select",success:"Invitation sent successfully. The staff member will receive an activation email.",error:"Unable to create this account."},
+  pt:{create:"Adicionar membro",name:"Nome completo",email:"E-mail profissional",function:"Função",role:"Função KRAM",scope:"Âmbito",country:"País",branch:"Filial",save:"Enviar convite",saving:"A criar...",cancel:"Cancelar",global:"Global",countryScope:"País",branchScope:"Filial",select:"Selecionar",success:"Convite enviado. O membro receberá um e-mail de ativação.",error:"Não foi possível criar esta conta."}
 } as const;
 
 const roles = [
@@ -36,7 +36,7 @@ export function StaffForm({ locale }: { locale: Locale }) {
     const res=await fetch("/api/ops/staff",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fullName:name,email,jobTitle,role,scopeLevel:scope,countryId:scope==="country"?countryId:null,branchId:scope==="branch"?branchId:null})});
     const body=await res.json().catch(()=>({}));
     if(!res.ok){setError(body.error??t.error);setPending(false);return;}
-    setSuccess(t.success);setPending(false);setName("");setEmail("");setJobTitle("");
+    setSuccess(t.success);setPending(false);setName("");setEmail("");setJobTitle("");setRole("operations");setScope("branch");setCountryId("");setBranchId("");
   }
   return <><button type="button" onClick={openForm} className="inline-flex items-center gap-2 rounded-xl bg-[var(--kram-orange)] px-4 py-2.5 text-sm font-bold text-white"><Plus size={16}/>{t.create}</button>
   {open&&<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4"><div className="w-full max-w-xl rounded-2xl border border-[var(--kram-border)] bg-white shadow-2xl">
