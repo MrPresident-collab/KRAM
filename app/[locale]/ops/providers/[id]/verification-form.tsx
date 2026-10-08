@@ -8,9 +8,9 @@ export function ProviderVerificationForm({providerId,status}:{providerId:string;
  return <form action={action} className="flex flex-col items-end gap-2">
   <input type="hidden" name="providerId" value={providerId}/>
   <div className="flex items-center gap-2">
-   <ShieldCheck size={15} className={status==="verified"?"text-emerald-600":"text-zinc-400"}/>
+   <ShieldCheck size={15} className={status==="active"?"text-emerald-600":"text-zinc-400"}/>
    <select name="verificationStatus" defaultValue={status} disabled={pending} className="rounded-xl border border-zinc-200 bg-white px-3 py-2 text-xs font-semibold">
-    <option value="pending">Pending</option><option value="verified">Verified</option><option value="rejected">Rejected</option>
+    <option value="pending">Pending</option><option value="active">Active</option><option value="inactive">Inactive</option>
    </select>
    <button disabled={pending} className="rounded-xl bg-[var(--kram-charcoal)] px-3 py-2 text-xs font-bold text-white">{pending?<Loader2 size={13} className="animate-spin"/>:"Save"}</button>
   </div>
