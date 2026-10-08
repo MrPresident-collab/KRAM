@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useState } from "react";
 import { Check, Globe2, Pencil, Trash2, X } from "lucide-react";
 import { deleteCountry, type CountryActionState, updateCountry } from "./actions";
 
@@ -21,7 +21,6 @@ export function CountryRow({
   const [editing, setEditing] = useState(false);
   const initial: CountryActionState = { success: false, message: "" };
   const [state, action, pending] = useActionState(updateCountry, initial);
-  useEffect(() => { if (state.success) setEditing(false); }, [state.success]);
   const [deleteState, deleteAction, deletePending] = useActionState(
     deleteCountry,
     initial,
