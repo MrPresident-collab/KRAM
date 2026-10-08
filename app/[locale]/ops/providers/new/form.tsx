@@ -1,5 +1,6 @@
 "use client";
-import {useActionState} from "react";
+import {useActionState,useEffect} from "react";
+import {useRouter} from "next/navigation";
 import {Loader2,Save} from "lucide-react";
 import {createProvider} from "../actions";
 import type {Locale} from "@/lib/i18n";
@@ -12,7 +13,7 @@ const labels={
 } as const;
 export function ProviderCreateForm({locale,branches,services}:{locale:Locale;branches:Branch[];services:Service[]}){
  const t=labels[locale];
- const[state,action,pending]=useActionState(createProvider,{success:false,message:""});
+ const[state,action,pending]=useActionState(createProvider,{success:false,message:""});const router=useRouter();useEffect(()=>{if(state.success)router.push(`/${locale}/ops/providers`);},[state.success,locale,router]);
  return <form action={action} className="space-y-5 rounded-2xl border border-[var(--kram-border)] bg-white p-6 shadow-sm">
   {([["name",t.name,"text",true],["phone",t.phone,"tel",false],["email",t.email,"email",false],["coverage",t.coverage,"text",false]] as const).map(([name,label,type,required])=><label key={name}><span className="mb-1.5 block text-xs font-semibold">{label}</span><input name={name} type={type} required={required} placeholder={name==="phone"?"+244 9XX XXX XXX":undefined} className="w-full rounded-xl border border-zinc-200 px-3.5 py-3 text-sm"/>{name==="phone"&&<span className="mt-1.5 block text-[11px] text-zinc-400">{t.phoneHint}</span>}</label>)}
   <fieldset><legend className="mb-2 block text-xs font-semibold">{t.specialties}</legend><p className="mb-3 text-[11px] text-zinc-400">Select all services this provider can perform.</p><div className="grid gap-2 sm:grid-cols-2">{services.map(s=><label key={s.id} className="flex cursor-pointer items-center gap-3 rounded-xl border border-zinc-200 px-3.5 py-3 text-sm hover:bg-zinc-50"><input type="checkbox" name="specialties" value={s.code} className="h-4 w-4"/><span>{locale==="fr"?s.name_fr:locale==="pt"?s.name_pt:s.name_en}</span></label>)}</div></fieldset>
