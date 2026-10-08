@@ -13,7 +13,7 @@ export type CountryActionState = { success: boolean; message: string };
 
 export async function createCountry(_previousState: CountryActionState, formData: FormData): Promise<CountryActionState> {
   const parsed = countrySchema.safeParse({ name: formData.get("name"), code: formData.get("code") });
-  if (!parsed.success) return { success: false, message: "Enter a country name and a 2–3 letter lowercase code, for example drc or rsa." };
+  if (!parsed.success) return { success: false, message: "Enter a country name and a 2–3 letter country code, for example DRC or RSA." };
 
   const supabase = await createClient();
   const { data: claimsData, error: claimsError } = await supabase.auth.getClaims();
