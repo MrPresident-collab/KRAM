@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Building2, Mail, Phone, UserRound, ClipboardList, ClipboardCheck, FolderKanban, Receipt, FileText, Plus } from "lucide-react";
+import { ArrowLeft, Building2, Mail, Phone, UserRound, ClipboardList, ClipboardCheck, FolderKanban, Receipt, FileText, Plus, Pencil } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { copy, isLocale, type Locale, getDetailUi } from "@/lib/i18n";
 import { opsLabels, labelFromMap } from "@/lib/ops-labels";
@@ -68,9 +68,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ l
               <p className="mt-1 text-xs text-zinc-400">{client.id.slice(0, 8).toUpperCase()}</p>
             </div>
           </div>
-          <span className="rounded-full bg-zinc-100 px-3 py-1.5 text-xs font-semibold text-zinc-600">
-            {assets?.length ?? 0} {t.assets.records}
-          </span>
+          <div className="flex flex-wrap items-center gap-2"><Link href={`/${locale}/ops/clients/${client.id}/edit`} className="inline-flex items-center gap-2 rounded-xl border border-zinc-200 px-3 py-2 text-xs font-bold text-zinc-700 hover:bg-zinc-50"><Pencil size={14}/>{locale==="fr"?"Modifier":locale==="pt"?"Editar":"Edit client"}</Link><span className="rounded-full bg-zinc-100 px-3 py-1.5 text-xs font-semibold text-zinc-600">{assets?.length ?? 0} {t.assets.records}</span></div>
         </div>
 
         <div className="grid gap-0 md:grid-cols-3">
