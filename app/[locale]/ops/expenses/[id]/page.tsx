@@ -44,6 +44,20 @@ export default async function ExpenseDetail({
 
   if (!expense) notFound();
 
+  const { data: lastEdit } = await supabase
+    .from("audit_logs")
+    .select("created_at,actor_id")
+    .eq("organization_id", membership?.organization_id ?? "")
+    .eq("entity_type", "expense")
+    .eq("entity_id", id)
+    .eq("action", "expense.updated")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  const { data: lastEditor } = lastEdit?.actor_id
+    ? await supabase.from("profiles").select("full_name").eq("id", lastEdit.actor_id).maybeSingle()
+    : { data: null };
+
   const paymentMethod = expense.payment_method
     ? String(expense.payment_method).replace(/_/g, " ")
     : "Not recorded";
@@ -143,8 +157,13 @@ export default async function ExpenseDetail({
             </div>
             <div>
               <dt className="text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-400">Created</dt>
-              <dd className="mt-1 text-sm font-semibold">{new Date(expense.created_at).toLocaleString()}</dd>
+              <dd className="mt-1 text-sm font-semibold">{new Date(expense.created_at).toLocaleString(locale)}</dd>
             </div>
+            {lastEdit && <div>
+              <dt className="text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-400">Last edited</dt>
+              <dd className="mt-1 text-sm font-semibold">{new Date(lastEdit.created_at).toLocaleString(locale)}</dd>
+              <dd className="mt-1 text-xs text-zinc-500">{lastEditor?.full_name || "Staff member"}</dd>
+            </div>}
           </dl>
           <div className="mt-6 border-t border-zinc-100 pt-5">
             <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-400">Notes</p>
