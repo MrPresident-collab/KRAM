@@ -19,7 +19,7 @@ export async function createProvider(_prev:ProviderActionState,fd:FormData):Prom
  if(!services||services.length!==new Set(parsed.data.specialties).size)return{success:false,message:"One or more selected specialties are not available in the KRAM service catalog."};
  const branchId=parsed.data.branchId||null;
  if(branchId){const{data:b}=await s.from("branches").select("id").eq("id",branchId).eq("organization_id",m.organization_id).maybeSingle();if(!b)return{success:false,message:"The selected branch is not accessible."}}
- const{data:p,error}=await s.from("service_providers").insert({organization_id:m.organization_id,branch_id:branchId,name:parsed.data.name,phone:phone||null,email:parsed.data.email||null,coverage:parsed.data.coverage||null,notes:parsed.data.notes||null}).select("id").single();
+ const{data:p,error}=await s.from("service_providers").insert({organization_id:m.organization_id,branch_id:branchId,name:parsed.data.name,phone:phone||null,email:parsed.data.email||null,coverage:parsed.data.coverage||null,notes:parsed.data.notes||null,status:"prospect",verification_status:"pending"}).select("id").single();
  if(error||!p)return{success:false,message:"The service provider could not be added: "+(error?.message||"unknown database error")};
  const{error:serviceError}=await s.from("provider_services").insert(parsed.data.specialties.map(service=>({provider_id:p.id,organization_id:m.organization_id,service})));
  if(serviceError){await s.from("service_providers").delete().eq("id",p.id);return{success:false,message:"The provider specialties could not be saved: "+serviceError.message}}
