@@ -5,9 +5,9 @@ import { Loader2, Plus, X } from "lucide-react";
 import { createCountry } from "./actions";
 
 const labels = {
-  fr: ["Ajouter un pays","Nom du pays","Code pays","République démocratique du Congo","drc","Annuler","Créer le pays","Création...","2–3 lettres minuscules. Exemples : drc, rsa."],
-  en: ["Add country","Country name","Country code","Democratic Republic of the Congo","drc","Cancel","Create country","Creating...","2–3 lowercase letters. Examples: drc, rsa."],
-  pt: ["Adicionar país","Nome do país","Código do país","República Democrática do Congo","drc","Cancelar","Criar país","A criar...","2–3 letras minúsculas. Exemplos: drc, rsa."]
+  fr: ["Ajouter un pays","Nom du pays","Code pays","République démocratique du Congo","drc","Annuler","Créer le pays","Création...","2–3 lettres. Exemples : DRC, RSA."],
+  en: ["Add country","Country name","Country code","Democratic Republic of the Congo","drc","Cancel","Create country","Creating...","2–3 letters. Examples: DRC, RSA."],
+  pt: ["Adicionar país","Nome do país","Código do país","República Democrática do Congo","drc","Cancelar","Criar país","A criar...","2–3 letras. Exemplos: DRC, RSA."]
 } as const;
 
 export function CountryForm({ locale }: { locale: "fr" | "en" | "pt" }) {
