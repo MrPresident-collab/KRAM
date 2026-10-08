@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useState } from "react";
 import { Check, GitBranch, Pencil, Trash2, X } from "lucide-react";
 import { deleteBranch, type BranchActionState, updateBranch } from "./actions";
 
@@ -24,7 +24,6 @@ export function BranchRow({
   const [editing, setEditing] = useState(false);
   const initial: BranchActionState = { success: false, message: "" };
   const [state, action, pending] = useActionState(updateBranch, initial);
-  useEffect(() => { if (state.success) setEditing(false); }, [state.success]);
   const [deleteState, deleteAction, deletePending] = useActionState(
     deleteBranch,
     initial,
