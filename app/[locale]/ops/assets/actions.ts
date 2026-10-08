@@ -95,3 +95,26 @@ export async function createAssetRecord(_prev: AssetActionState, formData: FormD
   revalidatePath("/pt/ops/assets");
   return { success: true, message: `Asset created successfully — ${referenceCode}.` };
 }
+
+
+export async function updateAssetRecord(_prev:AssetActionState,fd:FormData):Promise<AssetActionState>{
+ const parsed=schema.extend({assetId:z.string().uuid()}).safeParse({assetId:fd.get("assetId"),name:fd.get("name"),type:fd.get("type"),countryId:fd.get("countryId"),branchId:fd.get("branchId"),city:fd.get("city"),address:fd.get("address"),description:fd.get("description"),clientId:fd.get("clientId")});
+ if(!parsed.success)return{success:false,message:"Please complete the required asset fields."};
+ const s=await createClient();const{data:claims}=await s.auth.getClaims();const uid=claims?.claims?.sub;if(!uid)return{success:false,message:"Your session is no longer valid."};
+ const{data:m}=await s.from("organization_members").select("organization_id,role,scope_level,country_id,branch_id").eq("user_id",uid).eq("status","active").order("created_at",{ascending:true}).limit(1).maybeSingle();
+ if(!m)return{success:false,message:"You are not authorized to edit assets."};
+ if(!["owner","admin","regional_admin","operations"].includes(m.role))return{success:false,message:"You are not authorized to edit assets."};
+ const{data:asset}=await s.from("assets").select("id,branch_id,country_code").eq("id",parsed.data.assetId).eq("organization_id",m.organization_id).maybeSingle();
+ if(!asset)return{success:false,message:"Asset not found or outside your organization."};
+ if(m.scope_level==="branch"&&asset.branch_id!==m.branch_id)return{success:false,message:"This asset is outside your branch scope."};
+ const{data:country}=await s.from("countries").select("id,code").eq("id",parsed.data.countryId).eq("organization_id",m.organization_id).maybeSingle();
+ if(!country)return{success:false,message:"The selected country is not available to your KRAM scope."};
+ if(m.scope_level==="country"&&country.id!==m.country_id)return{success:false,message:"The selected country is outside your scope."};
+ const branchId=parsed.data.branchId||null;
+ if(branchId){const{data:b}=await s.from("branches").select("id,country_id").eq("id",branchId).eq("organization_id",m.organization_id).maybeSingle();if(!b||b.country_id!==country.id)return{success:false,message:"The selected branch does not belong to that country."};}
+ if(parsed.data.clientId){const{data:client}=await s.from("clients").select("id").eq("id",parsed.data.clientId).eq("organization_id",m.organization_id).maybeSingle();if(!client)return{success:false,message:"The selected client is outside your organization."};}
+ const{error}=await s.from("assets").update({name:parsed.data.name,type:parsed.data.type,country_code:country.code.toUpperCase(),branch_id:branchId,city:parsed.data.city,address:parsed.data.address||null,description:parsed.data.description||null,client_id:parsed.data.clientId||null,updated_at:new Date().toISOString()}).eq("id",asset.id).eq("organization_id",m.organization_id);
+ if(error)return{success:false,message:"The asset could not be updated: "+error.message};
+ for(const l of["fr","en","pt"]){revalidatePath("/"+l+"/ops/assets");revalidatePath("/"+l+"/ops/assets/"+asset.id);revalidatePath("/"+l+"/ops/assets/"+asset.id+"/edit");}
+ return{success:true,message:"Asset updated successfully."};
+}
