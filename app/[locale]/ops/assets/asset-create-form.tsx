@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useMemo, useState } from "react";
+import { useActionState, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Loader2, Save, MapPin, UserRound, Globe2 } from "lucide-react";
 import { createAssetRecord } from "./actions";
 import type { Locale } from "@/lib/i18n";
@@ -22,6 +23,8 @@ const types = [
 export function AssetCreateForm({ locale, clients, countries, branches }: { locale: Locale; clients: { id:string; full_name:string }[]; countries: Country[]; branches: Branch[] }) {
   const t = labels[locale];
   const [state, action, pending] = useActionState(createAssetRecord, { success:false, message:"" });
+  const router = useRouter();
+  useEffect(() => { if (state.success) router.push(`/${locale}/ops/assets`); }, [state.success, locale, router]);
   const [countryId, setCountryId] = useState("");
   const availableBranches = useMemo(() => branches.filter((branch) => branch.country_id === countryId), [branches, countryId]);
 
