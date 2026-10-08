@@ -4,7 +4,6 @@ import { ArrowLeft, Building2, Mail, Phone, UserRound, ClipboardList, ClipboardC
 import { createClient } from "@/lib/supabase/server";
 import { copy, isLocale, type Locale, getDetailUi } from "@/lib/i18n";
 import { opsLabels, labelFromMap } from "@/lib/ops-labels";
-import { ClientActionsPanel } from "../client-actions-panel";
 
 export default async function ClientDetailPage({ params }: { params: Promise<{ locale: string; id: string }> }) {
   const { locale, id } = await params;

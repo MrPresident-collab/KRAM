@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useMemo, useState } from "react";
-import { Loader2, Save, MapPin, UserRound, Building2, Globe2 } from "lucide-react";
+import { Loader2, Save, MapPin, UserRound, Globe2 } from "lucide-react";
 import { createAssetRecord } from "./actions";
 import type { Locale } from "@/lib/i18n";
 

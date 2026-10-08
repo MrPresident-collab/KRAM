@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { updateProvider, type ProviderActionState } from "../../actions";
 
@@ -38,13 +38,13 @@ export function ProviderEditForm({
     { success: false, message: "" },
   );
   const router = useRouter();
+  useEffect(() => {
+    if (state.success) router.push("/" + locale + "/ops/providers/" + provider.id);
+  }, [locale, provider.id, router, state.success]);
 
   return (
     <form
-      action={async (fd) => {
-        const result = await action(fd);
-        if (result?.success) router.push("/" + locale + "/ops/providers/" + provider.id);
-      }}
+      action={action}
       className="space-y-5"
     >
       <input type="hidden" name="providerId" value={provider.id} />

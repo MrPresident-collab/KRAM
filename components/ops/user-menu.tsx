@@ -6,7 +6,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { Locale } from "@/lib/i18n";
-import { copy } from "@/lib/i18n";
 
 type UserIdentity = {
   name: string;
@@ -81,7 +80,6 @@ const scopeLabels = {
 } as const;
 
 export function UserMenu({ locale, user }: { locale: Locale; user: UserIdentity }) {
-  const t = copy[locale];
   const router = useRouter();
   const supabase = createClient();
   const [open, setOpen] = useState(false);
