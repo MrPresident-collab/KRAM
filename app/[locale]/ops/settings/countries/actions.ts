@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 
 const countrySchema = z.object({
   name: z.string().trim().min(2).max(100),
-  code: z.string().trim().toLowerCase().regex(/^[a-z]{2,3}$/, "Country code must contain 2 or 3 lowercase letters.")
+  code: z.string().trim().toUpperCase().regex(/^[A-Z]{2,3}$/, "Country code must contain 2 or 3 letters.")
 });
 
 export type CountryActionState = { success: boolean; message: string };
