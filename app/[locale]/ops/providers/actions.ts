@@ -30,20 +30,24 @@ export async function createProvider(_prev:ProviderActionState,fd:FormData):Prom
 
 export async function updateProviderVerification(_prev: ProviderActionState, fd: FormData): Promise<ProviderActionState> {
  const providerId=String(fd.get("providerId")??"");
- const verificationStatus=String(fd.get("verificationStatus")??"");
- if(!providerId || !["pending","verified","rejected"].includes(verificationStatus)) return {success:false,message:"Invalid verification details."};
+ const requestedStatus=String(fd.get("verificationStatus")??"");
+ const statusMap={pending:"prospect",active:"active",inactive:"suspended"} as const;
+ if(!providerId || !(requestedStatus in statusMap)) return {success:false,message:"Invalid provider status."};
+ const nextStatus=statusMap[requestedStatus as keyof typeof statusMap];
  const s=await createClient();
  const {data:claims}=await s.auth.getClaims();
  const uid=claims?.claims?.sub;
  if(!uid) return {success:false,message:"Your session is no longer valid."};
- const {data:m}=await s.from("organization_members").select("organization_id,role").eq("user_id",uid).eq("status","active").limit(1).maybeSingle();
- if(!m || !["owner","admin","regional_admin","operations"].includes(m.role)) return {success:false,message:"You are not authorized to update provider verification."};
- const {data:provider}=await s.from("service_providers").select("id").eq("id",providerId).eq("organization_id",m.organization_id).maybeSingle();
+ const {data:m}=await s.from("organization_members").select("organization_id,role,scope_level,branch_id").eq("user_id",uid).eq("status","active").limit(1).maybeSingle();
+ if(!m || !["owner","admin","regional_admin","operations"].includes(m.role)) return {success:false,message:"You are not authorized to update provider status."};
+ const {data:provider}=await s.from("service_providers").select("id,branch_id").eq("id",providerId).eq("organization_id",m.organization_id).maybeSingle();
  if(!provider) return {success:false,message:"Service provider not found or outside your organization."};
- const {error}=await s.from("service_providers").update({verification_status:verificationStatus,updated_at:new Date().toISOString()}).eq("id",providerId).eq("organization_id",m.organization_id);
- if(error) return {success:false,message:"Verification could not be updated: "+error.message};
+ if(m.scope_level==="branch" && provider.branch_id!==m.branch_id) return {success:false,message:"This provider is outside your branch scope."};
+ const {error}=await s.from("service_providers").update({status:nextStatus,updated_at:new Date().toISOString()}).eq("id",providerId).eq("organization_id",m.organization_id);
+ if(error) return {success:false,message:"Provider status could not be updated: "+error.message};
  for(const l of ["fr","en","pt"]) revalidatePath("/"+l+"/ops/providers/"+providerId);
- return {success:true,message:"Provider verification updated successfully."};
+ for(const l of ["fr","en","pt"]) revalidatePath("/"+l+"/ops/providers");
+ return {success:true,message:"Provider status updated successfully."};
 }
 
 export async function updateProvider(_prev: ProviderActionState, fd: FormData): Promise<ProviderActionState> {
