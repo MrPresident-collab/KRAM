@@ -4,7 +4,6 @@ import { ArrowLeft, Building2, Mail, Phone, UserRound, ClipboardList, ClipboardC
 import { createClient } from "@/lib/supabase/server";
 import { copy, isLocale, type Locale, getDetailUi } from "@/lib/i18n";
 import { opsLabels, labelFromMap } from "@/lib/ops-labels";
-import { ClientActionsPanel } from "../client-actions-panel";
 
 export default async function ClientDetailPage({ params }: { params: Promise<{ locale: string; id: string }> }) {
   const { locale, id } = await params;
@@ -13,13 +12,13 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ l
   const ui = getDetailUi(locale as Locale).client;
   const supabase = await createClient();
 
-  const [{ data: client, error }, { data: assets }, { data: trustedContact }] = await Promise.all([
-    supabase.from("clients").select("id,full_name,email,primary_phone,alternative_phone,residency_country,residency_city,residency_address,preferred_language,preferred_contact_method,notes,status,created_at,updated_at").eq("id", id).maybeSingle(),
+  const [{ data: client, error }, { data: assets }] = await Promise.all([
+    supabase.from("clients").select("id,full_name,email,primary_phone,alternative_phone,residency_country,residency_city,residency_address,preferred_language,preferred_contact_method,notes,created_at,updated_at" ).eq("id", id).maybeSingle(),
     supabase.from("assets").select("id,name,reference_code,type,status,city,country_code").eq("client_id", id).order("created_at", { ascending: false }),
-    supabase.from("client_authorized_contacts").select("full_name,relationship,primary_phone,alternative_phone,email,residency_country,residency_city,residency_address,preferred_language,preferred_contact_method,same_as_client").eq("client_id", id).eq("status","active").maybeSingle(),
   ]);
 
   if (error || !client) notFound();
+  const { data: trustedContact } = await supabase.from("client_authorized_contacts").select("full_name,relationship,primary_phone,alternative_phone,email,residency_country,residency_city,residency_address").eq("client_id", id).eq("status", "active").maybeSingle();
 
   const initials = client.full_name
     .split(/\s+/)

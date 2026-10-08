@@ -1,8 +1,23 @@
-import { notFound, redirect } from "next/navigation";
-import { isLocale } from "@/lib/i18n";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ArrowRight, CalendarClock, ClipboardList, Plus, Wrench } from "lucide-react";
+import { getOpsUi, isLocale, type Locale } from "@/lib/i18n";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function MaintenancePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  redirect(`/${locale}/ops/work-orders`);
+  const ui = getOpsUi(locale as Locale);
+  const supabase = await createClient();
+  const { data: rows } = await supabase.from("work_orders").select("id,title,category,priority,status,created_at,assets(id,name,reference_code)").or("category.ilike.%maintenance%,category.ilike.%repair%,category.ilike.%plumbing%,category.ilike.%electrical%,category.ilike.%hvac%").order("created_at", { ascending: false }).limit(100);
+  const all = rows ?? [];
+  const active = all.filter((x) => !["closed", "verified", "completed"].includes(x.status));
+  const urgent = active.filter((x) => ["urgent", "high"].includes(x.priority)).length;
+  const completed = all.filter((x) => ["completed", "verified", "closed"].includes(x.status)).length;
+  return <div className="space-y-7">
+    <section className="flex flex-col justify-between gap-5 md:flex-row md:items-end"><div><p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--kram-orange)]">{ui.workOrdersPage.eyebrow}</p><div className="mt-2 flex items-center gap-3"><div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--kram-charcoal)] text-white"><Wrench size={19}/></div><h1 className="text-3xl font-bold tracking-[-0.045em] text-zinc-950">{locale === "fr" ? "Maintenance" : locale === "pt" ? "Manutenção" : "Maintenance"}</h1></div><p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-500">{locale === "fr" ? "Coordonnez les interventions préventives et correctives sur les actifs KRAM." : locale === "pt" ? "Coordene intervenções preventivas e corretivas nos ativos KRAM." : "Coordinate preventive and corrective interventions across KRAM assets."}</p></div><Link href={`/${locale}/ops/work-orders/new`} className="inline-flex items-center gap-2 rounded-xl bg-[var(--kram-orange)] px-4 py-2.5 text-sm font-bold text-white"><Plus size={16}/>{locale === "fr" ? "Créer une tâche de maintenance" : locale === "pt" ? "Criar tarefa de manutenção" : "Create maintenance task"}</Link></section>
+    <section className="grid gap-4 sm:grid-cols-3"><Metric icon={ClipboardList} label={locale === "fr" ? "Interventions ouvertes" : locale === "pt" ? "Intervenções abertas" : "Open interventions"} value={active.length}/><Metric icon={CalendarClock} label={locale === "fr" ? "Priorité élevée" : locale === "pt" ? "Prioridade elevada" : "High priority"} value={urgent}/><Metric icon={Wrench} label={locale === "fr" ? "Terminées" : locale === "pt" ? "Concluídas" : "Completed"} value={completed}/></section>
+    <section className="overflow-hidden rounded-2xl border border-[var(--kram-border)] bg-white"><div className="border-b border-zinc-100 px-5 py-4"><h2 className="text-base font-bold">{locale === "fr" ? "File de maintenance" : locale === "pt" ? "Fila de manutenção" : "Maintenance queue"}</h2><p className="mt-1 text-xs text-zinc-400">{locale === "fr" ? "Les tâches liées aux interventions apparaissent ici." : locale === "pt" ? "As tarefas ligadas às intervenções aparecem aqui." : "Tasks tied to maintenance interventions appear here."}</p></div>{active.length ? <div className="divide-y divide-zinc-100">{active.map((x) => { const a = Array.isArray(x.assets) ? x.assets[0] : x.assets; return <Link key={x.id} href={`/${locale}/ops/work-orders/${x.id}`} className="flex items-center justify-between gap-5 px-5 py-4 hover:bg-zinc-50"><div><p className="text-sm font-bold text-zinc-900">{x.title}</p><p className="mt-1 text-xs text-zinc-400">{a?.name ?? "—"} · {x.category} · {x.priority}</p></div><div className="flex items-center gap-3"><span className="text-xs font-semibold capitalize text-zinc-500">{x.status.replaceAll("_", " ")}</span><ArrowRight size={16} className="text-zinc-300"/></div></Link>})}</div> : <div className="p-14 text-center"><Wrench size={22} className="mx-auto text-zinc-300"/><p className="mt-4 text-sm font-semibold text-zinc-700">{locale === "fr" ? "Aucune intervention de maintenance" : locale === "pt" ? "Ainda não há intervenções de manutenção" : "No maintenance interventions yet"}</p><p className="mt-1 text-xs text-zinc-400">{locale === "fr" ? "Créez une tâche pour commencer." : locale === "pt" ? "Crie uma tarefa para começar." : "Create a task to get started."}</p></div>}</section>
+  </div>;
 }
+function Metric({ icon: Icon, label, value }: { icon: typeof Wrench; label: string; value: number }) { return <div className="rounded-2xl border border-[var(--kram-border)] bg-white p-5"><Icon size={17} className="text-[var(--kram-orange)]"/><p className="mt-3 text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-400">{label}</p><p className="mt-2 text-2xl font-bold text-zinc-950">{value}</p></div>; }

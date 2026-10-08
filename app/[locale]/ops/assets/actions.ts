@@ -37,9 +37,8 @@ export async function createAssetRecord(_prev: AssetActionState, formData: FormD
 
   const { data: membership } = await supabase
     .from("organization_members")
-    .select("organization_id,role,scope_level,country_id,branch_id")
+    .select("organization_id")
     .eq("user_id", userId)
-    .eq("status", "active")
     .order("created_at", { ascending: true })
     .limit(1)
     .maybeSingle();
@@ -55,9 +54,6 @@ export async function createAssetRecord(_prev: AssetActionState, formData: FormD
 
   if (!country) return { success: false, message: "The selected country is not available to your KRAM scope." };
 
-  if (membership.scope_level === "branch" && parsed.data.branchId !== membership.branch_id) return { success: false, message: "The selected branch is outside your scope." };
-  if (membership.scope_level === "country" && country.id !== membership.country_id) return { success: false, message: "The selected country is outside your scope." };
-
   const branchId: string | null = parsed.data.branchId || null;
   if (branchId) {
     const { data: branch } = await supabase
@@ -70,7 +66,7 @@ export async function createAssetRecord(_prev: AssetActionState, formData: FormD
     if (!branch || branch.country_id !== country.id) return { success: false, message: "The selected branch does not belong to that country." };
   }
 
-  const referenceCode = `${country.code.toUpperCase()}-${crypto.randomUUID().replaceAll("-", "").slice(0, 4).toUpperCase()}`;
+  const referenceCode = `KRAM-${country.code.toUpperCase()}-${crypto.randomUUID().replaceAll("-", "").slice(0, 8).toUpperCase()}`;
 
   const { error } = await supabase.from("assets").insert({
     organization_id: membership.organization_id,
@@ -87,7 +83,7 @@ export async function createAssetRecord(_prev: AssetActionState, formData: FormD
 
   if (error) {
     if (error.code === "23505") return { success: false, message: "KRAM could not generate a unique reference. Please try again." };
-    return { success: false, message: `The asset could not be created: ${error.message}` };
+    return { success: false, message: "The asset could not be created." };
   }
 
   revalidatePath("/fr/ops/assets");

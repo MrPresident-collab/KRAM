@@ -1,30 +1,12 @@
-
-import { PerformancePanel } from "./components/performance-panel";
+import { ArrowUpRight, Building2, CheckCircle2, ClipboardList, Clock3, FileCheck2, Plus, ShieldCheck, Users } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase/server";
 
-type CountFilter =
-  | { column: string; operator: "eq"; value: string }
-  | { column: string; operator: "not"; value: string };
-
-async function countRows(
-  supabase: Awaited<ReturnType<typeof createClient>>,
-  table: string,
-  filter?: CountFilter,
-) {
-  let query = supabase.from(table).select("id", { count: "exact", head: true });
-  if (filter?.operator === "eq") query = query.eq(filter.column, filter.value);
-  if (filter?.operator === "not") query = query.not(filter.column, "in", filter.value);
-  const { count } = await query;
-  return count ?? 0;
-}
-
 export default async function OpsDashboard({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-
   const supabase = await createClient();
   const { data: claims } = await supabase.auth.getClaims();
   const userId = claims?.claims?.sub;
@@ -42,62 +24,102 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
     if (data?.name) contextLabel = data.name + (locale === "fr" ? " — Vue d’ensemble" : locale === "pt" ? " — Visão geral" : " — Overview");
   }
 
-
-  const periodStart = new Date();
-  periodStart.setHours(0, 0, 0, 0);
-  periodStart.setDate(periodStart.getDate() - 29);
-
   const [
-    { data: assetRows },
-    { data: attentionRows },
-    { data: workOrders },
-    { data: expenseRows },
-    { data: branchRows },
-    { data: clientsRows },
-    { data: providerRows },
+    { count: assets }, { count: clients },
+    { count: openOrders }, { count: approvals }, { count: activeOrders },
+    { count: attentionAssets }, { count: inspections }, { count: providers },
   ] = await Promise.all([
-    supabase.from("assets").select("id,name,reference_code,status,branch_id,city,region").order("name"),
-    supabase.from("assets").select("id,name,reference_code,status,branch_id,city,region").eq("status", "attention").order("updated_at", { ascending: false }).limit(8),
-    supabase.from("work_orders").select("id,status,created_at").is("deleted_at", null),
-    supabase.from("expenses").select("asset_id,amount,currency,status,expense_date").is("deleted_at", null).gte("expense_date", periodStart.toISOString().slice(0, 10)).in("status", ["approved", "paid", "verified"]),
-    supabase.from("branches").select("id,name,code").eq("is_active", true).order("name"),
-    supabase.from("clients").select("id").eq("status", "active"),
-    supabase.from("service_providers").select("id").eq("status", "active").eq("verification_status", "verified"),
+    supabase.from("assets").select("id", { count: "exact", head: true }),
+    supabase.from("clients").select("id", { count: "exact", head: true }),
+    supabase.from("work_orders").select("id", { count: "exact", head: true }).not("status", "in", "(closed,verified,completed)"),
+    supabase.from("approvals").select("id", { count: "exact", head: true }).eq("status", "pending"),
+    supabase.from("work_orders").select("id", { count: "exact", head: true }).eq("status", "in_progress"),
+    supabase.from("assets").select("id", { count: "exact", head: true }).eq("status", "attention"),
+    supabase.from("inspections").select("id", { count: "exact", head: true }).eq("status", "scheduled"),
+    supabase.from("service_providers").select("id", { count: "exact", head: true }).eq("verification_status", "verified"),
   ]);
 
-  const assetsTotal = assetRows?.length ?? 0;
-  const assetsActive = assetRows?.filter(row => row.status === "active").length ?? 0;
-  const attentionAssets = attentionRows?.length ?? 0;
-  const openOrders = workOrders?.filter(row => !["completed", "verified", "closed"].includes(row.status)).length ?? 0;
-  const completedOrders = workOrders?.filter(row => ["completed", "verified", "closed"].includes(row.status)).length ?? 0;
-  const maintenanceSpend = (expenseRows ?? []).reduce((sum, row) => sum + Number(row.amount || 0), 0);
+  const fr = locale === "fr"; const pt = locale === "pt";
+  const labels = {
+    eyebrow: pt ? "Centro de operações" : fr ? "Centre des opérations" : "Operations console",
+    description: pt ? "O estado operacional da sua área autorizada, com foco no que exige ação." : fr ? "L’état opérationnel de votre périmètre autorisé, centré sur ce qui nécessite une action." : "The operational state of your authorized scope, focused on what needs action.",
+    create: pt ? "Nova ordem" : fr ? "Nouvel ordre" : "New work order",
+    assets: pt ? "Ativos" : fr ? "Actifs" : "Assets",
+    openOrders: pt ? "Ordens abertas" : fr ? "Ordres ouverts" : "Open work orders",
+    awaiting: pt ? "Aguardando aprovação" : fr ? "En attente d’approbation" : "Awaiting approval",
+    active: pt ? "Em execução" : fr ? "En cours" : "In progress",
+    attention: pt ? "Fila de atenção" : fr ? "File d’attention" : "Attention queue",
+    attentionDesc: pt ? "Itens que exigem decisão, verificação ou intervenção." : fr ? "Éléments nécessitant une décision, vérification ou intervention." : "Items requiring a decision, verification or intervention.",
+    approvals: pt ? "Aprovações pendentes" : fr ? "Approbations en attente" : "Pending approvals",
+    attentionAssets: pt ? "Ativos com atenção" : fr ? "Actifs à surveiller" : "Assets needing attention",
+    scheduled: pt ? "Inspeções agendadas" : fr ? "Inspections planifiées" : "Scheduled inspections",
+    network: pt ? "Rede de campo" : fr ? "Réseau terrain" : "Field network",
+    verified: pt ? "prestadores verificados" : fr ? "prestataires vérifiés" : "verified providers",
+    viewNetwork: pt ? "Abrir rede" : fr ? "Ouvrir le réseau" : "Open network",
+    clients: pt ? "Clientes" : fr ? "Clients" : "Clients",
+    owners: pt ? "proprietários sob acompanhamento" : fr ? "propriétaires suivis" : "owners under management",
+    evidence: pt ? "Inspeções" : fr ? "Inspections" : "Inspections",
+    scheduledShort: pt ? "agendadas" : fr ? "planifiées" : "scheduled",
+  };
 
-  const branchNames = new Map((branchRows ?? []).map(row => [row.id, row.name]));
-  const sites = (branchRows ?? []).map(branch => {
-    const siteAssets = (assetRows ?? []).filter(asset => asset.branch_id === branch.id);
-    const healthy = siteAssets.filter(asset => asset.status === "active").length;
-    return {
-      name: branch.name,
-      total: siteAssets.length,
-      healthy,
-      percent: siteAssets.length ? Math.round((healthy / siteAssets.length) * 100) : 0,
-    };
-  }).filter(site => site.total > 0);
+  const metrics = [
+    { label: labels.assets, value: assets ?? 0, note: pt ? "Registo de ativos" : fr ? "Registre des actifs" : "Asset registry", icon: Building2 },
+    { label: labels.openOrders, value: openOrders ?? 0, note: pt ? "Trabalho ainda aberto" : fr ? "Travail encore ouvert" : "Work still open", icon: ClipboardList },
+    { label: labels.awaiting, value: approvals ?? 0, note: pt ? "Decisão necessária" : fr ? "Décision requise" : "Decision required", icon: Clock3, accent: (approvals ?? 0) > 0 },
+    { label: labels.active, value: activeOrders ?? 0, note: pt ? "Intervenções em curso" : fr ? "Interventions en cours" : "Active interventions", icon: CheckCircle2 },
+  ];
+
+  const attentionTotal = (approvals ?? 0) + (attentionAssets ?? 0) + (inspections ?? 0);
 
   return <div className="space-y-6 pb-10">
-    <PerformancePanel
-      locale={locale}
-      contextLabel={contextLabel}
-      assetsTotal={assetsTotal}
-      assetsActive={assetsActive}
-      attentionAssets={attentionAssets}
-      maintenanceSpend={maintenanceSpend}
-      openOrders={openOrders}
-      completedOrders={completedOrders}
-      providers={providerRows?.length ?? 0}
-      clients={clientsRows?.length ?? 0}
-      attentionRows={(attentionRows ?? []).map(row => ({ ...row, site: row.branch_id ? (branchNames.get(row.branch_id) ?? row.city ?? row.region ?? "") : (row.city ?? row.region ?? "") }))}
-      sites={sites}
-    />
+    <section className="relative overflow-hidden rounded-2xl border border-[var(--kram-border)] bg-[var(--kram-deep)] px-6 py-7 text-white md:px-9 md:py-8">
+      <div className="absolute right-[-80px] top-[-120px] h-80 w-80 rounded-full bg-[var(--kram-orange)] opacity-10 blur-3xl" />
+      <div className="relative flex flex-col justify-between gap-7 lg:flex-row lg:items-end">
+        <div>
+          <div className="mb-3 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.2em] text-[var(--kram-orange)]"><span className="h-1.5 w-1.5 rounded-full bg-[var(--kram-orange)]" />{labels.eyebrow}</div>
+          <h1 className="text-3xl font-black tracking-[-.055em] md:text-[42px]">{contextLabel}</h1>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-white/55">{labels.description}</p>
+        </div>
+        <div className="flex gap-2">
+          <Link href={`/${locale}/ops/work-orders/new`} className="inline-flex items-center gap-2 rounded-xl bg-[var(--kram-orange)] px-4 py-2.5 text-xs font-bold text-white hover:bg-[#df6816]"><Plus size={15}/>{labels.create}</Link>
+          <Link href={`/${locale}/ops/assets`} className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2.5 text-xs font-bold text-white hover:bg-white/10">{labels.assets}<ArrowUpRight size={14}/></Link>
+        </div>
+      </div>
+    </section>
+
+    <section className="grid gap-px overflow-hidden rounded-2xl border border-[var(--kram-border)] bg-[var(--kram-border)] sm:grid-cols-2 xl:grid-cols-4">
+      {metrics.map(({ label, value, note, icon: Icon, accent }) => <div key={label} className="bg-white p-5">
+        <div className="flex items-center justify-between"><div className={`grid h-9 w-9 place-items-center rounded-lg ${accent ? "bg-[var(--kram-orange-soft)] text-[var(--kram-orange)]" : "bg-[var(--kram-bg)] text-[var(--kram-metal)]"}`}><Icon size={17}/></div>{accent&&<span className="text-[9px] font-bold uppercase tracking-[.14em] text-[var(--kram-orange)]">{pt?"Ação":fr?"Action":"Action"}</span>}</div>
+        <div className="mt-5 text-3xl font-black tracking-[-.06em] text-[var(--kram-deep)]">{value}</div>
+        <div className="mt-1 text-[13px] font-bold text-[var(--kram-charcoal)]">{label}</div>
+        <div className="mt-1 text-[11px] text-[var(--kram-metal)]">{note}</div>
+      </div>)}
+    </section>
+
+    <section className="grid gap-5 xl:grid-cols-[1.4fr_.6fr]">
+      <div className="rounded-2xl border border-[var(--kram-border)] bg-white">
+        <div className="flex items-center justify-between border-b border-[var(--kram-border)] px-6 py-5">
+          <div><h2 className="text-[15px] font-black tracking-[-.02em] text-[var(--kram-deep)]">{labels.attention}</h2><p className="mt-1 text-xs text-[var(--kram-metal)]">{labels.attentionDesc}</p></div>
+          <div className="rounded-full border border-[var(--kram-border)] px-2.5 py-1 text-[10px] font-black text-[var(--kram-charcoal)]">{attentionTotal}</div>
+        </div>
+        <div className="divide-y divide-[var(--kram-border)]">
+          {[
+            { label: labels.approvals, value: approvals ?? 0, route: "approvals" },
+            { label: labels.attentionAssets, value: attentionAssets ?? 0, route: "assets" },
+            { label: labels.scheduled, value: inspections ?? 0, route: "inspections" },
+          ].map(({ label, value, route }) => <Link href={`/${locale}/ops/${route}`} key={label} className="flex items-center justify-between px-6 py-4 hover:bg-[var(--kram-bg)]"><div className="flex items-center gap-3"><span className={`h-2 w-2 rounded-full ${(value ?? 0) > 0 ? "bg-[var(--kram-orange)]" : "bg-[var(--kram-soft-metal)]"}`}/><span className="text-sm font-semibold text-[var(--kram-charcoal)]">{label}</span></div><span className="min-w-7 rounded-full bg-[var(--kram-bg)] px-2.5 py-1 text-center text-xs font-black text-[var(--kram-metal)]">{value}</span></Link>)}
+        </div>
+      </div>
+      <div className="rounded-2xl bg-[var(--kram-charcoal)] p-6 text-white">
+        <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[var(--kram-orange)]">{labels.network}</p>
+        <div className="mt-3 flex items-end justify-between gap-4"><div><p className="text-4xl font-black tracking-[-.06em]">{providers}</p><p className="mt-1 text-xs text-white/50">{labels.verified}</p></div><ShieldCheck size={24} className="text-[var(--kram-orange)]"/></div>
+        <div className="mt-7 flex items-center justify-between border-t border-white/10 pt-5"><div><p className="text-[10px] uppercase tracking-[.14em] text-white/35">{labels.clients}</p><p className="mt-1 text-lg font-black">{clients}</p><p className="text-[10px] text-white/40">{labels.owners}</p></div><Link href={`/${locale}/ops/providers`} className="rounded-xl border border-white/15 px-3 py-2 text-xs font-bold hover:bg-white/10">{labels.viewNetwork}</Link></div>
+      </div>
+    </section>
+
+    <section className="grid gap-3 md:grid-cols-2">
+      <div className="rounded-2xl border border-[var(--kram-border)] bg-white p-5"><div className="flex items-center gap-2 text-[var(--kram-metal)]"><Users size={16}/><span className="text-[10px] font-bold uppercase tracking-[.15em]">{labels.clients}</span></div><div className="mt-4 text-2xl font-black tracking-[-.05em]">{clients}</div><p className="mt-1 text-xs text-[var(--kram-metal)]">{labels.owners}</p></div>
+      <div className="rounded-2xl border border-[var(--kram-border)] bg-white p-5"><div className="flex items-center gap-2 text-[var(--kram-metal)]"><FileCheck2 size={16}/><span className="text-[10px] font-bold uppercase tracking-[.15em]">{labels.evidence}</span></div><div className="mt-4 text-2xl font-black tracking-[-.05em]">{inspections}</div><p className="mt-1 text-xs text-[var(--kram-metal)]">{labels.scheduledShort}</p></div>
+    </section>
   </div>;
 }

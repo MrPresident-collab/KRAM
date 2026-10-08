@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Users, ShieldCheck, Globe2, Building2 } from "lucide-react";
-import { getOpsUi, isLocale, type Locale, copy } from "@/lib/i18n";
+import { isLocale, type Locale, copy, getOpsUi } from "@/lib/i18n";
+import { opsLabels, labelFromMap } from "@/lib/ops-labels";
 import { createClient } from "@/lib/supabase/server";
 import { StaffForm } from "./staff-form";
 
@@ -10,7 +10,7 @@ const roleLabels = { owner:"Owner", admin:"Administrator", regional_admin:"Regio
 export default async function UsersPage({ params }: { params: Promise<{ locale:string }> }) {
   const { locale }=await params;
   if(!isLocale(locale)) notFound();
-  const t=copy[locale as Locale]; const ui = getOpsUi(locale as Locale);
+  const t=copy[locale as Locale]; const ui=getOpsUi(locale as Locale); const labels = opsLabels(locale as Locale);
   const supabase=await createClient();
   const { data: claims }=await supabase.auth.getClaims();
   const userId=claims?.claims?.sub;
@@ -22,7 +22,7 @@ export default async function UsersPage({ params }: { params: Promise<{ locale:s
   const { data: staff }=await supabase.from("organization_members").select("id,user_id,role,scope_level,country_id,branch_id,status,profiles(full_name,work_email,job_title,avatar_url),countries(name),branches(name,city)").eq("organization_id",membership.organization_id).order("created_at",{ascending:true});
   const canCreate=membership.role==="owner"||membership.role==="admin"||membership.role==="regional_admin";
 
-  return <div className="space-y-7"><Link href={`/${locale}/ops/settings`} className="inline-flex items-center gap-2 text-sm font-semibold text-zinc-500 hover:text-zinc-900">← {locale === "fr" ? "Paramètres" : locale === "pt" ? "Definições" : "Settings"}</Link>
+  return <div className="space-y-7">
     <div className="flex items-start justify-between gap-4">
       <div><p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--kram-orange)]">{t.users.title}</p><h1 className="mt-2 text-3xl font-bold tracking-[-0.045em] text-zinc-950">{t.users.title}</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-500">{ui.usersPage.staffDescription}</p></div>
       {canCreate&&<StaffForm locale={locale as Locale}/>}
