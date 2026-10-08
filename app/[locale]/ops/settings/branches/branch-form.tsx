@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { Loader2, Plus, X } from "lucide-react";
 import { createBranch } from "./actions";
 
@@ -16,8 +17,9 @@ export function BranchForm({ locale, countries }: { locale:"fr"|"en"|"pt"; count
   const t=labels[locale];
   const [state,action,pending]=useActionState(createBranch,{success:false,message:""});
   const ref=useRef<HTMLDialogElement>(null);
+  const router=useRouter();
 
-  useEffect(()=>{ if(state.success) ref.current?.close(); },[state.success]);
+  useEffect(()=>{ if(state.success) { ref.current?.close(); router.refresh(); } },[state.success,router]);
 
   return <>
     <button type="button" onClick={()=>ref.current?.showModal()} disabled={!countries.length} className="inline-flex items-center gap-2 rounded-xl bg-[var(--kram-orange)] px-4 py-2.5 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-40">
