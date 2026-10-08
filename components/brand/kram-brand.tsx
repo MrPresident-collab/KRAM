@@ -22,7 +22,7 @@ export function KramBrand({ locale = "en", compact = false, href, className = ""
         width={compact ? 42 : 186}
         height={compact ? 42 : 45}
         priority
-        className={compact ? "h-10 w-10 shrink-0" : "h-auto w-[186px] shrink-0"}
+        className={compact ? "h-10 w-10 shrink-0" : "h-auto w-[186px] shrink-0"} style={{ width: compact ? 40 : 186, height: "auto" }}
       />
     </Link>
   );
