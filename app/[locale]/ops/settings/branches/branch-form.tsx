@@ -23,7 +23,7 @@ export function BranchForm({ locale, countries }: { locale:"fr"|"en"|"pt"; count
     <button type="button" onClick={()=>ref.current?.showModal()} disabled={!countries.length} className="inline-flex items-center gap-2 rounded-xl bg-[var(--kram-orange)] px-4 py-2.5 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-40">
       <Plus size={16}/>{t.create}
     </button>
-    <dialog ref={ref} className="w-[min(92vw,520px)] rounded-2xl border border-[var(--kram-border)] bg-white p-0 shadow-2xl backdrop:bg-black/30">
+    <dialog ref={ref} className="fixed inset-0 m-auto max-h-[90dvh] w-[min(92vw,520px)] overflow-y-auto rounded-2xl border border-[var(--kram-border)] bg-white p-0 shadow-2xl backdrop:bg-black/30">
       <div className="flex items-center justify-between border-b border-[var(--kram-border)] px-6 py-5">
         <div><p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--kram-orange)]">KRAM</p><h2 className="mt-1 text-lg font-bold text-zinc-950">{t.create}</h2></div>
         <button type="button" onClick={()=>ref.current?.close()} className="rounded-lg p-2 text-zinc-400 hover:bg-zinc-100"><X size={18}/></button>
