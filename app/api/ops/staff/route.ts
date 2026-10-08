@@ -86,7 +86,13 @@ export async function POST(request: Request) {
   const rateRow = Array.isArray(rate.data) ? rate.data[0] : rate.data;
   if (!rateRow?.allowed) return NextResponse.json({ error: "Too many staff invitations. Please try again shortly." }, { status: 429 });
 
-  const admin = createAdminClient();
+  let admin: ReturnType<typeof createAdminClient>;
+  try {
+    admin = createAdminClient();
+  } catch (error) {
+    console.error("KRAM staff provisioning is missing server admin configuration.", error);
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Server admin configuration is missing." }, { status: 500 });
+  }
   const appUrl = process.env.KRAM_APP_URL || new URL(request.url).origin;
   const redirectTo = `${appUrl.replace(/\/$/, "")}/fr/accept-invite`;
 
