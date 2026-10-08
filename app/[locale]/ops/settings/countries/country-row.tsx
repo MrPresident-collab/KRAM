@@ -45,7 +45,7 @@ export function CountryRow({
               />
               <input
                 name="code"
-                defaultValue={country.code}
+                defaultValue={country.code.toUpperCase()}
                 maxLength={3}
                 className="mt-1 w-24 rounded-lg border border-zinc-200 px-2 py-1 text-xs font-semibold lowercase"
               />
