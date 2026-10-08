@@ -14,7 +14,7 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
   const { data: membership } = userId
     ? await supabase
         .from("organization_members")
-        .select("scope_level,country_id,branch_id")
+        .select("organization_id,scope_level,country_id,branch_id")
         .eq("user_id", userId)
         .eq("status", "active")
         .order("created_at", { ascending: true })
@@ -54,6 +54,11 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
   const periodStart = new Date();
   periodStart.setHours(0, 0, 0, 0);
   periodStart.setDate(periodStart.getDate() - 29);
+
+  const { data: organization } = membership?.organization_id
+    ? await supabase.from("organizations").select("default_currency").eq("id", membership.organization_id).maybeSingle()
+    : { data: null };
+  const defaultCurrency = String(organization?.default_currency || "USD").toUpperCase();
 
   const [
     { data: assetRows },
@@ -114,11 +119,9 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
     ["completed", "verified", "closed"].includes(row.status),
   ).length;
 
-  const maintenanceSpendByCurrency = expenses.reduce<Record<string, number>>((totals, row) => {
-    const currency = String(row.currency || "—").trim().toUpperCase() || "—";
-    totals[currency] = (totals[currency] ?? 0) + Number(row.amount || 0);
-    return totals;
-  }, {});
+  const maintenanceSpend = expenses
+    .filter((row) => String(row.currency || "").trim().toUpperCase() === defaultCurrency)
+    .reduce((total, row) => total + Number(row.amount || 0), 0);
 
   const branchNames = new Map((branchRows ?? []).map((row) => [row.id, row.name]));
   const sites = (branchRows ?? [])
@@ -154,7 +157,8 @@ export default async function OpsDashboard({ params }: { params: Promise<{ local
         assetsTotal={assetsTotal}
         assetsActive={assetsActive}
         attentionAssets={attentionAssets}
-        maintenanceSpend={maintenanceSpendByCurrency}
+        maintenanceSpend={maintenanceSpend}
+        defaultCurrency={defaultCurrency}
         openOrders={openOrders}
         completedOrders={completedOrders}
         providers={providerRows?.length ?? 0}
