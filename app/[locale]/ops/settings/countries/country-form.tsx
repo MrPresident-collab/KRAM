@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { Loader2, Plus, X } from "lucide-react";
 import { createCountry } from "./actions";
 
@@ -14,7 +15,8 @@ export function CountryForm({ locale }: { locale: "fr" | "en" | "pt" }) {
   const t = labels[locale];
   const [state, action, pending] = useActionState(createCountry, { success: false, message: "" });
   const ref = useRef<HTMLDialogElement>(null);
-  useEffect(() => { if (state.success) ref.current?.close(); }, [state.success]);
+  const router = useRouter();
+  useEffect(() => { if (state.success) { ref.current?.close(); router.refresh(); } }, [state.success, router]);
   return <>
     <button type="button" onClick={() => ref.current?.showModal()} className="inline-flex items-center gap-2 rounded-lg bg-[var(--kram-charcoal)] px-4 py-2.5 text-sm font-bold text-white"><Plus size={16}/>{t[0]}</button>
     <dialog ref={ref} className="fixed inset-0 m-auto max-h-[90dvh] w-[min(92vw,480px)] overflow-y-auto rounded-2xl border border-[var(--kram-border)] bg-white p-0 shadow-2xl backdrop:bg-black/30">
