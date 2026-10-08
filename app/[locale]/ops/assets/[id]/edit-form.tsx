@@ -1,0 +1,26 @@
+"use client";
+import {useActionState,useEffect,useMemo,useState} from "react";
+import {useRouter} from "next/navigation";
+import {Loader2,Save} from "lucide-react";
+import {updateAssetRecord} from "../actions";
+import type {Locale} from "@/lib/i18n";
+type Country={id:string;name:string;code:string};type Branch={id:string;country_id:string;name:string;city:string|null};type Client={id:string;full_name:string};
+type Asset={id:string;name:string;type:string;countryId:string;country_code:string;branch_id:string|null;city:string;address:string|null;description:string|null;client_id:string|null};
+const labels={fr:{name:"Nom de l’actif",type:"Type",country:"Pays",city:"Ville",branch:"Agence",address:"Adresse",client:"Client",description:"Notes",select:"Sélectionner",save:"Enregistrer",saving:"Enregistrement...",back:"Annuler"},en:{name:"Asset name",type:"Type",country:"Country",city:"City",branch:"Branch",address:"Address",client:"Client",description:"Notes",select:"Select",save:"Save changes",saving:"Saving...",back:"Cancel"},pt:{name:"Nome do ativo",type:"Tipo",country:"País",city:"Cidade",branch:"Filial",address:"Morada",client:"Cliente",description:"Notas",select:"Selecionar",save:"Guardar alterações",saving:"A guardar...",back:"Cancelar"}} as const;
+const types=[["residential","Residential"],["commercial","Commercial"],["construction","Construction"],["retail","Retail"],["warehouse","Warehouse"],["land","Land"],["hospitality","Hospitality"],["other","Other"]] as const;
+export function AssetEditForm({locale,asset,countries,branches,clients}:{locale:Locale;asset:Asset;countries:Country[];branches:Branch[];clients:Client[]}){
+ const t=labels[locale];const[state,action,pending]=useActionState(updateAssetRecord,{success:false,message:""});const router=useRouter();const[countryId,setCountryId]=useState(asset.countryId);
+ const availableBranches=useMemo(()=>branches.filter(b=>b.country_id===countryId),[branches,countryId]);
+ useEffect(()=>{if(state.success)router.push("/"+locale+"/ops/assets/"+asset.id);},[state.success,locale,asset.id,router]);
+ return <form action={action} className="space-y-6 rounded-2xl border border-[var(--kram-border)] bg-white p-6"><input type="hidden" name="assetId" value={asset.id}/><div className="grid gap-5 md:grid-cols-2">
+ <Field label={t.name} name="name" defaultValue={asset.name} required/><label><span className="mb-1.5 block text-xs font-semibold">{t.type}</span><select name="type" defaultValue={asset.type} className="w-full rounded-xl border border-zinc-200 bg-white px-3.5 py-3 text-sm">{types.map(([v,l])=><option key={v} value={v}>{l}</option>)}</select></label>
+ <label><span className="mb-1.5 block text-xs font-semibold">{t.country}</span><select name="countryId" required value={countryId} onChange={e=>setCountryId(e.target.value)} className="w-full rounded-xl border border-zinc-200 bg-white px-3.5 py-3 text-sm"><option value="">{t.select}</option>{countries.map(x=><option key={x.id} value={x.id}>{x.name}</option>)}</select></label>
+ <Field label={t.city} name="city" defaultValue={asset.city} required/>
+ <label><span className="mb-1.5 block text-xs font-semibold">{t.branch}</span><select name="branchId" defaultValue={asset.branch_id||""} className="w-full rounded-xl border border-zinc-200 bg-white px-3.5 py-3 text-sm"><option value="">{t.select}</option>{availableBranches.map(x=><option key={x.id} value={x.id}>{x.name}{x.city?" — "+x.city:""}</option>)}</select></label>
+ <label><span className="mb-1.5 block text-xs font-semibold">{t.client}</span><select name="clientId" defaultValue={asset.client_id||""} className="w-full rounded-xl border border-zinc-200 bg-white px-3.5 py-3 text-sm"><option value="">{t.select}</option>{clients.map(x=><option key={x.id} value={x.id}>{x.full_name}</option>)}</select></label>
+ <div className="md:col-span-2"><Field label={t.address} name="address" defaultValue={asset.address||""}/></div>
+ <label className="md:col-span-2"><span className="mb-1.5 block text-xs font-semibold">{t.description}</span><textarea name="description" defaultValue={asset.description||""} rows={4} className="w-full rounded-xl border border-zinc-200 px-3.5 py-3 text-sm"/></label></div>
+ {state.message&&<p className={`rounded-xl px-3 py-2 text-xs font-medium ${state.success?"bg-emerald-50 text-emerald-700":"bg-red-50 text-red-700"}`}>{state.message}</p>}
+ <div className="flex justify-end gap-3 border-t border-zinc-100 pt-5"><button type="button" onClick={()=>router.push("/"+locale+"/ops/assets/"+asset.id)} className="rounded-xl border border-zinc-200 px-4 py-2.5 text-sm font-semibold">{t.back}</button><button disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-[var(--kram-charcoal)] px-4 py-2.5 text-sm font-bold text-white">{pending?<Loader2 size={15} className="animate-spin"/>:<Save size={15}/>} {pending?t.saving:t.save}</button></div></form>;
+}
+function Field({label,name,defaultValue,required=false}:{label:string;name:string;defaultValue:string;required?:boolean}){return <label><span className="mb-1.5 block text-xs font-semibold">{label}</span><input name={name} defaultValue={defaultValue} required={required} className="w-full rounded-xl border border-zinc-200 px-3.5 py-3 text-sm"/></label>}
