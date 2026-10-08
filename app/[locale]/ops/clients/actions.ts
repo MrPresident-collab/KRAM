@@ -34,7 +34,7 @@ export async function updateClientRecord(_prev:ClientActionState,fd:FormData):Pr
   clientId:z.string().uuid(),
   fullName:z.string().trim().min(2).max(160),
   email:z.string().trim().email().max(254).optional().or(z.literal("")),
-  primaryPhone:z.string().trim().max(40).optional().or(z.literal("")),
+  primaryPhone:z.string().trim().regex(INTERNATIONAL_PHONE_REGEX,"Use international format, e.g. +244...").optional().or(z.literal("")),
   alternativePhone:z.string().trim().regex(INTERNATIONAL_PHONE_REGEX,"Use international phone format.").optional().or(z.literal("")),
   residencyCountry:z.string().trim().max(100).optional(),
   residencyCity:z.string().trim().max(100).optional(),
