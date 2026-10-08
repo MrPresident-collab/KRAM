@@ -40,6 +40,7 @@ export default async function MaintenancePage({ params }: { params: Promise<{ lo
   const orders = maintenanceOrders ?? [];
   const terminal = ["completed", "verified", "closed"];
   const activeOrders = orders.filter((order) => !terminal.includes(order.status));
+  const historyOrders = orders.filter((order) => terminal.includes(order.status)).slice(0, 10);
   const preventiveOrders = orders.filter((order) => order.category === "preventive_maintenance" && !terminal.includes(order.status));
   const attentionOrders = orders.filter(
     (order) => !terminal.includes(order.status) && (["high", "urgent"].includes(order.priority) || order.status === "awaiting_evidence"),
@@ -62,6 +63,9 @@ export default async function MaintenancePage({ params }: { params: Promise<{ lo
           priority: "Priorité",
           status: "Statut",
           asset: "Actif",
+          history: "Historique de maintenance",
+          historyDesc: "Interventions terminées, vérifiées ou clôturées.",
+          noHistory: "Aucune intervention terminée pour le moment.",
         }
       : locale === "pt"
         ? {
@@ -79,6 +83,9 @@ export default async function MaintenancePage({ params }: { params: Promise<{ lo
             priority: "Prioridade",
             status: "Estado",
             asset: "Ativo",
+            history: "Histórico de manutenção",
+            historyDesc: "Intervenções concluídas, verificadas ou encerradas.",
+            noHistory: "Ainda não há intervenções concluídas.",
           }
         : {
             eyebrow: "Operations",
@@ -95,6 +102,9 @@ export default async function MaintenancePage({ params }: { params: Promise<{ lo
             priority: "Priority",
             status: "Status",
             asset: "Asset",
+            history: "Maintenance history",
+            historyDesc: "Completed, verified, and closed maintenance interventions.",
+            noHistory: "No completed maintenance interventions yet.",
           };
 
   return (
@@ -156,6 +166,26 @@ export default async function MaintenancePage({ params }: { params: Promise<{ lo
         ) : (
           <div className="flex min-h-[220px] items-center justify-center px-6 py-10 text-center text-sm text-[var(--kram-metal)]">{labels.empty}</div>
         )}
+      </section>
+
+      <section className="rounded-3xl border border-[var(--kram-border)] bg-white">
+        <div className="flex items-center gap-3 border-b border-[var(--kram-border)] px-5 py-4 md:px-6">
+          <ClipboardList size={17} className="text-[var(--kram-orange)]" />
+          <div>
+            <h2 className="text-base font-black tracking-[-0.03em] text-[var(--kram-deep)]">{labels.history}</h2>
+            <p className="mt-1 text-xs text-[var(--kram-metal)]">{labels.historyDesc}</p>
+          </div>
+        </div>
+        {historyOrders.length ? <div className="divide-y divide-[var(--kram-border)]">
+          {historyOrders.map((order) => {
+            const asset = Array.isArray(order.assets) ? order.assets[0] : order.assets;
+            return <Link key={order.id} href={"/"+locale+"/ops/work-orders/"+order.id} className="grid gap-2 px-5 py-4 transition hover:bg-[var(--kram-bg)] md:grid-cols-[1.6fr_1fr_auto] md:items-center md:px-6">
+              <div className="min-w-0"><p className="truncate text-sm font-bold text-[var(--kram-deep)]">{order.title}</p><p className="mt-1 truncate text-xs text-[var(--kram-metal)]">{labels.asset}: {asset?.name ?? "—"}{asset?.reference_code ? " · "+asset.reference_code : ""}</p></div>
+              <span className="text-xs font-semibold capitalize text-[var(--kram-metal)]">{order.status.replaceAll("_", " ")}</span>
+              <span className="text-xs text-[var(--kram-metal)]">{new Date(order.updated_at).toLocaleDateString(locale)}</span>
+            </Link>;
+          })}
+        </div> : <div className="flex min-h-[120px] items-center justify-center px-6 py-8 text-center text-sm text-[var(--kram-metal)]">{labels.noHistory}</div>}
       </section>
     </div>
   );
