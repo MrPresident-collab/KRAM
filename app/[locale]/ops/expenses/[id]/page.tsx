@@ -180,7 +180,7 @@ export default async function ExpenseDetail({
         </div>
       </section>
 
-      <ExpenseEditForm expense={expense} />
+      <ExpenseEditForm expense={expense} locale={locale as Locale} />
     </div>
   );
 }
