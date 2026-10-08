@@ -42,7 +42,7 @@ export default async function MaintenancePage({ params }: { params: Promise<{ lo
   const activeOrders = orders.filter((order) => !terminal.includes(order.status));
   const preventiveOrders = orders.filter((order) => order.category === "preventive_maintenance" && !terminal.includes(order.status));
   const attentionOrders = orders.filter(
-    (order) => !terminal.includes(order.status) && ["high", "urgent", "awaiting_evidence"].includes(order.priority === "high" || order.priority === "urgent" ? order.priority : order.status),
+    (order) => !terminal.includes(order.status) && (["high", "urgent"].includes(order.priority) || order.status === "awaiting_evidence"),
   );
 
   const labels =
