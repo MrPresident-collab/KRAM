@@ -11,7 +11,7 @@ export function ExpenseCreateForm({assets,workOrders,projects,providers,defaultC
    <Field label="Description" name="description" required placeholder="Plumbing materials"/>
    <Field label="Category" name="category" required placeholder="Materials"/>
    <Field label="Amount" name="amount" required type="number" step="0.01" min="0"/>
-   <label><span className="mb-1.5 block text-xs font-semibold">Currency</span><select name="currency" defaultValue={defaultCurrency} className="w-full rounded-xl border border-zinc-200 bg-white px-3.5 py-3 text-sm"><option value={defaultCurrency}>{defaultCurrency}</option><option value="USD">USD</option><option value="EUR">EUR</option><option value="GBP">GBP</option><option value="CDF">CDF</option><option value="AOA">AOA</option></select></label>
+   <div className="rounded-xl border border-[var(--kram-border)] bg-[var(--kram-bg)] px-3.5 py-3"><p className="text-[10px] font-black uppercase tracking-[0.12em] text-[var(--kram-metal)]">Organization currency</p><p className="mt-1 text-sm font-bold text-[var(--kram-deep)]">{defaultCurrency}</p><p className="mt-1 text-[11px] text-[var(--kram-metal)]">All new expenses are recorded in the organization default currency.</p><input type="hidden" name="currency" value={defaultCurrency}/></div>
    <Field label="Paid to" name="paidTo" placeholder="Supplier or technician"/><Select label="Payment method" name="paymentMethod" options={["cash","bank_transfer","card","mobile_money","other"].map(x=>({value:x,label:x.replace("_"," ")}))}/>
    <Field label="Expense date" name="expenseDate" required type="date" defaultValue={new Date().toISOString().slice(0,10)}/>
    <Select label="Asset" name="assetId" options={assets.map(x=>({value:x.id,label:x.name+" · "+x.reference_code}))}/>
