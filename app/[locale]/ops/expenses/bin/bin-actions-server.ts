@@ -71,21 +71,111 @@ export async function emptyKramBin(
   return { success: true, message: "KRAM bin emptied successfully." };
 }
 
+export async function restoreBinItem(
+  _previous: BinActionState,
+  fd: FormData,
+): Promise<BinActionState> {
+  void _previous;
 
-export async function restoreBinItem(_previous: BinActionState, fd: FormData): Promise<BinActionState> {
- const id=String(fd.get("id")||""); const type=String(fd.get("type")||"");
- if(!id || !["expense","work_order","inspection","project","report"].includes(type)) return {success:false,message:"Invalid bin record."};
- const s=await createClient(); const {data:claims}=await s.auth.getClaims(); const uid=claims?.claims?.sub;
- if(!uid)return{success:false,message:"Your session is no longer valid."};
- const {data:m}=await s.from("organization_members").select("organization_id,role").eq("user_id",uid).eq("status","active").limit(1).maybeSingle();
- if(!m||!["owner","admin","regional_admin","operations","finance"].includes(m.role))return{success:false,message:"You are not authorized to restore this record."};
- let error:any=null;
- if(type==="expense")({error}=await s.from("expenses").update({deleted_at:null,updated_at:new Date().toISOString()}).eq("id",id).eq("organization_id",m.organization_id).not("deleted_at","is",null));
- if(type==="work_order")({error}=await s.from("work_orders").update({deleted_at:null,updated_at:new Date().toISOString()}).eq("id",id).eq("organization_id",m.organization_id).not("deleted_at","is",null));
- if(type==="inspection")({error}=await s.from("inspections").update({deleted_at:null,updated_at:new Date().toISOString()}).eq("id",id).eq("organization_id",m.organization_id).not("deleted_at","is",null));
- if(type==="project")({error}=await s.from("projects").update({deleted_at:null,updated_at:new Date().toISOString()}).eq("id",id).eq("organization_id",m.organization_id).not("deleted_at","is",null));
- if(type==="report")({error}=await s.from("reports").update({deleted_at:null,updated_at:new Date().toISOString()}).eq("id",id).eq("organization_id",m.organization_id).not("deleted_at","is",null));
- if(error)return{success:false,message:"The record could not be restored: "+error.message};
- for(const l of ["fr","en","pt"]){revalidatePath("/"+l+"/ops/expenses/bin");revalidatePath("/"+l+"/ops/expenses");revalidatePath("/"+l+"/ops/work-orders");revalidatePath("/"+l+"/ops/inspections");revalidatePath("/"+l+"/ops/projects");revalidatePath("/"+l+"/ops/reports");}
- return{success:true,message:"Record restored successfully."};
+  const id = String(fd.get("id") || "");
+  const type = String(fd.get("type") || "");
+  const supportedTypes = ["expense", "work_order", "inspection", "project", "report"] as const;
+
+  if (!id || !supportedTypes.includes(type as (typeof supportedTypes)[number])) {
+    return { success: false, message: "Invalid bin record." };
+  }
+
+  const supabase = await createClient();
+  const { data: claims } = await supabase.auth.getClaims();
+  const userId = claims?.claims?.sub;
+
+  if (!userId) {
+    return { success: false, message: "Your session is no longer valid." };
+  }
+
+  const { data: membership } = await supabase
+    .from("organization_members")
+    .select("organization_id,role")
+    .eq("user_id", userId)
+    .eq("status", "active")
+    .limit(1)
+    .maybeSingle();
+
+  if (
+    !membership ||
+    !["owner", "admin", "regional_admin", "operations", "finance"].includes(membership.role)
+  ) {
+    return {
+      success: false,
+      message: "You are not authorized to restore this record.",
+    };
+  }
+
+  const updatedAt = new Date().toISOString();
+  let error: { message: string } | null = null;
+
+  if (type === "expense") {
+    error = (
+      await supabase
+        .from("expenses")
+        .update({ deleted_at: null, updated_at: updatedAt })
+        .eq("id", id)
+        .eq("organization_id", membership.organization_id)
+        .not("deleted_at", "is", null)
+    ).error;
+  } else if (type === "work_order") {
+    error = (
+      await supabase
+        .from("work_orders")
+        .update({ deleted_at: null, updated_at: updatedAt })
+        .eq("id", id)
+        .eq("organization_id", membership.organization_id)
+        .not("deleted_at", "is", null)
+    ).error;
+  } else if (type === "inspection") {
+    error = (
+      await supabase
+        .from("inspections")
+        .update({ deleted_at: null, updated_at: updatedAt })
+        .eq("id", id)
+        .eq("organization_id", membership.organization_id)
+        .not("deleted_at", "is", null)
+    ).error;
+  } else if (type === "project") {
+    error = (
+      await supabase
+        .from("projects")
+        .update({ deleted_at: null, updated_at: updatedAt })
+        .eq("id", id)
+        .eq("organization_id", membership.organization_id)
+        .not("deleted_at", "is", null)
+    ).error;
+  } else {
+    error = (
+      await supabase
+        .from("reports")
+        .update({ deleted_at: null, updated_at: updatedAt })
+        .eq("id", id)
+        .eq("organization_id", membership.organization_id)
+        .not("deleted_at", "is", null)
+    ).error;
+  }
+
+  if (error) {
+    return {
+      success: false,
+      message: "The record could not be restored: " + error.message,
+    };
+  }
+
+  for (const locale of ["fr", "en", "pt"]) {
+    revalidatePath("/" + locale + "/ops/expenses/bin");
+    revalidatePath("/" + locale + "/ops/expenses");
+    revalidatePath("/" + locale + "/ops/work-orders");
+    revalidatePath("/" + locale + "/ops/inspections");
+    revalidatePath("/" + locale + "/ops/projects");
+    revalidatePath("/" + locale + "/ops/reports");
+  }
+
+  return { success: true, message: "Record restored successfully." };
 }
