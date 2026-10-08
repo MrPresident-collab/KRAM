@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Building2, CheckCircle2, MapPin, UserRound, ClipboardList, ClipboardCheck, FolderKanban, Receipt, FileText, Plus } from "lucide-react";
+import { ArrowLeft, Building2, CheckCircle2, MapPin, UserRound, ClipboardList, ClipboardCheck, FolderKanban, Receipt, FileText, Plus, Pencil } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { copy, isLocale, type Locale } from "@/lib/i18n";
 
@@ -66,6 +66,7 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ lo
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
+            <Link href={`/${locale}/ops/assets/${asset.id}/edit`} className="inline-flex items-center gap-2 rounded-xl border border-zinc-200 px-3 py-2 text-xs font-bold text-zinc-700 hover:bg-zinc-50"><Pencil size={14}/>{locale==="fr"?"Modifier":locale==="pt"?"Editar":"Edit asset"}</Link>
             <span className="rounded-full bg-orange-50 px-3 py-1.5 text-xs font-bold text-[var(--kram-orange)]">{typeLabels[locale as Locale][asset.type as keyof typeof typeLabels.fr]}</span>
             <span className="rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1.5 text-xs font-semibold text-zinc-600">{statusLabel}</span>
           </div>
