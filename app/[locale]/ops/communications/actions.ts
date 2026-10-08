@@ -2,19 +2,9 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
-const schema=z.object({conversationId:z.string().uuid(),body:z.string().trim().min(1).max(10000),visibility:z.enum(["client","internal"])});
-export async function sendMessage(formData:FormData){
- const parsed=schema.safeParse({conversationId:formData.get("conversationId"),body:formData.get("body"),visibility:formData.get("visibility")||"client"});
- if(!parsed.success)return;
- const supabase=await createClient();
- const {data:claims}=await supabase.auth.getClaims(); const userId=claims?.claims?.sub;
- if(!userId)return;
- const {data:conversation}=await supabase.from("client_conversations").select("id,organization_id,client_id").eq("id",parsed.data.conversationId).maybeSingle();
- if(!conversation)return;
- const {data:membership}=await supabase.from("organization_members").select("organization_id").eq("user_id",userId).eq("status","active").limit(1).maybeSingle();
- if(!membership || membership.organization_id!==conversation.organization_id)return;
- const {error}=await supabase.from("client_conversation_messages").insert({organization_id:conversation.organization_id,conversation_id:conversation.id,sender_user_id:userId,body:parsed.data.body,visibility:parsed.data.visibility});
- if(error)return;
- await supabase.from("client_conversations").update({last_message_at:new Date().toISOString(),updated_at:new Date().toISOString()}).eq("id",conversation.id);
- revalidatePath("/fr/ops/communications");revalidatePath("/en/ops/communications");revalidatePath("/pt/ops/communications");
-}
+
+const startSchema=z.object({clientId:z.string().uuid(),subject:z.string().trim().min(2).max(200),priority:z.enum(["low","normal","high","urgent"]),body:z.string().trim().min(1).max(10000)});
+const messageSchema=z.object({conversationId:z.string().uuid(),body:z.string().trim().min(1).max(10000),visibility:z.enum(["client","internal"])});
+async function actor(){const s=await createClient();const{data:c}=await s.auth.getClaims();const uid=c?.claims?.sub;if(!uid)return null;const{data:m}=await s.from("organization_members").select("organization_id").eq("user_id",uid).eq("status","active").limit(1).maybeSingle();return m?{s,uid,organizationId:m.organization_id}:null}
+export async function startConversation(fd:FormData){const parsed=startSchema.safeParse({clientId:fd.get("clientId"),subject:fd.get("subject"),priority:fd.get("priority")||"normal",body:fd.get("body")});if(!parsed.success)return{success:false,message:"Please complete the conversation details."};const a=await actor();if(!a)return{success:false,message:"Your session is no longer valid."};const{data:client}=await a.s.from("clients").select("id").eq("id",parsed.data.clientId).eq("organization_id",a.organizationId).maybeSingle();if(!client)return{success:false,message:"Client not found or outside your organization."};const now=new Date().toISOString();const{data:conversation,error}=await a.s.from("client_conversations").insert({organization_id:a.organizationId,client_id:client.id,subject:parsed.data.subject,channel:"portal",status:"open",priority:parsed.data.priority,created_by:a.uid,last_message_at:now,updated_at:now}).select("id").single();if(error||!conversation)return{success:false,message:"The conversation could not be started: "+(error?.message||"unknown database error")};const{error:messageError}=await a.s.from("client_conversation_messages").insert({organization_id:a.organizationId,conversation_id:conversation.id,sender_user_id:a.uid,body:parsed.data.body,visibility:"client",message_type:"message"});if(messageError){await a.s.from("client_conversations").delete().eq("id",conversation.id);return{success:false,message:"The conversation was not completed: "+messageError.message}}for(const l of["fr","en","pt"])revalidatePath("/"+l+"/ops/communications");return{success:true,message:"Conversation started successfully."}}
+export async function sendMessage(fd:FormData){const parsed=messageSchema.safeParse({conversationId:fd.get("conversationId"),body:fd.get("body"),visibility:fd.get("visibility")||"client"});if(!parsed.success)return;const a=await actor();if(!a)return;const{data:conversation}=await a.s.from("client_conversations").select("id").eq("id",parsed.data.conversationId).eq("organization_id",a.organizationId).maybeSingle();if(!conversation)return;const{error}=await a.s.from("client_conversation_messages").insert({organization_id:a.organizationId,conversation_id:conversation.id,sender_user_id:a.uid,body:parsed.data.body,visibility:parsed.data.visibility,message_type:"message"});if(error)return;await a.s.from("client_conversations").update({last_message_at:new Date().toISOString(),updated_at:new Date().toISOString()}).eq("id",conversation.id).eq("organization_id",a.organizationId);for(const l of["fr","en","pt"])revalidatePath("/"+l+"/ops/communications")}
