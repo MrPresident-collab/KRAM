@@ -18,6 +18,7 @@ export function PerformancePanel({
   assetsActive,
   attentionAssets,
   maintenanceSpend,
+  defaultCurrency,
   openOrders,
   completedOrders,
   providers,
@@ -30,7 +31,8 @@ export function PerformancePanel({
   assetsTotal: number;
   assetsActive: number;
   attentionAssets: number;
-  maintenanceSpend: Record<string, number>;
+  maintenanceSpend: number;
+  defaultCurrency: string;
   openOrders: number;
   completedOrders: number;
   providers: number;
@@ -39,17 +41,9 @@ export function PerformancePanel({
   sites: SiteRow[];
 }) {
   const numberLocale = locale === "fr" ? "fr-FR" : locale === "pt" ? "pt-PT" : "en-US";
-  const formattedSpend = Object.entries(maintenanceSpend)
-    .filter(([, amount]) => amount > 0)
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([currency, amount]) =>
-      new Intl.NumberFormat(numberLocale, {
-        style: "currency",
-        currency,
-        maximumFractionDigits: 0,
-      }).format(amount),
-    )
-    .join(" · ");
+  const formattedSpend = maintenanceSpend > 0
+    ? new Intl.NumberFormat(numberLocale, { style: "currency", currency: defaultCurrency, maximumFractionDigits: 0 }).format(maintenanceSpend)
+    : "—";
 
   const activeShare = assetsTotal > 0 ? Math.round((assetsActive / assetsTotal) * 100) : 0;
   const totalCompleted = openOrders + completedOrders;
