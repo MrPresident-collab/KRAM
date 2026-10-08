@@ -1,13 +1,31 @@
 "use client";
 
-import { useState } from "react";
-import { AlertTriangle, ArrowDownRight, ArrowUpRight, ClipboardList, Coins, ShieldCheck, Users } from "lucide-react";
+import {
+  AlertTriangle,
+  Building2,
+  ClipboardList,
+  Coins,
+  ShieldCheck,
+  TrendingUp,
+  Users,
+} from "lucide-react";
 
 type AssetRow = { id: string; name: string; reference_code: string; status: string; site: string };
 type SiteRow = { name: string; total: number; healthy: number; percent: number };
 
 export function PerformancePanel({
-  locale, contextLabel, assetsTotal, assetsActive, attentionAssets, maintenanceSpend, openOrders, completedOrders, providers, clients, attentionRows, sites,
+  locale,
+  contextLabel,
+  assetsTotal,
+  assetsActive,
+  attentionAssets,
+  maintenanceSpend,
+  openOrders,
+  completedOrders,
+  providers,
+  clients,
+  attentionRows,
+  sites,
 }: {
   locale: string;
   contextLabel: string;
@@ -22,72 +40,255 @@ export function PerformancePanel({
   attentionRows: AssetRow[];
   sites: SiteRow[];
 }) {
-  const [days, setDays] = useState<30 | 60 | 90>(30);
-  const labels = locale === "fr" ? {
-    title: "Vue de gestion des actifs", assets: "Actifs gérés", healthy: "Actifs en bon état", attention: "Actifs à surveiller", spend: "Dépenses de maintenance", open: "Ordres ouverts", completed: "Terminés", work: "Performance des interventions", attentionTitle: "Actifs nécessitant une attention", attentionEmpty: "Aucun actif ne nécessite actuellement une attention.", sites: "État des actifs par site", team: "Performance de l’équipe", providers: "Prestataires actifs", clients: "Clients gérés", days: "jours", notEnough: "Données insuffisantes", noAssets: "Aucun actif n’est encore enregistré.", siteEmpty: "Les données de site apparaîtront lorsque les actifs seront enregistrés.", period: "Période", view: "Voir", managed: "sous gestion", current: "actuellement", orders: "ordres de travail", 
-  } : locale === "pt" ? {
-    title: "Visão geral da gestão de ativos", assets: "Ativos geridos", healthy: "Ativos em bom estado", attention: "Ativos que precisam de atenção", spend: "Despesas de manutenção", open: "Ordens abertas", completed: "Concluídas", work: "Desempenho das intervenções", attentionTitle: "Ativos que precisam de atenção", attentionEmpty: "Nenhum ativo requer atenção neste momento.", sites: "Saúde dos ativos por local", team: "Desempenho da equipa", providers: "Prestadores ativos", clients: "Clientes geridos", days: "dias", notEnough: "Dados insuficientes", noAssets: "Ainda não existem ativos registados.", siteEmpty: "Os dados por local aparecerão quando os ativos forem registados.", period: "Período", view: "Ver", managed: "sob gestão", current: "atualmente", orders: "ordens de trabalho",
-  } : {
-    title: "Asset Management Overview", assets: "Managed Assets", healthy: "Assets in good standing", attention: "Assets Requiring Attention", spend: "Maintenance Spend", open: "Open Work Orders", completed: "Completed", work: "Work Order Performance", attentionTitle: "Assets Requiring Attention", attentionEmpty: "No assets currently require attention.", sites: "Asset Health by Site", team: "Team Performance", providers: "Active Providers", clients: "Managed Clients", days: "days", notEnough: "Not enough data", noAssets: "No assets have been registered yet.", siteEmpty: "Site health will appear as assets are registered.", period: "Period", view: "View", managed: "under management", current: "currently", orders: "work orders",
-  };
+  const currency = new Intl.NumberFormat(locale === "fr" ? "fr-FR" : locale === "pt" ? "pt-PT" : "en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  });
 
-  const currency = new Intl.NumberFormat(locale === "fr" ? "fr-FR" : locale === "pt" ? "pt-PT" : "en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
-  const health = assetsTotal ? Math.round((assetsActive / assetsTotal) * 1000) / 10 : null;
+  const activeShare = assetsTotal > 0 ? Math.round((assetsActive / assetsTotal) * 100) : 0;
+  const totalCompleted = openOrders + completedOrders;
+  const openShare = totalCompleted > 0 ? Math.round((openOrders / totalCompleted) * 100) : 0;
+  const completedShare = totalCompleted > 0 ? Math.round((completedOrders / totalCompleted) * 100) : 0;
 
-  return <div className="space-y-6">
-    <section className="rounded-2xl border border-[var(--kram-border)] bg-white">
-      <div className="flex flex-col gap-4 border-b border-[var(--kram-border)] px-5 py-5 sm:flex-row sm:items-end sm:justify-between md:px-6">
-        <div>
-          <p className="text-[10px] font-black uppercase tracking-[.2em] text-[var(--kram-orange)]">{labels.title}</p>
-          <h1 className="mt-2 text-2xl font-black tracking-[-.05em] text-[var(--kram-deep)] md:text-3xl">{contextLabel}</h1>
+  const labels =
+    locale === "fr"
+      ? {
+          title: "Vue de gestion des actifs",
+          subtitle: "Surveillez l’état des actifs, la charge opérationnelle et les performances de maintenance.",
+          period: "Derniers 30 jours",
+          assets: "Actifs gérés",
+          attention: "Actifs à surveiller",
+          spend: "Dépenses de maintenance",
+          open: "Ordres ouverts",
+          completed: "Clos",
+          healthy: "actifs actifs",
+          assetHealth: "Santé des actifs par site",
+          attentionTitle: "Actifs nécessitant une attention",
+          workload: "Charge opérationnelle",
+          team: "Réseau opérationnel",
+          providers: "Prestataires",
+          clients: "Clients",
+          noAssets: "Aucune donnée d’actif pour le moment.",
+          noAttention: "Aucun actif n’a besoin d’attention pour le moment.",
+          noSites: "Aucune donnée de site disponible pour le moment.",
+        }
+      : locale === "pt"
+        ? {
+            title: "Visão geral da gestão de ativos",
+            subtitle: "Monitore a saúde dos ativos, a carga operacional e o desempenho da manutenção.",
+            period: "Últimos 30 dias",
+            assets: "Ativos geridos",
+            attention: "Ativos a vigiar",
+            spend: "Despesas de manutenção",
+            open: "Ordens abertas",
+            completed: "Concluídas",
+            healthy: "ativos ativos",
+            assetHealth: "Saúde dos ativos por local",
+            attentionTitle: "Ativos que requerem atenção",
+            workload: "Carga operacional",
+            team: "Rede operacional",
+            providers: "Prestadores",
+            clients: "Clientes",
+            noAssets: "Ainda não há dados de ativos.",
+            noAttention: "Nenhum ativo requer atenção neste momento.",
+            noSites: "Ainda não há dados de locais.",
+          }
+        : {
+            title: "Asset Management Overview",
+            subtitle: "Monitor asset health, operational workload and maintenance performance.",
+            period: "Last 30 days",
+            assets: "Managed Assets",
+            attention: "Assets Requiring Attention",
+            spend: "Maintenance Spend",
+            open: "Open Work Orders",
+            completed: "Completed",
+            healthy: "active assets",
+            assetHealth: "Asset health by site",
+            attentionTitle: "Assets requiring attention",
+            workload: "Operational workload",
+            team: "Operational network",
+            providers: "Providers",
+            clients: "Clients",
+            noAssets: "No asset data yet.",
+            noAttention: "No assets currently require attention.",
+            noSites: "No site data available yet.",
+          };
+
+  const kpis = [
+    {
+      icon: Building2,
+      label: labels.assets,
+      value: String(assetsTotal),
+      note: assetsTotal ? `${activeShare}% ${labels.healthy}` : labels.noAssets,
+    },
+    {
+      icon: AlertTriangle,
+      label: labels.attention,
+      value: String(attentionAssets),
+      note: attentionAssets ? `${attentionAssets} active attention records` : labels.noAttention,
+      alert: attentionAssets > 0,
+    },
+    {
+      icon: Coins,
+      label: labels.spend,
+      value: maintenanceSpend > 0 ? currency.format(maintenanceSpend) : "—",
+      note: maintenanceSpend > 0 ? labels.period : "No spend recorded in the last 30 days.",
+    },
+    {
+      icon: ClipboardList,
+      label: labels.open,
+      value: String(openOrders),
+      note: totalCompleted > 0 ? `${completedOrders} ${labels.completed.toLowerCase()} this period` : "No work order volume recorded yet.",
+    },
+  ];
+
+  return (
+    <div className="space-y-6 pb-4">
+      <section className="overflow-hidden rounded-3xl border border-[var(--kram-border)] bg-[var(--kram-surface)] shadow-[0_12px_28px_rgba(24,24,24,0.05)]">
+        <div className="flex flex-col gap-3 border-b border-[var(--kram-border)] bg-[var(--kram-bg)] px-5 py-5 md:flex-row md:items-end md:justify-between md:px-6">
+          <div>
+            <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[var(--kram-orange)]">{labels.title}</p>
+            <h1 className="mt-2 text-2xl font-black tracking-[-0.06em] text-[var(--kram-deep)] md:text-3xl">{contextLabel}</h1>
+          </div>
+          <div className="inline-flex items-center gap-2 rounded-full border border-[var(--kram-border)] bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--kram-metal)]">
+            <TrendingUp size={13} className="text-[var(--kram-orange)]" />
+            {labels.period}
+          </div>
         </div>
-        <div className="flex items-center gap-1 rounded-xl border border-[var(--kram-border)] bg-[var(--kram-bg)] p-1">
-          {[30,60,90].map(value => <button key={value} type="button" onClick={() => setDays(value as 30|60|90)} className={`rounded-lg px-3 py-2 text-[10px] font-black ${days===value ? "bg-[var(--kram-orange)] text-white" : "text-[var(--kram-metal)]"}`}>{value}d</button>)}
+
+        <div className="grid gap-px bg-[var(--kram-border)] md:grid-cols-2 xl:grid-cols-4">
+          {kpis.map(({ icon: Icon, label, value, note, alert }) => (
+            <div key={label} className="min-h-[170px] bg-white p-5 md:p-6">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[var(--kram-metal)]">{label}</p>
+                  <p className="mt-3 text-3xl font-black tracking-[-0.06em] text-[var(--kram-deep)]">{value}</p>
+                </div>
+                <div
+                  className={
+                    "flex h-10 w-10 items-center justify-center rounded-xl " +
+                    (alert ? "bg-[var(--kram-orange-soft)] text-[var(--kram-orange)]" : "bg-[var(--kram-bg)] text-[var(--kram-charcoal)]")
+                  }
+                >
+                  <Icon size={18} />
+                </div>
+              </div>
+              <p className="mt-5 text-[11px] leading-5 text-[var(--kram-metal)]">{note}</p>
+            </div>
+          ))}
         </div>
-      </div>
+      </section>
 
-      <div className="grid gap-px bg-[var(--kram-border)] sm:grid-cols-2 xl:grid-cols-4">
-        <Kpi icon={ShieldCheck} label={labels.assets} value={assetsTotal} note={labels.managed} />
-        <Kpi icon={AlertTriangle} label={labels.attention} value={attentionAssets} note={assetsTotal ? `${health}% ${labels.healthy}` : labels.noAssets} alert={attentionAssets > 0} />
-        <Kpi icon={Coins} label={labels.spend} value={maintenanceSpend > 0 ? currency.format(maintenanceSpend) : "—"} note={maintenanceSpend > 0 ? `${labels.period}: ${days} ${labels.days}` : labels.notEnough} />
-        <Kpi icon={ClipboardList} label={labels.open} value={openOrders} note={`${completedOrders} ${labels.completed.toLowerCase()} ${labels.period.toLowerCase()}`} />
-      </div>
-    </section>
+      <section className="grid gap-5 xl:grid-cols-[1.4fr_0.8fr]">
+        <div className="rounded-3xl border border-[var(--kram-border)] bg-white">
+          <div className="flex items-center justify-between border-b border-[var(--kram-border)] px-5 py-4 md:px-6">
+            <div>
+              <h2 className="text-base font-black tracking-[-0.03em] text-[var(--kram-deep)]">{labels.assetHealth}</h2>
+            </div>
+          </div>
 
-    <section className="grid gap-5 xl:grid-cols-[1.35fr_.65fr]">
-      <div className="rounded-2xl border border-[var(--kram-border)] bg-white">
-        <Header title={labels.attentionTitle} subtitle={`${attentionAssets} ${labels.current}`} />
-        {attentionRows.length ? <div className="divide-y divide-[var(--kram-border)]">{attentionRows.map(row => <div key={row.id} className="flex items-center justify-between gap-4 px-6 py-4"><div className="min-w-0"><p className="truncate text-sm font-bold text-[var(--kram-deep)]">{row.name}</p><p className="mt-1 text-[10px] font-semibold uppercase tracking-[.1em] text-[var(--kram-soft-metal)]">{row.reference_code} · {row.site || "Site not assigned"}</p></div><span className="shrink-0 rounded-full bg-orange-50 px-2.5 py-1 text-[10px] font-black text-[var(--kram-orange)]">{row.status}</span></div>)}</div> : <Empty text={assetsTotal ? labels.attentionEmpty : labels.noAssets}/>}
-      </div>
-
-      <div className="rounded-2xl bg-[var(--kram-charcoal)] p-6 text-white">
-        <p className="text-[10px] font-black uppercase tracking-[.18em] text-[var(--kram-orange)]">{labels.team}</p>
-        <div className="mt-6 grid grid-cols-2 gap-5">
-          <Metric value={providers} label={labels.providers}/>
-          <Metric value={clients} label={labels.clients}/>
+          <div className="space-y-4 p-5 md:p-6">
+            {sites.length ? (
+              sites.map((site) => (
+                <div key={site.name} className="space-y-2">
+                  <div className="flex items-center justify-between gap-3 text-xs">
+                    <span className="font-bold text-[var(--kram-deep)]">{site.name}</span>
+                    <span className="font-semibold text-[var(--kram-metal)]">{site.percent}%</span>
+                  </div>
+                  <div className="h-2.5 overflow-hidden rounded-full bg-[var(--kram-bg)]">
+                    <div
+                      className="h-full rounded-full bg-[var(--kram-orange)]"
+                      style={{ width: `${Math.max(6, site.percent)}%` }}
+                    />
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="flex min-h-[180px] items-center justify-center rounded-2xl border border-dashed border-[var(--kram-border)] bg-[var(--kram-bg)] px-4 py-10 text-center text-sm text-[var(--kram-metal)]">
+                {labels.noSites}
+              </div>
+            )}
+          </div>
         </div>
-        <div className="mt-7 border-t border-white/10 pt-5"><p className="text-3xl font-black tracking-[-.05em]">{openOrders}</p><p className="mt-1 text-xs text-white/50">{labels.open.toLowerCase()} · {completedOrders} {labels.completed.toLowerCase()}</p></div>
-      </div>
-    </section>
 
-    <section className="rounded-2xl border border-[var(--kram-border)] bg-white">
-      <Header title={labels.work} subtitle={`${openOrders} ${labels.open.toLowerCase()} · ${completedOrders} ${labels.completed.toLowerCase()}`}/>
-      <div className="grid gap-px bg-[var(--kram-border)] sm:grid-cols-2">
-        <div className="bg-white p-6"><p className="text-[10px] font-black uppercase tracking-[.16em] text-[var(--kram-metal)]">{labels.open}</p><p className="mt-3 text-4xl font-black tracking-[-.06em] text-[var(--kram-deep)]">{openOrders}</p><div className="mt-4 h-2 rounded-full bg-[var(--kram-bg)]"><div className="h-full rounded-full bg-[var(--kram-orange)]" style={{width: openOrders+completedOrders ? `${Math.round((openOrders/(openOrders+completedOrders))*100)}%` : "0%"}}/></div></div>
-        <div className="bg-white p-6"><p className="text-[10px] font-black uppercase tracking-[.16em] text-[var(--kram-metal)]">{labels.completed}</p><p className="mt-3 text-4xl font-black tracking-[-.06em] text-[var(--kram-deep)]">{completedOrders}</p><div className="mt-4 h-2 rounded-full bg-[var(--kram-bg)]"><div className="h-full rounded-full bg-[var(--kram-charcoal)]" style={{width: openOrders+completedOrders ? `${Math.round((completedOrders/(openOrders+completedOrders))*100)}%` : "0%"}}/></div></div>
-      </div>
-    </section>
+        <div className="rounded-3xl bg-[var(--kram-charcoal)] p-6 text-white shadow-[0_18px_35px_rgba(36,36,36,0.18)]">
+          <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[var(--kram-orange)]">{labels.workload}</p>
+          <div className="mt-6 flex items-center justify-center">
+            <div
+              className="relative grid h-36 w-36 place-items-center rounded-full"
+              style={{
+                background: `conic-gradient(var(--kram-orange) 0 ${openShare}%, rgba(255,255,255,0.12) ${openShare}% 100%)`,
+              }}
+            >
+              <div className="grid h-20 w-20 place-items-center rounded-full bg-[var(--kram-charcoal)] text-center">
+                <div>
+                  <p className="text-2xl font-black tracking-[-0.06em]">{openOrders}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-white/65">{labels.open}</p>
+                </div>
+              </div>
+            </div>
+          </div>
 
-    <section className="rounded-2xl border border-[var(--kram-border)] bg-white">
-      <Header title={labels.sites} subtitle={sites.length ? `${sites.length} sites` : labels.siteEmpty}/>
-      {sites.length ? <div className="divide-y divide-[var(--kram-border)]">{sites.map(site => <div key={site.name} className="grid grid-cols-[110px_1fr_48px] items-center gap-4 px-6 py-4"><span className="truncate text-xs font-bold text-[var(--kram-charcoal)]">{site.name}</span><div className="h-2 overflow-hidden rounded-full bg-[var(--kram-bg)]"><div className="h-full rounded-full bg-[var(--kram-orange)]" style={{width:`${site.percent}%`}}/></div><span className="text-right text-xs font-black text-[var(--kram-deep)]">{site.percent}%</span></div>)}</div> : <Empty text={labels.siteEmpty}/>}
-    </section>
-  </div>;
+          <div className="mt-6 grid grid-cols-2 gap-4">
+            <div className="rounded-2xl border border-white/10 bg-white/4 p-3">
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-white/55">{labels.open}</p>
+              <p className="mt-2 text-2xl font-black tracking-[-0.05em]">{openOrders}</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-white/4 p-3">
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-white/55">{labels.completed}</p>
+              <p className="mt-2 text-2xl font-black tracking-[-0.05em]">{completedOrders}</p>
+            </div>
+          </div>
+
+          <div className="mt-6 border-t border-white/10 pt-5">
+            <div className="flex items-center justify-between text-[11px] text-white/70">
+              <span>{labels.providers}</span>
+              <span className="font-bold text-white">{providers}</span>
+            </div>
+            <div className="mt-3 flex items-center justify-between text-[11px] text-white/70">
+              <span>{labels.clients}</span>
+              <span className="font-bold text-white">{clients}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="rounded-3xl border border-[var(--kram-border)] bg-white">
+        <div className="flex items-center justify-between border-b border-[var(--kram-border)] px-5 py-4 md:px-6">
+          <h2 className="text-base font-black tracking-[-0.03em] text-[var(--kram-deep)]">{labels.attentionTitle}</h2>
+        </div>
+
+        {attentionRows.length ? (
+          <div className="divide-y divide-[var(--kram-border)]">
+            {attentionRows.slice(0, 6).map((row) => (
+              <div key={row.id} className="flex items-center justify-between gap-4 px-5 py-4 md:px-6">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-bold text-[var(--kram-deep)]">{row.name}</p>
+                  <p className="mt-1 text-[11px] uppercase tracking-[0.12em] text-[var(--kram-metal)]">{row.reference_code}</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="rounded-full border border-orange-200 bg-orange-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[var(--kram-orange)]">
+                    {row.status}
+                  </span>
+                  <span className="text-[11px] text-[var(--kram-metal)]">{row.site}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex min-h-[140px] items-center justify-center px-6 py-10 text-center text-sm text-[var(--kram-metal)]">
+            {labels.noAttention}
+          </div>
+        )}
+      </section>
+    </div>
+  );
 }
 
-function Kpi({icon:Icon,label,value,note,alert}:{icon:typeof ShieldCheck;label:string;value:number|string;note:string;alert?:boolean}) {
-  return <div className="min-h-[154px] bg-white p-5 md:p-6"><div className="flex items-center justify-between"><div className="grid h-9 w-9 place-items-center rounded-xl bg-[var(--kram-bg)] text-[var(--kram-metal)]"><Icon size={17}/></div>{alert ? <ArrowUpRight size={15} className="text-[var(--kram-orange)]"/> : null}</div><p className="mt-5 text-3xl font-black tracking-[-.06em] text-[var(--kram-deep)]">{value}</p><p className="mt-1 text-[13px] font-black text-[var(--kram-charcoal)]">{label}</p><p className="mt-1 text-[10px] leading-4 text-[var(--kram-metal)]">{note}</p></div>;
+function getStatusBarWidth(value: number) {
+  return `${Math.max(6, value)}%`;
 }
-function Header({title,subtitle}:{title:string;subtitle:string}) { return <div className="border-b border-[var(--kram-border)] px-6 py-5"><h2 className="text-[15px] font-black tracking-[-.02em] text-[var(--kram-deep)]">{title}</h2><p className="mt-1 text-xs text-[var(--kram-metal)]">{subtitle}</p></div>; }
-function Empty({text}:{text:string}) { return <div className="px-6 py-10 text-center text-xs text-[var(--kram-metal)]">{text}</div>; }
-function Metric({value,label}:{value:number;label:string}) { return <div><p className="text-3xl font-black tracking-[-.05em]">{value}</p><p className="mt-1 text-[10px] text-white/50">{label}</p></div>; }
+
+export default PerformancePanel;
+
