@@ -45,3 +45,29 @@ export async function updateProviderVerification(_prev: ProviderActionState, fd:
  for(const l of ["fr","en","pt"]) revalidatePath("/"+l+"/ops/providers/"+providerId);
  return {success:true,message:"Provider verification updated successfully."};
 }
+
+export async function updateProvider(_prev: ProviderActionState, fd: FormData): Promise<ProviderActionState> {
+ const providerId=String(fd.get("providerId")??"");
+ const parsed=schema.safeParse({name:fd.get("name"),phone:fd.get("phone")||"",email:fd.get("email")||"",specialties:fd.getAll("specialties").map(String),coverage:fd.get("coverage")||undefined,notes:fd.get("notes")||undefined,branchId:fd.get("branchId")||""});
+ if(!providerId || !parsed.success) return {success:false,message:"Please complete the provider fields correctly."};
+ const phone=normalizePhone(parsed.data.phone||"");
+ if(phone&&!INTERNATIONAL_PHONE_REGEX.test(phone)) return {success:false,message:"Please check phone: use international format, e.g. +244912345678."};
+ const s=await createClient(); const {data:claims}=await s.auth.getClaims(); const uid=claims?.claims?.sub;
+ if(!uid) return {success:false,message:"Your session is no longer valid."};
+ const {data:m}=await s.from("organization_members").select("organization_id,role").eq("user_id",uid).eq("status","active").limit(1).maybeSingle();
+ if(!m||!["owner","admin","regional_admin","operations"].includes(m.role)) return {success:false,message:"You are not authorized to edit service providers."};
+ const {data:provider}=await s.from("service_providers").select("id").eq("id",providerId).eq("organization_id",m.organization_id).maybeSingle();
+ if(!provider) return {success:false,message:"Service provider not found or outside your organization."};
+ const {data:services}=await s.from("service_catalog").select("code").in("code",parsed.data.specialties).eq("active",true);
+ if(!services||services.length!==new Set(parsed.data.specialties).size) return {success:false,message:"One or more selected specialties are not available in the KRAM service catalog."};
+ const branchId=parsed.data.branchId||null;
+ if(branchId){const {data:b}=await s.from("branches").select("id").eq("id",branchId).eq("organization_id",m.organization_id).maybeSingle();if(!b)return{success:false,message:"The selected branch is not accessible."};}
+ const {error}=await s.from("service_providers").update({name:parsed.data.name,phone:phone||null,email:parsed.data.email||null,coverage:parsed.data.coverage||null,notes:parsed.data.notes||null,branch_id:branchId,updated_at:new Date().toISOString()}).eq("id",providerId).eq("organization_id",m.organization_id);
+ if(error)return{success:false,message:"The provider could not be updated: "+error.message};
+ const {error:deleteError}=await s.from("provider_services").delete().eq("provider_id",providerId).eq("organization_id",m.organization_id);
+ if(deleteError)return{success:false,message:"Provider details were saved, but specialties could not be refreshed."};
+ const {error:serviceError}=await s.from("provider_services").insert(parsed.data.specialties.map(service=>({provider_id:providerId,organization_id:m.organization_id,service})));
+ if(serviceError)return{success:false,message:"Provider details were saved, but specialties could not be refreshed: "+serviceError.message};
+ for(const l of ["fr","en","pt"]){revalidatePath("/"+l+"/ops/providers");revalidatePath("/"+l+"/ops/providers/"+providerId);}
+ return{success:true,message:"Provider updated successfully."};
+}
