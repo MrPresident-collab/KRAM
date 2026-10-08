@@ -24,9 +24,9 @@ export async function startConversation(fd:FormData){
   if(!client)return{success:false,message:"Client not found or outside your organization."};
   const now=new Date().toISOString();
   const {data:conversation,error}=await a.s.from("client_conversations").insert({organization_id:a.organizationId,client_id:client.id,subject:parsed.data.subject,channel:"portal",status:"open",priority:parsed.data.priority,created_by:a.uid,last_message_at:now,updated_at:now}).select("id").single();
-  if(error||!conversation)return{success:false,message:"The conversation could not be started."};
+  if(error||!conversation){console.error("KRAM conversation insert failed",{code:error?.code,message:error?.message,details:error?.details,hint:error?.hint});return{success:false,message:"The conversation could not be started"+(error?.message?": "+error.message:"")};}
   const {error:messageError}=await a.s.from("client_conversation_messages").insert({organization_id:a.organizationId,conversation_id:conversation.id,sender_user_id:a.uid,body:parsed.data.body,visibility:"client",message_type:"message"});
-  if(messageError){await a.s.from("client_conversations").delete().eq("id",conversation.id).eq("organization_id",a.organizationId);return{success:false,message:"The conversation could not be completed. Please try again."};}
+  if(messageError){console.error("KRAM opening message insert failed",{code:messageError.code,message:messageError.message,details:messageError.details,hint:messageError.hint});await a.s.from("client_conversations").delete().eq("id",conversation.id).eq("organization_id",a.organizationId);return{success:false,message:"The conversation was created but the opening message failed: "+messageError.message};}
   for(const l of["fr","en","pt"])revalidatePath("/"+l+"/ops/communications");
   return{success:true,message:"Conversation started successfully.",conversationId:conversation.id};
 }
