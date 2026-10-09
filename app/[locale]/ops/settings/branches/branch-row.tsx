@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Check, GitBranch, Pencil, Trash2, X } from "lucide-react";
 import { deleteBranch, type BranchActionState, updateBranch } from "./actions";
 
@@ -22,6 +23,7 @@ export function BranchRow({
   countries: Country[];
 }) {
   const [editing, setEditing] = useState(false);
+  const router = useRouter();
   const initial: BranchActionState = { success: false, message: "" };
   const [state, action, pending] = useActionState(updateBranch, initial);
   const [deleteState, deleteAction, deletePending] = useActionState(
@@ -29,6 +31,7 @@ export function BranchRow({
     initial,
   );
 
+  useEffect(() => { if (state.success || deleteState.success) router.refresh(); }, [state.success, deleteState.success, router]);
   return (
     <div className="grid gap-3 px-5 py-4 md:grid-cols-[1.5fr_1fr_1fr_1fr_auto] md:items-center">
       <form action={action} className="contents">
