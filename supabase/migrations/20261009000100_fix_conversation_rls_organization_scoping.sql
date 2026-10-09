@@ -47,3 +47,8 @@ with check (
       and om.status = 'active'
   )
 );
+
+-- RLS controls which rows staff can access; SQL privileges must also allow
+-- authenticated users to issue these operations through the Data API.
+grant select, insert, update on table public.client_conversations to authenticated;
+grant select, insert on table public.client_conversation_messages to authenticated;
