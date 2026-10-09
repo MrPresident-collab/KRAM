@@ -16,7 +16,7 @@ export function CountryForm({ locale }: { locale: "fr" | "en" | "pt" }) {
   const [state, action, pending] = useActionState(createCountry, { success: false, message: "" });
   const ref = useRef<HTMLDialogElement>(null);
   const router = useRouter();
-  useEffect(() => { if (state.success) { ref.current?.close(); router.refresh(); } }, [state.success, router]);
+  useEffect(() => { if (state.success) { ref.current?.close(); router.refresh(); } }, [state, router]);
   return <>
     <button type="button" onClick={() => ref.current?.showModal()} className="inline-flex items-center gap-2 rounded-lg bg-[var(--kram-charcoal)] px-4 py-2.5 text-sm font-bold text-white"><Plus size={16}/>{t[0]}</button>
     <dialog ref={ref} className="fixed left-1/2 top-1/2 m-0 max-h-[90dvh] w-[min(92vw,480px)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl border border-[var(--kram-border)] bg-white p-0 shadow-2xl backdrop:bg-black/30">
