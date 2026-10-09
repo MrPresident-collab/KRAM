@@ -39,11 +39,11 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ l
 
   const [{ data: workOrders }, { data: inspections }, { data: projects }, { data: expenses }, { data: reports }] = assetIds.length
     ? await Promise.all([
-        supabase.from("work_orders").select("id,title,status,priority,created_at,asset_id,assets(id,name)").in("asset_id", assetIds).order("created_at", { ascending: false }).limit(12),
-        supabase.from("inspections").select("id,inspection_type,status,scheduled_for,created_at,asset_id,assets(id,name)").in("asset_id", assetIds).order("created_at", { ascending: false }).limit(12),
-        supabase.from("projects").select("id,name,status,progress_percent,updated_at,asset_id,assets(id,name)").in("asset_id", assetIds).order("updated_at", { ascending: false }).limit(12),
-        supabase.from("expenses").select("id,description,amount,currency,status,expense_date,asset_id,assets(id,name)").in("asset_id", assetIds).order("expense_date", { ascending: false }).limit(12),
-        supabase.from("reports").select("id,title,status,report_type,created_at,asset_id,assets(id,name)").in("asset_id", assetIds).order("created_at", { ascending: false }).limit(12),
+        supabase.from("work_orders").select("id,title,status,priority,created_at,asset_id,assets(id,name)").in("asset_id", assetIds).eq("organization_id", membership.organization_id).order("created_at", { ascending: false }).limit(12),
+        supabase.from("inspections").select("id,inspection_type,status,scheduled_for,created_at,asset_id,assets(id,name)").in("asset_id", assetIds).eq("organization_id", membership.organization_id).order("created_at", { ascending: false }).limit(12),
+        supabase.from("projects").select("id,name,status,progress_percent,updated_at,asset_id,assets(id,name)").in("asset_id", assetIds).eq("organization_id", membership.organization_id).order("updated_at", { ascending: false }).limit(12),
+        supabase.from("expenses").select("id,description,amount,currency,status,expense_date,asset_id,assets(id,name)").in("asset_id", assetIds).eq("organization_id", membership.organization_id).order("expense_date", { ascending: false }).limit(12),
+        supabase.from("reports").select("id,title,status,report_type,created_at,asset_id,assets(id,name)").in("asset_id", assetIds).eq("organization_id", membership.organization_id).order("created_at", { ascending: false }).limit(12),
       ])
     : [{ data: [] }, { data: [] }, { data: [] }, { data: [] }, { data: [] }];
 
