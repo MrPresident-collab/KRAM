@@ -15,23 +15,30 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ lo
   if (!isLocale(locale)) notFound();
   const t = copy[locale as Locale];
   const supabase = await createClient();
+  const { data: claims } = await supabase.auth.getClaims();
+  const userId = claims?.claims?.sub;
+  if (!userId) notFound();
+  const { data: membership } = await supabase.from("organization_members")
+    .select("organization_id,scope_level,branch_id,country_id")
+    .eq("user_id", userId).eq("status", "active").order("created_at", { ascending: true }).limit(1).maybeSingle();
+  if (!membership) notFound();
 
   const { data: asset, error } = await supabase
     .from("assets")
-    .select("id,name,reference_code,type,status,country_code,region,city,address,description,created_at,updated_at,clients(id,full_name,email,primary_phone)")
-    .eq("id", id)
+    .select("id,name,reference_code,type,status,country_code,region,city,address,description,branch_id,organization_id,created_at,updated_at,clients(id,full_name,email,primary_phone)")
+    .eq("id", id).eq("organization_id", membership.organization_id)
     .maybeSingle();
 
-  if (error || !asset) notFound();
+  if (error || !asset || (membership.scope_level === "branch" && asset.branch_id !== membership.branch_id)) notFound();
 
   const client = Array.isArray(asset.clients) ? asset.clients[0] : asset.clients;
   const [{ data: workOrders }, { data: inspections }, { data: projects }, { data: expenses }, { data: reports }, { count: documentCount }] = await Promise.all([
-    supabase.from("work_orders").select("id,title,status,priority,created_at").eq("asset_id", id).order("created_at", { ascending: false }).limit(8),
-    supabase.from("inspections").select("id,inspection_type,status,scheduled_for,created_at").eq("asset_id", id).order("created_at", { ascending: false }).limit(8),
-    supabase.from("projects").select("id,name,status,progress_percent,updated_at").eq("asset_id", id).order("updated_at", { ascending: false }).limit(8),
-    supabase.from("expenses").select("id,description,amount,currency,status,expense_date").eq("asset_id", id).order("expense_date", { ascending: false }).limit(8),
-    supabase.from("reports").select("id,title,status,report_type,created_at").eq("asset_id", id).order("created_at", { ascending: false }).limit(8),
-    supabase.from("documents").select("id", { count: "exact", head: true }).eq("asset_id", id),
+    supabase.from("work_orders").select("id,title,status,priority,created_at").eq("asset_id", id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).order("created_at", { ascending: false }).limit(8),
+    supabase.from("inspections").select("id,inspection_type,status,scheduled_for,created_at").eq("asset_id", id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).order("created_at", { ascending: false }).limit(8),
+    supabase.from("projects").select("id,name,status,progress_percent,updated_at").eq("asset_id", id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).order("updated_at", { ascending: false }).limit(8),
+    supabase.from("expenses").select("id,description,amount,currency,status,expense_date").eq("asset_id", id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).order("expense_date", { ascending: false }).limit(8),
+    supabase.from("reports").select("id,title,status,report_type,created_at").eq("asset_id", id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).order("created_at", { ascending: false }).limit(8),
+    supabase.from("documents").select("id", { count: "exact", head: true }).eq("asset_id", id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id).eq("organization_id", membership.organization_id),
   ]);
 
   const openWorkOrders = (workOrders ?? []).filter((x) => !["closed", "verified", "completed"].includes(x.status)).length;
