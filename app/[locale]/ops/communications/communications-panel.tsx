@@ -3,20 +3,25 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, MessageSquare, Plus, Search, Send, X } from "lucide-react";
-import { startConversation, sendMessage } from "./actions";
+import { startConversation, sendMessage, updateCase } from "./actions";
 import type { Locale } from "@/lib/i18n";
 
 type ClientRef = { id:string; full_name:string|null; email:string|null };
-type Message = { id:string; body:string; sent_at:string };
-type Conversation = { id:string; subject:string|null; status:string; priority:string|null; clients:ClientRef|ClientRef[]|null; messages:Message[] };
+type Message = { id:string; body:string; sent_at:string; visibility?:string; sender_user_id?:string|null }; type Event = {id:string;event_type:string;from_status:string|null;to_status:string|null;details:string|null;created_at:string;actor_id:string|null;assigned_to:string|null}; type Staff = {user_id:string;role:string;name:string};
+type Conversation = { id:string; subject:string|null; status:string; case_status?:string|null; priority:string|null; assigned_to?:string|null; escalation_reason?:string|null; resolution_summary?:string|null; clients:ClientRef|ClientRef[]|null; messages:Message[]; events:Event[] };
 
-export function CommunicationsPanel({ locale, conversations, clients }:{locale:Locale;conversations:Conversation[];clients:ClientRef[]}) {
+export function CommunicationsPanel({ locale, conversations, clients, staff, currentRole }:{locale:Locale;conversations:Conversation[];clients:ClientRef[];staff:Staff[];currentRole:string}) {
   const [q,setQ]=useState("");
   const [selected,setSelected]=useState<string|null>(conversations[0]?.id??null);
   const [open,setOpen]=useState(false);
   const [reply,setReply]=useState("");
   const [replyPending,setReplyPending]=useState(false);
   const [replyError,setReplyError]=useState("");
+  const [caseStatus,setCaseStatus]=useState("open");
+  const [caseAssignee,setCaseAssignee]=useState("");
+  const [caseNote,setCaseNote]=useState("");
+  const [casePending,setCasePending]=useState(false);
+  const [caseMessage,setCaseMessage]=useState("");
   const router=useRouter();
 
   const filtered=useMemo(()=>conversations.filter(c=>{
@@ -26,6 +31,9 @@ export function CommunicationsPanel({ locale, conversations, clients }:{locale:L
 
   const active=conversations.find(c=>c.id===selected);
   const client=active&&(Array.isArray(active.clients)?active.clients[0]:active.clients);
+  const statusOptions=locale==="fr"?{open:"Ouvert",assigned:"Attribué",in_progress:"En cours",escalated:"Escaladé",resolved:"Résolu",closed:"Fermé"}:locale==="pt"?{open:"Aberto",assigned:"Atribuído",in_progress:"Em curso",escalated:"Escalado",resolved:"Resolvido",closed:"Fechado"}:{open:"Open",assigned:"Assigned",in_progress:"In progress",escalated:"Escalated",resolved:"Resolved",closed:"Closed"};
+  async function saveCase(e:React.FormEvent){e.preventDefault();if(!active)return;setCasePending(true);setCaseMessage("");const result=await updateCase({conversationId:active.id,status:caseStatus,assignedTo:caseAssignee||active.assigned_to||null,details:caseNote});setCasePending(false);setCaseMessage(result.message);if(result.success){setCaseNote("");router.refresh();}}
+
   const labels=locale==="fr"
     ? {start:"Démarrer une conversation",client:"Client",subject:"Sujet",priority:"Priorité",message:"Message initial",cancel:"Annuler",send:"Démarrer",reply:"Répondre au client",replyPlaceholder:"Écrivez votre réponse…",sendReply:"Envoyer",sending:"Envoi…",search:"Rechercher des conversations…",empty:"Aucune conversation. Démarrez une conversation avec un client.",noMatch:"Aucune conversation ne correspond à votre recherche.",select:"Sélectionnez une conversation."}
     : locale==="pt"
@@ -49,7 +57,7 @@ export function CommunicationsPanel({ locale, conversations, clients }:{locale:L
       </div>
       <div className="divide-y divide-zinc-100">
         {filtered.map(c=>{const x=Array.isArray(c.clients)?c.clients[0]:c.clients;const latest=c.messages[0];return <button type="button" key={c.id} onClick={()=>{setSelected(c.id);setReplyError("");}} className={`block w-full px-4 py-4 text-left hover:bg-zinc-50 ${selected===c.id?"bg-orange-50/60":""}`}>
-          <div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="truncate text-sm font-bold text-zinc-900">{x?.full_name??"Client"}</p><p className="mt-0.5 truncate text-xs text-zinc-400">{c.subject||"General communication"}</p></div><span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-bold uppercase text-zinc-500">{c.status}</span></div>
+          <div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="truncate text-sm font-bold text-zinc-900">{x?.full_name??"Client"}</p><p className="mt-0.5 truncate text-xs text-zinc-400">{c.subject||"General communication"}</p></div><span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-bold uppercase text-zinc-500">{statusOptions[(c.case_status||c.status) as keyof typeof statusOptions]||c.case_status||c.status}</span></div>
           {latest&&<p className="mt-2 truncate text-xs text-zinc-500">{latest.body}</p>}
         </button>})}
         {!filtered.length&&<div className="p-8 text-center text-sm text-zinc-500">{q?labels.noMatch:labels.empty}</div>}
@@ -57,7 +65,13 @@ export function CommunicationsPanel({ locale, conversations, clients }:{locale:L
     </aside>
     <main className="flex min-h-0 flex-col">
       {active ? <>
-        <header className="border-b border-zinc-100 p-5"><p className="text-sm font-bold">{client?.full_name??"Client"}</p><p className="mt-1 text-xs text-zinc-400">{active.subject||"General communication"}</p></header>
+        <header className="border-b border-zinc-100 p-5"><p className="text-sm font-bold">{client?.full_name??"Client"}</p><p className="mt-1 text-xs text-zinc-400">{active.subject||"General communication"} · {active.priority||"normal"}</p></header>
+        <section className="border-b border-zinc-100 bg-zinc-50/60 p-4"><form onSubmit={saveCase} className="grid gap-3 md:grid-cols-2">
+<label className="block"><span className="mb-1 block text-xs font-semibold">Case status</span><select value={caseStatus} onChange={e=>setCaseStatus(e.target.value)} className="w-full rounded-lg border bg-white px-3 py-2.5 text-sm">{Object.entries(statusOptions).map(([v,l])=><option key={v} value={v}>{l}</option>)}</select></label>
+<label className="block"><span className="mb-1 block text-xs font-semibold">Assigned to</span><select value={caseAssignee||active.assigned_to||""} onChange={e=>setCaseAssignee(e.target.value)} className="w-full rounded-lg border bg-white px-3 py-2.5 text-sm"><option value="">Unassigned</option>{staff.map(s=><option key={s.user_id} value={s.user_id}>{s.name} · {s.role}</option>)}</select></label>
+<label className="block md:col-span-2"><span className="mb-1 block text-xs font-semibold">Action taken / escalation reason / resolution note</span><textarea value={caseNote} onChange={e=>setCaseNote(e.target.value)} rows={2} maxLength={4000} placeholder="Record actions taken, next steps, or the reason for escalation…" className="w-full rounded-lg border bg-white px-3 py-2.5 text-sm"/></label>
+<div className="flex flex-wrap items-center justify-between gap-2 md:col-span-2"><p className="text-[11px] text-zinc-500">Closing requires an administrator and a resolved case.</p><button disabled={casePending} className="rounded-lg bg-[var(--kram-charcoal)] px-4 py-2.5 text-xs font-bold text-white disabled:opacity-50">{casePending?"Saving…":"Save case update"}</button></div>{caseMessage&&<p role="status" className="text-xs text-zinc-600 md:col-span-2">{caseMessage}</p>}</form>
+{active.events?.length>0&&<div className="mt-4 border-t border-zinc-200 pt-3"><p className="mb-2 text-xs font-bold uppercase tracking-wide text-zinc-500">Case history</p><div className="space-y-2">{active.events.slice(0,8).map(ev=><div key={ev.id} className="flex gap-3 text-xs"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--kram-orange)]"/><div><p className="font-semibold text-zinc-700">{ev.event_type.replaceAll("_"," ")}{ev.to_status?" · "+(statusOptions[ev.to_status as keyof typeof statusOptions]||ev.to_status):""}</p>{ev.details&&<p className="mt-0.5 text-zinc-500">{ev.details}</p>}<p className="mt-0.5 text-[10px] text-zinc-400">{new Date(ev.created_at).toLocaleString(locale)}</p></div></div>)}</div></div>}</section>
         <div className="flex-1 space-y-4 overflow-y-auto p-6">{[...active.messages].reverse().map(m=><div key={m.id} className="max-w-2xl rounded-2xl bg-zinc-50 p-4"><p className="text-sm leading-6 text-zinc-700">{m.body}</p><p className="mt-2 text-[10px] text-zinc-400">{new Date(m.sent_at).toLocaleString(locale)}</p></div>)}</div>
         <form onSubmit={submitReply} className="border-t bg-zinc-50/60 p-4">
           <label className="mb-2 block text-xs font-bold text-zinc-600">{labels.reply}</label>
