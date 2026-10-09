@@ -10,7 +10,7 @@ export function SettingsPreferences({ defaultCurrency }: { defaultCurrency: stri
     success: false,
     message: "",
   });
-  useEffect(() => { if (state.success) router.refresh(); }, [state.success, router]);
+  useEffect(() => { if (state.success) router.refresh(); }, [state, router]);
 
   return (
     <section>
