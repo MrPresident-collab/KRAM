@@ -21,7 +21,7 @@ export function DocumentUpload({locale,organizationId,branchId}:Props) {
     e.preventDefault(); const file=input.current?.files?.[0]; if(!file)return;
     setBusy(true);setMessage("");setError(false);
     if(file.size>20*1024*1024||!allowed.has(file.type)){setError(true);setMessage("Choose a supported file up to 20 MB.");setBusy(false);return;}
-    const supabase=createClient();const id=crypto.randomUUID();const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");const folder=branchId??"shared";const path=`${organizationId}/${folder}/${id}-${safeName}`;
+    const supabase=createClient();const id=crypto.randomUUID();const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");const folder=branchId??"global";const path=`${organizationId}/${folder}/${id}-${safeName}`;
     const {error:uploadError}=await supabase.storage.from("kram-documents").upload(path,file,{contentType:file.type,upsert:false});
     if(uploadError){setError(true);setMessage(uploadError.message);setBusy(false);return;}
     const result=await saveDocumentMetadata({fileName:file.name,storagePath:path,mimeType:file.type,sizeBytes:file.size,documentType:type,description});
