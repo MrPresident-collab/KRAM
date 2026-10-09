@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Check, Globe2, Pencil, Trash2, X } from "lucide-react";
 import { deleteCountry, type CountryActionState, updateCountry } from "./actions";
 
@@ -19,6 +20,7 @@ export function CountryRow({
   locale: string;
 }) {
   const [editing, setEditing] = useState(false);
+  const router = useRouter();
   const initial: CountryActionState = { success: false, message: "" };
   const [state, action, pending] = useActionState(updateCountry, initial);
   const [deleteState, deleteAction, deletePending] = useActionState(
@@ -26,6 +28,7 @@ export function CountryRow({
     initial,
   );
 
+  useEffect(() => { if (state.success || deleteState.success) router.refresh(); }, [state.success, deleteState.success, router]);
   return (
     <div className="flex items-center justify-between gap-4 px-5 py-4">
       <form action={action} className="flex min-w-0 flex-1 items-center gap-3">
