@@ -102,3 +102,23 @@ export async function updateProjectMilestone(_prev:ProjectActionState,fd:FormDat
 }
 
 export async function moveProjectToBin(_prev:{success:boolean;message:string},fd:FormData){const id=String(fd.get("projectId")||"");if(!z.string().uuid().safeParse(id).success)return{success:false,message:"Invalid record."};const s=await createClient();const{data:c}=await s.auth.getClaims();const uid=c?.claims?.sub;if(!uid)return{success:false,message:"Your session is no longer valid."};const{data:m}=await s.from("organization_members").select("organization_id,role").eq("user_id",uid).eq("status","active").limit(1).maybeSingle();if(!m||!["owner","admin","regional_admin","operations"].includes(m.role))return{success:false,message:"You are not authorized to move this record to the bin."};const{error}=await s.from("projects").update({deleted_at:new Date().toISOString(),deleted_by:uid,updated_at:new Date().toISOString()}).eq("id",id).eq("organization_id",m.organization_id);if(error)return{success:false,message:error.message};for(const l of["fr","en","pt"])revalidatePath("/"+l+"/ops/projects");return{success:true,message:"Moved to bin."};}
+
+
+export async function updateProjectRecord(_prev:ProjectActionState,fd:FormData):Promise<ProjectActionState>{
+ const parsed=schema.extend({projectId:z.string().uuid()}).safeParse({locale:fd.get("locale"),projectId:fd.get("projectId"),assetId:fd.get("assetId"),name:fd.get("name"),projectType:fd.get("projectType"),startDate:fd.get("startDate")||undefined,targetEndDate:fd.get("targetEndDate")||undefined,budget:fd.get("budget")||undefined,description:fd.get("description")||undefined});
+ if(!parsed.success)return{success:false,message:getMessages(fd.get("locale")).updateRequired};
+ const s=await createClient();const{data:claims}=await s.auth.getClaims();const uid=claims?.claims?.sub;if(!uid)return{success:false,message:getMessages(parsed.data.locale).session};
+ const{data:m}=await s.from("organization_members").select("organization_id,role,scope_level,branch_id").eq("user_id",uid).eq("status","active").limit(1).maybeSingle();
+ if(!m||!["owner","admin","regional_admin","operations"].includes(m.role))return{success:false,message:getMessages(parsed.data.locale).unauthorizedUpdate};
+ const{data:current}=await s.from("projects").select("id,organization_id,branch_id,status").eq("id",parsed.data.projectId).eq("organization_id",m.organization_id).is("deleted_at",null).maybeSingle();
+ if(!current)return{success:false,message:getMessages(parsed.data.locale).notFound};
+ if(m.scope_level==="branch"&&current.branch_id!==m.branch_id)return{success:false,message:"This project is outside your branch scope."};
+ if(["completed","cancelled"].includes(current.status))return{success:false,message:"Completed or cancelled projects cannot be edited."};
+ const{data:a}=await s.from("assets").select("id,organization_id,branch_id").eq("id",parsed.data.assetId).eq("organization_id",m.organization_id).is("deleted_at",null).maybeSingle();if(!a)return{success:false,message:getMessages(parsed.data.locale).asset};
+ if(m.scope_level==="branch"&&a.branch_id!==m.branch_id)return{success:false,message:"The selected asset is outside your branch scope."};
+ const{error}=await s.from("projects").update({asset_id:a.id,branch_id:a.branch_id,name:parsed.data.name,project_type:parsed.data.projectType,start_date:parsed.data.startDate||null,target_end_date:parsed.data.targetEndDate||null,budget:parsed.data.budget??null,description:parsed.data.description||null,updated_at:new Date().toISOString()}).eq("id",current.id).eq("organization_id",m.organization_id);
+ if(error)return{success:false,message:getMessages(parsed.data.locale).updateError};
+ await writeAudit(s,{organizationId:m.organization_id,branchId:a.branch_id,actorId:uid,action:"project.updated",entityType:"project",entityId:current.id,summary:"Project details updated",metadata:{name:parsed.data.name,projectType:parsed.data.projectType}});
+ for(const l of ["fr","en","pt"]) {revalidatePath("/"+l+"/ops/projects");revalidatePath("/"+l+"/ops/projects/"+current.id);}
+ return{success:true,message:getMessages(parsed.data.locale).updated};
+}
