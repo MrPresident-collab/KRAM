@@ -19,7 +19,7 @@ export function BranchForm({ locale, countries }: { locale:"fr"|"en"|"pt"; count
   const ref=useRef<HTMLDialogElement>(null);
   const router=useRouter();
 
-  useEffect(()=>{ if(state.success) { ref.current?.close(); router.refresh(); } },[state.success,router]);
+  useEffect(()=>{ if(state.success) { ref.current?.close(); router.refresh(); } },[state,router]);
 
   return <>
     <button type="button" onClick={()=>ref.current?.showModal()} disabled={!countries.length} className="inline-flex items-center gap-2 rounded-xl bg-[var(--kram-orange)] px-4 py-2.5 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-40">
