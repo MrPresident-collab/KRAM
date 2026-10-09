@@ -143,9 +143,9 @@ export async function transitionReport(_prev:ReportActionState,fd:FormData):Prom
  const{data:m}=await s.from("organization_members").select("organization_id,role,scope_level").eq("user_id",uid).eq("status","active").limit(1).maybeSingle();
  if(!m||!["owner","admin","regional_admin","operations","finance"].includes(m.role))
   return{success:false,message:"You are not authorized to update reports."};
- if(["review","published"].includes(parsed.data.status)) {
+ if(parsed.data.status === "published") {
   const canApprove = m.role === "regional_admin" || ((m.role === "owner" || m.role === "admin") && m.scope_level === "global");
-  if(!canApprove) return {success:false,message:"Only a global or regional administrator can review and publish reports."};
+  if(!canApprove) return {success:false,message:"Only a global or regional administrator can publish reports."};
  }
 
  const{data:r}=await s.from("reports").select("id,organization_id,branch_id,status").eq("id",parsed.data.reportId).eq("organization_id",m.organization_id).maybeSingle();
