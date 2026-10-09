@@ -28,7 +28,7 @@ export function CountryRow({
     initial,
   );
 
-  useEffect(() => { if (state.success || deleteState.success) router.refresh(); }, [state.success, deleteState.success, router]);
+  useEffect(() => { if (state.success || deleteState.success) router.refresh(); }, [state, deleteState, router]);
   return (
     <div className="flex items-center justify-between gap-4 px-5 py-4">
       <form action={action} className="flex min-w-0 flex-1 items-center gap-3">
