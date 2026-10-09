@@ -32,7 +32,7 @@ export function DocumentUpload({locale,organizationId,branchId}:Props) {
     <label className="block"><span className="mb-1.5 block text-xs font-semibold">{t.type}</span><select value={type} onChange={e=>setType(e.target.value as keyof typeof t.types)} className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-3 text-sm">{Object.entries(t.types).map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label>
     <label className="block"><span className="mb-1.5 block text-xs font-semibold">{t.description}</span><input value={description} onChange={e=>setDescription(e.target.value)} maxLength={1000} className="w-full rounded-xl border border-zinc-200 px-3 py-3 text-sm"/></label>
     <label className="block"><span className="mb-1.5 block text-xs font-semibold">{t.choose}</span><input ref={input} type="file" required accept=".pdf,.jpg,.jpeg,.png,.webp,.txt,.doc,.docx,.xls,.xlsx" className="block w-full text-xs file:mr-3 file:rounded-lg file:border-0 file:bg-zinc-100 file:px-3 file:py-2 file:font-semibold"/></label>
-    <button disabled={busy} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--kram-charcoal)] px-4 py-3 text-sm font-bold text-white disabled:opacity-60">{busy?<Loader2 size={16} className="animate-spin"/>:<FileUp size={16}/ >}{busy?t.busy:t.save}</button>
+    <button disabled={busy} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--kram-charcoal)] px-4 py-3 text-sm font-bold text-white disabled:opacity-60">{busy?<Loader2 size={16} className="animate-spin"/>:<FileUp size={16} />}{busy?t.busy:t.save}</button>
     {message&&<p role="status" className={`text-xs md:col-span-4 ${error?"text-red-600":"text-emerald-700"}`}>{message}</p>}
   </form>;
 }
