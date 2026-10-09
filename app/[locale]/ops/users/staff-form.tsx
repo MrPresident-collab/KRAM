@@ -33,10 +33,16 @@ export function StaffForm({ locale }: { locale: Locale }) {
   function openForm(){setError("");setSuccess("");setOpen(true);setCountryId("");setBranchId("");void loadLocations();}
   async function submit(e:React.FormEvent){
     e.preventDefault(); setPending(true); setError(""); setSuccess("");
-    const res=await fetch("/api/ops/staff",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fullName:name,email,jobTitle,role,scopeLevel:scope,countryId:scope==="country"?countryId:null,branchId:scope==="branch"?branchId:null})});
-    const body=await res.json().catch(()=>({}));
-    if(!res.ok){setError(body.error??t.error);setPending(false);return;}
-    setSuccess(t.success);setPending(false);setName("");setEmail("");setJobTitle("");setRole("operations");setScope("branch");setCountryId("");setBranchId("");
+    try {
+      const res=await fetch("/api/ops/staff",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fullName:name,email,jobTitle,role,scopeLevel:scope,countryId:scope==="country"?countryId:null,branchId:scope==="branch"?branchId:null})});
+      const body=await res.json().catch(()=>({error:"The server returned an unexpected response (HTTP "+res.status+"). Check the development terminal for the underlying error."}));
+      if(!res.ok){setError(body.error??t.error);setPending(false);return;}
+      setSuccess(t.success);setPending(false);setName("");setEmail("");setJobTitle("");setRole("operations");setScope("branch");setCountryId("");setBranchId("");
+    } catch (cause) {
+      console.error("KRAM staff provisioning request failed", cause);
+      setError("The staff request could not reach the server. Check your connection and the development terminal, then try again.");
+      setPending(false);
+    }
   }
   return <><button type="button" onClick={openForm} className="inline-flex items-center gap-2 rounded-xl bg-[var(--kram-orange)] px-4 py-2.5 text-sm font-bold text-white"><Plus size={16}/>{t.create}</button>
   {open&&<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4"><div className="w-full max-w-xl rounded-2xl border border-[var(--kram-border)] bg-white shadow-2xl">
