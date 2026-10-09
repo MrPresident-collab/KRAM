@@ -1,10 +1,14 @@
 "use client";
-import {useState} from "react";
+import {useState,useEffect} from "react";
+import {useRouter} from "next/navigation";
+import type {Locale} from "@/lib/i18n";
 import{useActionState}from"react";import{Loader2,Save,Upload}from"lucide-react";import{createReport,type ReportActionState}from"../actions";
 type Option={id:string;name?:string;reference_code?:string;inspection_type?:string;title?:string};
-export function ReportCreateForm({assets,inspections,projects,workOrders}:{assets:Option[];inspections:Option[];projects:Option[];workOrders:Option[]}){
+export function ReportCreateForm({assets,inspections,projects,workOrders,locale}:{assets:Option[];inspections:Option[];projects:Option[];workOrders:Option[];locale:Locale}){
  const [sourceType,setSourceType]=useState("none");
  const[state,action,pending]=useActionState<ReportActionState,FormData>(createReport,{success:false,message:""});
+ const router=useRouter();
+ useEffect(()=>{if(state.success)router.push("/"+locale+"/ops/reports");},[state.success,locale,router]);
  return <form action={action} className="space-y-5 rounded-2xl border border-[var(--kram-border)] bg-white p-6">
  <div className="grid gap-5 md:grid-cols-2">
  <Field label="Report title" name="title" required placeholder="Property inspection report"/>
