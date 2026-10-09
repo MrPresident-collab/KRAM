@@ -22,7 +22,7 @@ export async function saveDocumentMetadata(input: unknown) {
   if (!userId) return { success: false, message: "Your session has expired. Sign in again." };
   const { data: member } = await supabase.from("organization_members").select("organization_id,role,scope_level,branch_id,status").eq("user_id", userId).eq("status", "active").order("created_at", { ascending: true }).limit(1).maybeSingle();
   if (!member || !["owner","admin","regional_admin","operations","finance"].includes(member.role)) return { success: false, message: "You are not authorized to upload documents." };
-  const expectedPrefix = member.branch_id ? `${member.organization_id}/${member.branch_id}/` : `${member.organization_id}/shared/`;
+  const expectedPrefix = member.branch_id ? `${member.organization_id}/${member.branch_id}/` : `${member.organization_id}/global/`;
   if (!parsed.data.storagePath.startsWith(expectedPrefix)) return { success: false, message: "The document storage path is outside your authorized scope." };
   const { error } = await supabase.from("documents").insert({
     organization_id: member.organization_id,
