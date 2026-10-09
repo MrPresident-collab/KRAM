@@ -31,7 +31,7 @@ export function BranchRow({
     initial,
   );
 
-  useEffect(() => { if (state.success || deleteState.success) router.refresh(); }, [state.success, deleteState.success, router]);
+  useEffect(() => { if (state.success || deleteState.success) router.refresh(); }, [state, deleteState, router]);
   return (
     <div className="grid gap-3 px-5 py-4 md:grid-cols-[1.5fr_1fr_1fr_1fr_auto] md:items-center">
       <form action={action} className="contents">
