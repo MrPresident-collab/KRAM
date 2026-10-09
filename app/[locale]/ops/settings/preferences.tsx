@@ -1,13 +1,16 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { updateDefaultCurrency, type SettingsState } from "./actions";
 
 export function SettingsPreferences({ defaultCurrency }: { defaultCurrency: string }) {
+  const router = useRouter();
   const [state, action, pending] = useActionState<SettingsState, FormData>(updateDefaultCurrency, {
     success: false,
     message: "",
   });
+  useEffect(() => { if (state.success) router.refresh(); }, [state.success, router]);
 
   return (
     <section>
@@ -18,6 +21,7 @@ export function SettingsPreferences({ defaultCurrency }: { defaultCurrency: stri
           <p className="mt-1 text-xs text-[var(--kram-metal)]">Used as the default for new financial records.</p>
           <div className="mt-4 flex gap-2">
             <select
+              key={defaultCurrency}
               name="currency"
               defaultValue={defaultCurrency}
               className="min-w-0 flex-1 rounded-xl border border-[var(--kram-border)] bg-[var(--kram-surface)] px-3 py-2.5 text-sm text-[var(--kram-deep)] outline-none transition focus:border-[var(--kram-orange)]"
