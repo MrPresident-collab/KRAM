@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Loader2, Plus, X } from "lucide-react";
 import type { Locale } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase/client";
@@ -17,6 +18,7 @@ const roles = [
 
 export function StaffForm({ locale }: { locale: Locale }) {
   const t=copy[locale];
+  const router = useRouter();
   const [open,setOpen]=useState(false); const [mode,setMode]=useState<"directory"|"invite">("directory"); const [pending,setPending]=useState(false); const [error,setError]=useState(""); const [success,setSuccess]=useState("");
   const [name,setName]=useState(""); const [email,setEmail]=useState(""); const [jobTitle,setJobTitle]=useState(""); const [role,setRole]=useState("operations"); const [scope,setScope]=useState("branch"); const [countryId,setCountryId]=useState(""); const [branchId,setBranchId]=useState("");
   const [countries,setCountries]=useState<{id:string;name:string;code:string}[]>([]);
@@ -37,7 +39,7 @@ export function StaffForm({ locale }: { locale: Locale }) {
       const res=await fetch("/api/ops/staff",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fullName:name,email:mode==="invite"?email:"",jobTitle,role,scopeLevel:scope,countryId:scope==="country"?countryId:null,branchId:scope==="branch"?branchId:null})});
       const body=await res.json().catch(()=>({error:"The server returned an unexpected response (HTTP "+res.status+"). Check the development terminal for the underlying error."}));
       if(!res.ok){setError(body.error??t.error);setPending(false);return;}
-      setSuccess(body.message??(mode==="invite"?t.success:"Staff record created. You can invite this person later."));setPending(false);setName("");setEmail("");setJobTitle("");setRole("operations");setScope("branch");setCountryId("");setBranchId("");
+      setSuccess(body.message??(mode==="invite"?t.success:"Staff record created. You can invite this person later."));setPending(false);setName("");setEmail("");setJobTitle("");setRole("operations");setScope("branch");setCountryId("");setBranchId("");setOpen(false);router.refresh();
     } catch (cause) {
       console.error("KRAM staff provisioning request failed", cause);
       setError("The staff request could not reach the server. Check your connection and the development terminal, then try again.");
