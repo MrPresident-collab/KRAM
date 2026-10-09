@@ -11,14 +11,21 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ l
   const t = copy[locale as Locale]; const labels = opsLabels(locale as Locale);
   const ui = getDetailUi(locale as Locale).client;
   const supabase = await createClient();
+  const { data: claims } = await supabase.auth.getClaims();
+  const userId = claims?.claims?.sub;
+  if (!userId) notFound();
+  const { data: membership } = await supabase.from("organization_members")
+    .select("organization_id,scope_level,branch_id").eq("user_id", userId).eq("status", "active")
+    .order("created_at", { ascending: true }).limit(1).maybeSingle();
+  if (!membership) notFound();
 
   const [{ data: client, error }, { data: assets }, { data: trustedContact }] = await Promise.all([
-    supabase.from("clients").select("id,full_name,email,primary_phone,alternative_phone,residency_country,residency_city,residency_address,preferred_language,preferred_contact_method,notes,status,created_at,updated_at").eq("id", id).maybeSingle(),
-    supabase.from("assets").select("id,name,reference_code,type,status,city,country_code").eq("client_id", id).order("created_at", { ascending: false }),
+    supabase.from("clients").select("id,organization_id,branch_id,full_name,email,primary_phone,alternative_phone,residency_country,residency_city,residency_address,preferred_language,preferred_contact_method,notes,status,created_at,updated_at").eq("id", id).eq("organization_id", membership.organization_id).maybeSingle(),
+    supabase.from("assets").select("id,name,reference_code,type,status,city,country_code").eq("client_id", id).eq("organization_id", membership.organization_id).order("created_at", { ascending: false }),
     supabase.from("client_authorized_contacts").select("full_name,relationship,primary_phone,alternative_phone,email,residency_country,residency_city,residency_address,preferred_language,preferred_contact_method,same_as_client").eq("client_id", id).eq("status","active").maybeSingle(),
   ]);
 
-  if (error || !client) notFound();
+  if (error || !client || (membership.scope_level === "branch" && client.branch_id !== membership.branch_id)) notFound();
 
   const initials = client.full_name
     .split(/\s+/)
