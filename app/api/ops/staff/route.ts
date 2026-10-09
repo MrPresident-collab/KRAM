@@ -6,7 +6,7 @@ import { writeAudit } from "@/lib/audit";
 
 const schema = z.object({
   fullName: z.string().trim().min(2).max(160),
-  email: z.string().trim().email().max(254),
+  email: z.string().trim().email().max(254).optional().or(z.literal("")),
   jobTitle: z.string().trim().min(2).max(160),
   role: z.enum(["owner","admin","regional_admin","operations","finance","support","viewer"]),
   scopeLevel: z.enum(["global","country","branch"]),
@@ -80,6 +80,40 @@ export async function POST(request: Request) {
   if (parsed.data.scopeLevel === "global" && (targetCountryId || targetBranchId)) return NextResponse.json({ error: "Global scope cannot include a country or branch." }, { status: 400 });
   if (!scopeAllowed(actor, parsed.data.scopeLevel, targetCountryId, targetBranchId, branchCountryId)) return NextResponse.json({ error: "The selected scope is outside your authorization." }, { status: 403 });
   if (actor.scope_level === "branch" && actor.role === "admin" && parsed.data.role === "admin" && targetBranchId !== actor.branch_id) return NextResponse.json({ error: "You cannot assign an administrator outside your branch." }, { status: 403 });
+
+  if (!parsed.data.email) {
+    const { data: record, error: directoryError } = await supabase
+      .from("staff_directory")
+      .insert({
+        organization_id: actor.organization_id,
+        full_name: parsed.data.fullName,
+        job_title: parsed.data.jobTitle,
+        role: parsed.data.role,
+        scope_level: parsed.data.scopeLevel,
+        country_id: targetCountryId,
+        branch_id: targetBranchId,
+        status: "pending_invitation",
+        created_by: userId,
+        updated_by: userId,
+      })
+      .select("id")
+      .single();
+    if (directoryError || !record) {
+      console.error("KRAM staff directory record could not be created.", directoryError);
+      return NextResponse.json({ error: directoryError?.message || "Unable to create staff directory record." }, { status: 500 });
+    }
+    await writeAudit(supabase, {
+      organizationId: actor.organization_id,
+      branchId: targetBranchId,
+      actorId: userId,
+      action: "staff.directory_created",
+      entityType: "staff_directory",
+      entityId: record.id,
+      summary: `Staff directory record created for ${parsed.data.fullName}`,
+      metadata: { role: parsed.data.role, scope_level: parsed.data.scopeLevel, country_id: targetCountryId, branch_id: targetBranchId },
+    });
+    return NextResponse.json({ success: true, mode: "directory", message: "Staff record created. You can invite this person later." });
+  }
 
   const rate = await supabase.rpc("consume_api_rate_limit", { p_bucket_key: `${userId}:user:staff-invite`, p_limit: 10, p_window_seconds: 60 });
   if (rate.error) return NextResponse.json({ error: `Staff invitation rate-limit check failed: ${rate.error.message}` }, { status: 500 });
