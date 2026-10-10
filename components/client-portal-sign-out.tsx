@@ -12,7 +12,8 @@ export function ClientSignOut({ locale, label }: { locale: string; label: string
     if (pending) return;
     setPending(true);
     const supabase = createClient();
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+    if (error) { setPending(false); return; }
     router.replace("/" + locale + "/client-login");
     router.refresh();
   }
