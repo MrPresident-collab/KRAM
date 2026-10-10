@@ -9,7 +9,7 @@ import { ClientSignOut } from "@/components/client-portal-sign-out";
 const words = {
   en: {
     eyebrow:"CLIENT SPACE", title:"Your assets, in view.", intro:"A clearer picture of the assets you’ve entrusted to KRAM, and the conversations and updates connected to them.",
-    assets:"Your assets", conversations:"Your conversations", reports:"Published reports", view:"View all", emptyAssets:"Your assets will appear here once they have been registered to your client account.",
+    assets:"Your assets", conversations:"Your conversations", reports:"Published reports", approvals:"Approvals", review:"Review requests", view:"View all", emptyAssets:"Your assets will appear here once they have been registered to your client account.",
     emptyChats:"No conversations yet. If you need help with an asset or service, our team is here to listen.",
     emptyReports:"Published reports for your assets will appear here when they are ready.",
     chat:"Talk to KRAM", chatDesc:"Tell our team what help you need. This is a direct client-to-KRAM conversation, separate from internal operations.",
@@ -18,7 +18,7 @@ const words = {
   },
   fr: {
     eyebrow:"ESPACE CLIENT", title:"Vos actifs, en toute visibilité.", intro:"Une vision plus claire des actifs confiés à KRAM, ainsi que des échanges et des informations qui s’y rapportent.",
-    assets:"Vos actifs", conversations:"Vos conversations", reports:"Rapports publiés", view:"Tout voir", emptyAssets:"Vos actifs apparaîtront ici lorsqu’ils auront été enregistrés dans votre dossier client.",
+    assets:"Vos actifs", conversations:"Vos conversations", reports:"Rapports publiés", approvals:"Approbations", review:"Examiner les demandes", view:"Tout voir", emptyAssets:"Vos actifs apparaîtront ici lorsqu’ils auront été enregistrés dans votre dossier client.",
     emptyChats:"Aucune conversation pour le moment. Si vous avez besoin d’aide concernant un actif ou un service, notre équipe est à votre écoute.",
     emptyReports:"Les rapports publiés concernant vos actifs apparaîtront ici dès qu’ils seront disponibles.",
     chat:"Échanger avec KRAM", chatDesc:"Expliquez à notre équipe l’aide dont vous avez besoin. Cet échange est réservé à la relation client-KRAM, séparément des opérations internes.",
@@ -27,7 +27,7 @@ const words = {
   },
   pt: {
     eyebrow:"ÁREA DO CLIENTE", title:"Os seus ativos, com clareza.", intro:"Uma visão mais clara dos ativos confiados à KRAM e das conversas e atualizações relacionadas.",
-    assets:"Os seus ativos", conversations:"As suas conversas", reports:"Relatórios publicados", view:"Ver todos", emptyAssets:"Os seus ativos aparecerão aqui quando forem registados na sua conta de cliente.",
+    assets:"Os seus ativos", conversations:"As suas conversas", reports:"Relatórios publicados", approvals:"Aprovações", review:"Ver pedidos", view:"Ver todos", emptyAssets:"Os seus ativos aparecerão aqui quando forem registados na sua conta de cliente.",
     emptyChats:"Ainda não existem conversas. Se precisar de ajuda com um ativo ou serviço, a nossa equipa está disponível para ouvir.",
     emptyReports:"Os relatórios publicados dos seus ativos aparecerão aqui quando estiverem disponíveis.",
     chat:"Falar com a KRAM", chatDesc:"Diga à nossa equipa de que ajuda precisa. Esta conversa é exclusivamente entre o cliente e a KRAM, separada das operações internas.",
@@ -53,10 +53,11 @@ export default async function ClientOverviewPage({ params }: { params: Promise<{
   const { data: clientId, error: clientError } = await supabase.rpc("current_kram_client_id");
   if (clientError || !clientId) redirect("/" + locale + "/client-login");
 
-  const [assetsResult, chatsResult, reportsResult] = await Promise.all([
+  const [assetsResult, chatsResult, reportsResult, approvalsResult] = await Promise.all([
     supabase.from("assets").select("id,name,reference_code,type,status,city,country_code,updated_at", { count:"exact" }).eq("client_id", clientId).order("updated_at", { ascending:false }).limit(6),
     supabase.from("client_conversations").select("id,subject,status,last_message_at,created_at", { count:"exact" }).eq("client_id", clientId).order("last_message_at", { ascending:false, nullsFirst:false }).limit(5),
-    supabase.from("reports").select("id,title,summary,published_at,asset_id", { count:"exact" }).eq("status","published").is("deleted_at",null).order("published_at",{ascending:false}).limit(5)
+    supabase.from("reports").select("id,title,summary,published_at,asset_id", { count:"exact" }).eq("status","published").is("deleted_at",null).order("published_at",{ascending:false}).limit(5),
+    supabase.rpc("get_client_approval_requests")
   ]);
   const assets = assetsResult.data ?? [];
   const chats = chatsResult.data ?? [];
@@ -77,6 +78,7 @@ export default async function ClientOverviewPage({ params }: { params: Promise<{
         <article className="client-portal-stat"><span>{t.assets}</span><strong>{assetsResult.count ?? assets.length}</strong><small>{assets.length===1?"asset":"assets"}</small></article>
         <article className="client-portal-stat"><span>{t.conversations}</span><strong>{chatsResult.count ?? chats.length}</strong><small>{chats.filter((c:any)=>!["closed","resolved"].includes(c.status)).length} active</small></article>
         <article className="client-portal-stat"><span>{t.reports}</span><strong>{reportsResult.count ?? reports.length}</strong><small>Available to you</small></article>
+        <Link className="client-portal-stat client-portal-stat-link" href={"/"+locale+"/client/approvals"}><span>{t.approvals}</span><strong>{approvalsResult.data?.length ?? 0}</strong><small>{t.review}</small><ArrowUpRight size={14}/></Link>
       </section>
       <section className="client-portal-chat-banner">
         <div className="client-portal-chat-icon"><MessageCircle size={23}/></div>
