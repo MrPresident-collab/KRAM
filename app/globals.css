@@ -679,3 +679,13 @@
 .enquiry-page .enquiry-form-success p{margin:4px 0 0;color:#52665A;font-size:12px}
 @media(max-width:760px){.enquiry-page .enquiry-layout{grid-template-columns:1fr;padding-top:34px;gap:22px}.enquiry-page .enquiry-aside{position:static}.enquiry-page .enquiry-hero{min-height:400px;padding:62px 22px}.enquiry-page .enquiry-form{padding:24px 18px}}
 @media(max-width:520px){.enquiry-page .enquiry-field-grid{grid-template-columns:1fr;gap:17px}.enquiry-page .enquiry-field-full{margin-top:20px}.enquiry-page .enquiry-options{gap:7px}.enquiry-page .enquiry-option{flex:1 1 100%}.enquiry-page .enquiry-submit-row .button{width:100%}.enquiry-page .enquiry-hero h1{font-size:42px}}
+
+/* Enquiry form field rhythm and accessible input affordances */
+.enquiry-page .enquiry-field-grid{column-gap:24px;row-gap:26px}
+.enquiry-page .enquiry-field{gap:11px;line-height:1.55}
+.enquiry-page .enquiry-field input:not([type=checkbox]):not([type=radio]),.enquiry-page .enquiry-field select,.enquiry-page .enquiry-field textarea{min-height:52px;padding:14px 15px}
+.enquiry-page .enquiry-field-full{margin-top:28px}
+.enquiry-page .enquiry-fieldset{margin-bottom:36px;padding-bottom:34px}
+.enquiry-page .enquiry-field input:invalid:not(:placeholder-shown){border-color:#c96b54}
+.enquiry-page .enquiry-field input[type=tel]{font-variant-numeric:tabular-nums;letter-spacing:.025em}
+@media(max-width:520px){.enquiry-page .enquiry-field-grid{row-gap:20px}.enquiry-page .enquiry-fieldset{margin-bottom:28px;padding-bottom:26px}}
