@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ArrowRight, ArrowUpRight, KeyRound, MessageCircle, ShieldCheck } from "lucide-react";
 import { isLocale, type Locale } from "@/lib/i18n";
-import { KramLogo } from "@/components/brand/kram-logo";
+import { KramBrand } from "@/components/brand/kram-brand";
 
 const copy = {
   en: {
@@ -83,7 +83,7 @@ export default function ClientLoginPage() {
   return (
     <main className="public-home client-login-page" id="top">
       <header className="site-header">
-        <Link href={`/${locale}`} className="brand-mark" aria-label="KRAM home"><KramLogo className="site-logo" /></Link>
+        <KramBrand locale={locale} href={`/${locale}`} className="brand-mark" />
         <nav className="main-nav" aria-label="Main navigation">
           <Link href={`/${locale}`}>{t.nav.home}</Link>
           <Link href={`/${locale}/about`}>{t.nav.about}</Link>
@@ -156,7 +156,7 @@ export default function ClientLoginPage() {
 
       <footer className="site-footer">
         <div className="footer-top">
-          <Link href={`/${locale}`} className="brand-mark brand-mark-footer" aria-label="KRAM home"><KramLogo className="site-logo site-logo-footer" /></Link>
+          <KramBrand locale={locale} href={`/${locale}`} className="brand-mark brand-mark-footer" logoClassName="site-logo site-logo-footer" />
           <p>{t.footerLine}</p>
           <div className="footer-contact"><span>{t.contact}</span><Link href={`/${locale}/services`}>{t.contactAction} ↗</Link></div>
         </div>
