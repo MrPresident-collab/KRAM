@@ -104,7 +104,7 @@
 .site-footer { padding: 30px clamp(24px, 5.4vw, 86px) 18px; background: #1d1e1c; color: white; }
 .footer-brand-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 28px; padding-bottom: 22px; }
 .footer-brand-copy { max-width: 430px; }
-.footer-wordmark { display: inline-flex; align-items: center; color: #f4f3ee; font-family: "Dancing Script", "Segoe Script", "Brush Script MT", cursive; font-size: 29px; font-weight: 600; letter-spacing: -.02em; line-height: 1.1; text-decoration: none; opacity: .92; }
+.footer-wordmark { display: inline-flex; align-items: center; color: #d8d8d1; font-family: "Dancing Script", "Segoe Script", "Brush Script MT", cursive; font-size: 23px; font-weight: 500; letter-spacing: 0; line-height: 1.1; text-decoration: none; opacity: .82; }
 .footer-wordmark span { display: inline-block; }
 .footer-company { margin: 8px 0 3px; color: #f0efe9; font-size: 12px; font-weight: 550; letter-spacing: .01em; }
 .footer-tagline { max-width: 330px; margin: 0; color: #c0c0b9; font-size: 11px; line-height: 1.6; }
