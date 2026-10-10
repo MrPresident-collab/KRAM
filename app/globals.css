@@ -561,3 +561,19 @@
 .client-chat-not-found p{color:#6D6D65;font-size:14px;line-height:1.7}
 .client-chat-not-found .button{display:inline-flex;align-items:center;text-decoration:none}
 @media(max-width:600px){.client-form-layout,.client-chat-layout{padding:30px 18px 64px}.client-form-heading{padding:38px 0 25px}.client-form-heading h1,.client-chat-heading h1{font-size:40px}.client-form-submit-row{align-items:stretch;flex-direction:column}.client-form-submit-row button{width:100%}.client-chat-message{max-width:95%}.client-chat-message-list{padding:15px}.client-chat-reply{padding:18px 15px}.client-chat-reply>div{align-items:stretch;flex-direction:column}.client-chat-reply button{justify-content:center;width:100%}}
+
+/* Client asset detail */
+.client-asset-layout{max-width:900px;margin:0 auto;padding:44px 24px 90px}
+.client-asset-hero{position:relative;padding:46px 0 32px;border-bottom:1px solid #DEDED9}
+.client-asset-icon{width:54px;height:54px;display:grid;place-items:center;margin-bottom:27px;background:#E9E9E3;color:#F47721}
+.client-asset-hero h1{max-width:760px;margin:19px 0 12px;font-size:clamp(40px,6vw,64px);line-height:1.03;letter-spacing:-.055em;font-weight:500;overflow-wrap:anywhere}
+.client-asset-hero>p:not(.eyebrow){color:#77776F;font-size:14px;line-height:1.7}
+.client-asset-hero .client-portal-status{display:inline-block;margin-top:8px}
+.client-asset-details{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:22px 0 26px}
+.client-asset-details>div{display:flex;flex-direction:column;gap:10px;min-width:0;padding:18px;background:#FBFBF9;border:1px solid #E1E1DB}
+.client-asset-details span{color:#85857D;font-size:11px}
+.client-asset-details strong{font-size:13px;line-height:1.6;font-weight:600;overflow-wrap:anywhere}
+.client-asset-description{padding:25px 0 12px}
+.client-asset-description .eyebrow{margin-bottom:12px}
+.client-asset-description>p:last-child{font-size:13px;line-height:1.8;color:#6F6F68;white-space:pre-wrap}
+@media(max-width:600px){.client-asset-layout{padding:30px 18px 65px}.client-asset-hero{padding-top:38px}.client-asset-hero h1{font-size:40px}.client-asset-details{grid-template-columns:1fr}.client-asset-details>div{padding:14px 16px;gap:6px}}
