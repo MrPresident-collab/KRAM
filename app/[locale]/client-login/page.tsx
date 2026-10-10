@@ -35,8 +35,8 @@ export default function ClientAccessPage() {
       setPending(false);
       return;
     }
-    const {data:client,error:clientError} = await supabase.from("clients").select("id").eq("profile_id",data.user.id).eq("status","active").maybeSingle();
-    if (clientError || !client) {
+    const {data:clientId,error:clientError} = await supabase.rpc("current_kram_client_id");
+    if (clientError || !clientId) {
       await supabase.auth.signOut();
       setError(t.noAccess);
       setPending(false);
