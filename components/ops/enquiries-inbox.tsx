@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Check, Mail, MapPin, Phone, UserRound, UserCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
-type Enquiry = {
+export type Enquiry = {
  id:string; full_name:string; email:string; phone:string|null; residence:string;
  asset_location:string; asset_type:string; help_needed:string[]; details:string|null;
  preferred_contact:string; preferred_language:string; status:string; assigned_to:string|null; created_at:string;
