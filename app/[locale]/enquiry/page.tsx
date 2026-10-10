@@ -18,7 +18,10 @@ const copy = {
     contact: "Your details",
     name: "Full name",
     email: "Email address",
-    phone: "Phone or WhatsApp (optional)",
+    phone: "Phone or WhatsApp (include country code)",
+    phonePlaceholder: "+244 923 456 789",
+    residenceCountry: "Country of residence", residenceCity: "City of residence",
+    assetStreet: "Street address, building or neighbourhood", assetCity: "Asset city", assetCountry: "Asset country",
     residence: "Where are you based?",
     asset: "About the asset",
     assetLocation: "Where is the asset located?",
@@ -46,7 +49,10 @@ const copy = {
     contact: "Vos coordonnées",
     name: "Nom complet",
     email: "Adresse e-mail",
-    phone: "Téléphone ou WhatsApp (facultatif)",
+    phone: "Téléphone ou WhatsApp (avec indicatif du pays)",
+    phonePlaceholder: "+244 923 456 789",
+    residenceCountry: "Pays de résidence", residenceCity: "Ville de résidence",
+    assetStreet: "Adresse, bâtiment ou quartier", assetCity: "Ville de l’actif", assetCountry: "Pays de l’actif",
     residence: "Où résidez-vous ?",
     asset: "À propos de l’actif",
     assetLocation: "Où se situe l’actif ?",
@@ -74,7 +80,10 @@ const copy = {
     contact: "Os seus dados",
     name: "Nome completo",
     email: "Endereço de e-mail",
-    phone: "Telefone ou WhatsApp (opcional)",
+    phone: "Telefone ou WhatsApp (com indicativo do país)",
+    phonePlaceholder: "+244 923 456 789",
+    residenceCountry: "País de residência", residenceCity: "Cidade de residência",
+    assetStreet: "Morada, edifício ou bairro", assetCity: "Cidade do ativo", assetCountry: "País do ativo",
     residence: "Onde reside?",
     asset: "Sobre o ativo",
     assetLocation: "Onde está localizado o ativo?",
@@ -152,8 +161,8 @@ export default function EnquiryPage() {
             p_full_name: String(data.get("fullName") || ""),
             p_email: String(data.get("email") || ""),
             p_phone: String(data.get("phone") || ""),
-            p_residence: String(data.get("residence") || ""),
-            p_asset_location: String(data.get("assetLocation") || ""),
+            p_residence: `${String(data.get("residenceCity") || "").trim()}, ${String(data.get("residenceCountry") || "").trim()}`,
+            p_asset_location: `${String(data.get("assetStreet") || "").trim()}, ${String(data.get("assetCity") || "").trim()}, ${String(data.get("assetCountry") || "").trim()}`,
             p_asset_type: String(data.get("assetType") || ""),
             p_help_needed: helpNeeded,
             p_details: String(data.get("details") || ""),
@@ -170,15 +179,18 @@ export default function EnquiryPage() {
             <div className="enquiry-field-grid">
               <label className="enquiry-field"><span>{t.name} *</span><input name="fullName" autoComplete="name" required maxLength={160} /></label>
               <label className="enquiry-field"><span>{t.email} *</span><input name="email" type="email" autoComplete="email" required maxLength={254} /></label>
-              <label className="enquiry-field"><span>{t.phone}</span><input name="phone" type="tel" autoComplete="tel" maxLength={40} /></label>
-              <label className="enquiry-field"><span>{t.residence} *</span><input name="residence" required maxLength={120} /></label>
+              <label className="enquiry-field"><span>{t.phone} *</span><input name="phone" type="tel" inputMode="tel" autoComplete="tel" required maxLength={16} placeholder={t.phonePlaceholder} pattern="\\+[1-9][0-9]{7,14}" title="Use international format: + followed by country code and 7–14 more digits, without spaces." onChange={(event) => { const digits = event.currentTarget.value.replace(/\\D/g, "").slice(0, 15); event.currentTarget.value = digits ? "+" + digits : ""; }} /></label>
+              <label className="enquiry-field"><span>{t.residenceCountry} *</span><input name="residenceCountry" autoComplete="country-name" required maxLength={100} /></label>
+              <label className="enquiry-field"><span>{t.residenceCity} *</span><input name="residenceCity" required maxLength={100} /></label>
             </div>
           </fieldset>
 
           <fieldset className="enquiry-fieldset">
             <legend>{t.asset}</legend>
             <div className="enquiry-field-grid">
-              <label className="enquiry-field"><span>{t.assetLocation} *</span><input name="assetLocation" required maxLength={180} /></label>
+              <label className="enquiry-field enquiry-field-full"><span>{t.assetStreet} *</span><input name="assetStreet" autoComplete="street-address" required maxLength={180} /></label>
+              <label className="enquiry-field"><span>{t.assetCity} *</span><input name="assetCity" required maxLength={100} /></label>
+              <label className="enquiry-field"><span>{t.assetCountry} *</span><input name="assetCountry" autoComplete="country-name" required maxLength={100} /></label>
               <label className="enquiry-field"><span>{t.assetType} *</span><span className="enquiry-select-wrap"><select name="assetType" required defaultValue=""><option value="" disabled>{t.chooseType}</option>{t.types.map((type) => <option key={type} value={type}>{type}</option>)}</select><ChevronDown size={16} /></span></label>
             </div>
             <div className="enquiry-field enquiry-field-full"><span>{t.help} *</span><div className="enquiry-options">{t.helpOptions.map((option) => <label key={option} className="enquiry-option"><input type="checkbox" name="helpNeeded" value={option} /><span>{option}</span></label>)}</div></div>
