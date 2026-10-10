@@ -179,7 +179,7 @@ export default function EnquiryPage() {
             <div className="enquiry-field-grid">
               <label className="enquiry-field"><span>{t.name} *</span><input name="fullName" autoComplete="name" required maxLength={160} /></label>
               <label className="enquiry-field"><span>{t.email} *</span><input name="email" type="email" autoComplete="email" required maxLength={254} /></label>
-              <label className="enquiry-field"><span>{t.phone} *</span><input name="phone" type="tel" inputMode="tel" autoComplete="tel" required maxLength={16} placeholder={t.phonePlaceholder} pattern="\\+[1-9][0-9]{7,14}" title="Use international format: + followed by country code and 7–14 more digits, without spaces." onChange={(event) => { const digits = event.currentTarget.value.replace(/\\D/g, "").slice(0, 15); event.currentTarget.value = digits ? "+" + digits : ""; }} /></label>
+              <label className="enquiry-field"><span>{t.phone} *</span><input name="phone" type="tel" inputMode="tel" autoComplete="tel" required maxLength={16} placeholder={t.phonePlaceholder} pattern="\+[1-9][0-9]{7,14}" title="Use international format: + followed by country code and 7–14 more digits, without spaces." onChange={(event) => { const digits = event.currentTarget.value.replace(/\D/g, "").slice(0, 15); event.currentTarget.value = digits ? "+" + digits : ""; }} /></label>
               <label className="enquiry-field"><span>{t.residenceCountry} *</span><input name="residenceCountry" autoComplete="country-name" required maxLength={100} /></label>
               <label className="enquiry-field"><span>{t.residenceCity} *</span><input name="residenceCity" required maxLength={100} /></label>
             </div>
