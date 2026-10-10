@@ -168,7 +168,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               <Link key={language} href={`/${language}`} aria-current={locale === language ? "page" : undefined} className={locale === language ? "language-current" : ""}>{language.toUpperCase()}</Link>
             ))}
           </div>
-          <a className="button button-small button-orange header-cta" href="#contact">{t.nav.start}<span aria-hidden="true">↗</span></a>
+          <a className="button button-small button-orange header-cta" href={`/${locale}/enquiry`}>{t.nav.start}<span aria-hidden="true">↗</span></a>
         </div>
       </header>
 
@@ -179,7 +179,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <p className="eyebrow eyebrow-light"><span className="eyebrow-line" />{t.hero.note}</p>
           <h1 id="hero-title">{t.hero.title}</h1>
           <p className="hero-description">{t.hero.description}</p>
-          <a className="button button-orange" href="#contact">{t.hero.start}<span aria-hidden="true">↗</span></a>
+          <a className="button button-orange" href={`/${locale}/enquiry`}>{t.hero.start}<span aria-hidden="true">↗</span></a>
           <div className="hero-footnote"><span className="hero-footnote-dot" />{locale === "fr" ? "Une approche centrée sur votre actif" : locale === "pt" ? "Uma abordagem centrada no seu ativo" : "A considered approach to your asset"}</div>
         </div>
         <div className="hero-index" aria-hidden="true"><span>01</span><i /><span>03</span></div>
@@ -250,7 +250,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <KramLogo className="site-logo site-logo-footer" />
           </Link>
           <p>{t.footer.line}</p>
-          <div className="footer-contact"><span>{t.footer.contact}</span><a href="#contact">{t.nav.start} ↗</a></div>
+          <div className="footer-contact"><span>{t.footer.contact}</span><a href={`/${locale}/enquiry`}>{t.nav.start} ↗</a></div>
         </div>
         <div className="footer-bottom">
           <span>© {new Date().getFullYear()} KRAM. {t.footer.rights}</span>
