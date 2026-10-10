@@ -587,3 +587,30 @@
 .client-portal-stat-link:hover{border-color:#F47721;transform:translateY(-2px)}
 .client-portal-stat-link>svg{position:absolute;right:18px;bottom:20px;color:#F47721}
 @media(max-width:560px){.client-portal-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.client-portal-header nav a:nth-child(2){display:none}}
+
+/* Client approval requests */
+.client-approval-page{max-width:980px;margin:0 auto;padding:44px 24px 90px}
+.client-approval-page .client-form-heading{padding:48px 0 30px}
+.client-approval-page .client-form-heading h1{max-width:760px}
+.client-approval-context{display:flex;gap:12px;align-items:flex-start;padding:18px 20px;margin-bottom:24px;background:#EAEAE5;color:#F47721}
+.client-approval-context p{margin:0;color:#696962;font-size:12px;line-height:1.8}
+.client-approval-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.client-approval-card{padding:25px;background:#FBFBF9;border:1px solid #E1E1DB;min-width:0}
+.client-approval-card-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.client-approval-icon{width:40px;height:40px;display:grid;place-items:center;background:#F0F0EB;color:#F47721}
+.client-approval-card h2{margin:24px 0 13px;font-size:22px;font-weight:500;line-height:1.25;letter-spacing:-.035em;overflow-wrap:anywhere}
+.client-approval-asset{display:flex;align-items:center;gap:6px;flex-wrap:wrap;color:#77776F;font-size:11px}
+.client-approval-asset svg{color:#F47721}
+.client-approval-asset a{color:#42423D;text-decoration:underline;text-decoration-color:#D6D6D0;text-underline-offset:3px}
+.client-approval-meta{display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px solid #E8E8E2}
+.client-approval-meta span{color:#818179;font-size:11px}
+.client-approval-meta strong{color:#454540;font-size:11px;font-weight:600;text-align:right}
+.client-approval-actions{display:flex;gap:10px;margin-top:23px}
+.client-approval-actions button{display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:1;min-height:42px;font-size:11px;cursor:pointer}
+.client-approval-actions .client-approval-decline{border:1px solid #D9D9D2;background:transparent;color:#696962}
+.client-approval-actions button:disabled{opacity:.55;cursor:wait}
+.client-approval-privacy{grid-column:1/-1;margin:0;color:#85857D;font-size:11px;line-height:1.7}
+.client-approval-notice{grid-column:1/-1;padding:12px 14px;border:1px solid #C8DCCF;background:#EFF7F1;color:#27633D;font-size:12px}
+.client-approval-empty{display:flex;align-items:center;gap:14px;padding:30px;background:#FBFBF9;border:1px solid #E1E1DB;color:#F47721}
+.client-approval-empty p{margin:0;color:#74746C;font-size:13px;line-height:1.7}
+@media(max-width:700px){.client-approval-page{padding:30px 18px 65px}.client-approval-page .client-form-heading{padding:38px 0 25px}.client-approval-page .client-form-heading h1{font-size:40px}.client-approval-list{grid-template-columns:1fr}.client-approval-card{padding:21px}.client-approval-actions{flex-direction:column}.client-approval-privacy{grid-column:auto}}
