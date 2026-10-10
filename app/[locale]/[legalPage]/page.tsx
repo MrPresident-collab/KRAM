@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { isLocale, locales, type Locale } from "@/lib/i18n";
 import { footerLabels, publicFooter } from "@/lib/public-footer";
@@ -13,6 +14,18 @@ const routeMap: Record<string, LegalDocument> = {
 
 export function generateStaticParams() {
   return Object.keys(routeMap).map((legalPage) => ({ legalPage }));
+}
+
+export async function generateMetadata({
+  params,
+}: Readonly<{ params: Promise<{ locale: string; legalPage: string }> }>): Promise<Metadata> {
+  const { locale: localeParam, legalPage } = await params;
+  if (!isLocale(localeParam) || !routeMap[legalPage]) return {};
+  const document = legalContent[localeParam][routeMap[legalPage]];
+  return {
+    title: `${document.title} | KRAM`,
+    description: document.intro,
+  };
 }
 
 export default async function LegalPage({
