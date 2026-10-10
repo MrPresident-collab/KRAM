@@ -29,6 +29,7 @@ export function OpsSidebar({ locale, collapsed = false, mobileOpen = false, onCl
     { label: t.nav.network, items: [{ href: "/" + locale + "/ops/providers", label: t.nav.providers, icon: HardHat }] },
     { label: t.nav.finance, items: [
       { href: "/" + locale + "/ops/expenses", label: t.nav.expenses, icon: Wallet },
+      { href: "/" + locale + "/ops/financial-reports", label: locale === "fr" ? "Rapports financiers clients" : locale === "pt" ? "Relatórios financeiros dos clientes" : "Client financial reports", icon: FileText },
       { href: "/" + locale + "/ops/approvals", label: t.nav.approvals, icon: ShieldCheck },
       { href: "/" + locale + "/ops/expenses/bin", label: locale === "fr" ? "Corbeille" : locale === "pt" ? "Lixeira" : "Bin", icon: Trash2 }
     ] },
