@@ -16,7 +16,10 @@
   min-height: 88px; padding: 0 clamp(22px, 5.4vw, 86px); display: flex; align-items: center;
   justify-content: space-between; gap: 28px; background: #f8f8f5; position: relative; z-index: 5;
 }
-.brand-mark { display: inline-flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.brand-mark { display: inline-flex; align-items: center; flex-shrink: 0; }
+.site-logo { display: block; width: 132px; height: auto; }
+.site-logo-footer { filter: brightness(0) invert(1); }
+.brand-mark-footer .site-logo-footer { filter: brightness(0) invert(1); }
 .brand-symbol {
   width: 34px; height: 34px; display: grid; place-items: center; background: var(--public-orange);
   color: white; font-size: 23px; font-weight: 800; letter-spacing: -2px; line-height: 1;
