@@ -614,3 +614,13 @@
 .client-approval-empty{display:flex;align-items:center;gap:14px;padding:30px;background:#FBFBF9;border:1px solid #E1E1DB;color:#F47721}
 .client-approval-empty p{margin:0;color:#74746C;font-size:13px;line-height:1.7}
 @media(max-width:700px){.client-approval-page{padding:30px 18px 65px}.client-approval-page .client-form-heading{padding:38px 0 25px}.client-approval-page .client-form-heading h1{font-size:40px}.client-approval-list{grid-template-columns:1fr}.client-approval-card{padding:21px}.client-approval-actions{flex-direction:column}.client-approval-privacy{grid-column:auto}}
+
+/* Public enquiry submission feedback */
+.enquiry-spinner{animation:enquiry-spin 1s linear infinite}
+@keyframes enquiry-spin{to{transform:rotate(360deg)}}
+.enquiry-form-feedback{display:flex;align-items:flex-start;gap:12px;margin-top:18px;padding:17px 18px;font-size:13px;line-height:1.7}
+.enquiry-form-feedback>svg{flex-shrink:0;margin-top:2px}
+.enquiry-form-error{border:1px solid #E8C7C1;background:#FFF7F5;color:#9A3428}
+.enquiry-form-success{border:1px solid #C9DCCF;background:#F3F8F4;color:#2D6A43}
+.enquiry-form-success p{margin:4px 0 0;color:#52665A;font-size:12px}
+.enquiry-submit-row .button:disabled{opacity:.65;cursor:wait}
