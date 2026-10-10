@@ -233,7 +233,7 @@
 .about-page .main-nav .nav-active { color: var(--public-ink); }
 .about-hero { min-height: clamp(570px, 57vw, 760px); position: relative; isolation: isolate; display: flex; align-items: center; color: #fff; background: #454943; }
 .about-hero-image, .about-hero-shade { position: absolute; inset: 0; }
-.about-hero-image { z-index: -2; background-image: url("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2400&q=85"); background-size: cover; background-position: center 58%; }
+.about-hero-image { z-index: -2; background-image: url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2400&q=85"); background-size: cover; background-position: center 58%; }
 .about-hero-shade { z-index: -1; background: linear-gradient(90deg, rgba(19,22,20,.83) 0%, rgba(19,22,20,.68) 36%, rgba(19,22,20,.2) 72%, rgba(19,22,20,.05) 100%), linear-gradient(0deg, rgba(17,19,17,.22), transparent 40%); }
 .about-hero-content { width: min(790px, 72%); padding: 100px 0 110px clamp(24px, 8.5vw, 136px); }
 .about-hero-content h1 { max-width: 730px; margin: 0; font-size: clamp(46px, 5.7vw, 82px); font-weight: 520; letter-spacing: -.055em; line-height: 1.02; text-wrap: balance; }
@@ -262,7 +262,7 @@
 .about-closing-copy { align-self: center; padding: 80px clamp(24px, 8.5vw, 136px); }
 .about-closing-copy h2 { max-width: 600px; }
 .about-closing-copy > p:not(.eyebrow) { max-width: 490px; margin: 22px 0 28px; color: #666660; font-size: 14px; line-height: 1.9; }
-.about-closing-image { min-height: 400px; background: url("https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1600&q=85") center / cover no-repeat; }
+.about-closing-image { min-height: 400px; background: url("https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1600&q=85") center / cover no-repeat; }
 @media (max-width: 1050px) {
   .about-hero-content { width: 82%; padding-left: 7vw; }
   .about-story { gap: 55px; }
@@ -297,7 +297,7 @@
 .services-page .main-nav .nav-active { color: var(--public-ink); }
 .services-hero { min-height: clamp(590px, 59vw, 790px); position: relative; isolation: isolate; display: flex; align-items: center; color: #fff; background: #3c423b; }
 .services-hero-image, .services-hero-shade, .services-closing-image, .services-closing-shade { position: absolute; inset: 0; }
-.services-hero-image { z-index: -2; background: url("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2400&q=85") center 54% / cover no-repeat; }
+.services-hero-image { z-index: -2; background: url("https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=2400&q=85") center 54% / cover no-repeat; }
 .services-hero-shade { z-index: -1; background: linear-gradient(90deg, rgba(18,21,19,.88) 0%, rgba(18,21,19,.72) 35%, rgba(18,21,19,.25) 72%, rgba(18,21,19,.04) 100%), linear-gradient(0deg, rgba(18,21,19,.28), transparent 38%); }
 .services-hero-content { width: min(850px, 75%); padding: 100px 0 104px clamp(24px, 8.5vw, 136px); }
 .services-hero-content h1 { max-width: 790px; margin: 0; font-size: clamp(46px, 5.8vw, 82px); font-weight: 520; letter-spacing: -.058em; line-height: 1.02; text-wrap: balance; }
@@ -340,7 +340,7 @@
 .services-fit-list li { display: flex; align-items: flex-start; gap: 16px; padding: 19px 0; border-bottom: 1px solid var(--public-line); font-size: 13px; line-height: 1.7; }
 .services-fit-list li span { color: var(--public-orange); }
 .services-closing { min-height: 490px; position: relative; isolation: isolate; display: flex; align-items: center; color: #fff; background: #333831; }
-.services-closing-image { z-index: -2; background: url("https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=2200&q=85") center 54% / cover no-repeat; }
+.services-closing-image { z-index: -2; background: url("https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=2200&q=85") center 54% / cover no-repeat; }
 .services-closing-shade { z-index: -1; background: linear-gradient(90deg, rgba(20,23,20,.86) 0%, rgba(20,23,20,.66) 43%, rgba(20,23,20,.12) 100%); }
 .services-closing-content { width: min(790px, 76%); padding: 88px 0 92px clamp(24px, 8.5vw, 136px); }
 .services-closing-content h2 { max-width: 680px; margin: 0; font-size: clamp(40px, 4.8vw, 66px); font-weight: 520; letter-spacing: -.055em; line-height: 1.05; text-wrap: balance; }
@@ -391,7 +391,7 @@
 .client-login-page .main-nav .nav-active { color: var(--public-ink); }
 .client-login-hero { min-height: clamp(510px, 48vw, 660px); position: relative; isolation: isolate; display: flex; align-items: center; color: #fff; background: #3a4039; }
 .client-login-hero-image, .client-login-hero-shade, .client-login-closing-image, .client-login-closing-shade { position: absolute; inset: 0; }
-.client-login-hero-image { z-index: -2; background: url("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2400&q=85") center 57% / cover no-repeat; }
+.client-login-hero-image { z-index: -2; background: url("https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=2400&q=85") center 57% / cover no-repeat; }
 .client-login-hero-shade { z-index: -1; background: linear-gradient(90deg, rgba(19,22,20,.86) 0%, rgba(19,22,20,.69) 39%, rgba(19,22,20,.18) 78%, rgba(19,22,20,.04) 100%), linear-gradient(0deg, rgba(17,19,17,.24), transparent 40%); }
 .client-login-hero-content { width: min(800px, 76%); padding: 90px 0 94px clamp(24px, 8.5vw, 136px); }
 .client-login-hero-content h1 { max-width: 760px; margin: 0; font-size: clamp(46px, 5.8vw, 78px); font-weight: 520; letter-spacing: -.058em; line-height: 1.02; text-wrap: balance; }
@@ -420,7 +420,7 @@
 .client-access-note-inner h2 { max-width: 680px; margin: 0; font-size: clamp(38px, 4.6vw, 62px); font-weight: 520; letter-spacing: -.052em; line-height: 1.08; text-wrap: balance; }
 .client-access-note-inner > div:last-child > p:not(.eyebrow) { max-width: 600px; margin: 22px 0 0; color: rgba(255,255,255,.7); font-size: 14px; line-height: 1.95; }
 .client-login-closing { min-height: 420px; position: relative; isolation: isolate; display: flex; align-items: center; color: #fff; background: #333831; }
-.client-login-closing-image { z-index: -2; background: url("https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=2200&q=85") center 55% / cover no-repeat; }
+.client-login-closing-image { z-index: -2; background: url("https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=2200&q=85") center 55% / cover no-repeat; }
 .client-login-closing-shade { z-index: -1; background: linear-gradient(90deg, rgba(20,23,20,.86) 0%, rgba(20,23,20,.63) 45%, rgba(20,23,20,.12) 100%); }
 .client-login-closing-content { width: min(780px, 76%); padding: 80px 0 84px clamp(24px, 8.5vw, 136px); }
 .client-login-closing-content h2 { max-width: 650px; margin: 0; font-size: clamp(38px, 4.6vw, 62px); font-weight: 520; letter-spacing: -.052em; line-height: 1.08; text-wrap: balance; }
@@ -505,7 +505,7 @@
 /* Client sign-in */
 .client-access-page{min-height:100vh;background:#F3F3F0;color:#242424}
 .client-access-shell{min-height:100vh;display:grid;grid-template-columns:minmax(0,1fr) minmax(390px,.8fr)}
-.client-access-story{position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:100vh;padding:42px clamp(28px,6vw,88px);overflow:hidden;background:linear-gradient(135deg,rgba(24,24,24,.98),rgba(36,36,36,.94)),url("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1800&q=85") center/cover;color:#fff}
+.client-access-story{position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:100vh;padding:42px clamp(28px,6vw,88px);overflow:hidden;background:linear-gradient(135deg,rgba(24,24,24,.98),rgba(36,36,36,.94)),url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1800&q=85") center/cover;color:#fff}
 .client-access-logo{width:138px;height:auto}
 .client-access-story-copy{position:relative;z-index:1;max-width:560px;padding:70px 0}
 .client-access-story-copy h1{font-size:clamp(46px,6vw,78px);line-height:1.02;letter-spacing:-.055em;font-weight:500;margin:22px 0}
