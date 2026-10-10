@@ -42,7 +42,7 @@ export default function ClientAccessPage() {
       setPending(false);
       return;
     }
-    // Client portal destination will be wired when its protected overview is implemented.
+    // The overview re-checks the active client link on the server before returning portal data.
     router.replace("/" + locale + "/client");
     router.refresh();
   }
