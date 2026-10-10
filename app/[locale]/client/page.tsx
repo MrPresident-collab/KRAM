@@ -53,9 +53,9 @@ export default async function ClientOverviewPage({ params }: { params: Promise<{
   if (clientError || !clientId) redirect("/" + locale + "/client-login");
 
   const [assetsResult, chatsResult, reportsResult] = await Promise.all([
-    supabase.from("assets").select("id,name,reference_code,type,status,city,country_code,updated_at").eq("client_id", clientId).order("updated_at", { ascending:false }).limit(6),
-    supabase.from("client_conversations").select("id,subject,status,last_message_at,created_at").eq("client_id", clientId).order("last_message_at", { ascending:false, nullsFirst:false }).limit(5),
-    supabase.from("reports").select("id,title,summary,published_at,asset_id").eq("status","published").is("deleted_at",null).order("published_at",{ascending:false}).limit(5)
+    supabase.from("assets").select("id,name,reference_code,type,status,city,country_code,updated_at", { count:"exact" }).eq("client_id", clientId).order("updated_at", { ascending:false }).limit(6),
+    supabase.from("client_conversations").select("id,subject,status,last_message_at,created_at", { count:"exact" }).eq("client_id", clientId).order("last_message_at", { ascending:false, nullsFirst:false }).limit(5),
+    supabase.from("reports").select("id,title,summary,published_at,asset_id", { count:"exact" }).eq("status","published").is("deleted_at",null).order("published_at",{ascending:false}).limit(5)
   ]);
   const assets = assetsResult.data ?? [];
   const chats = chatsResult.data ?? [];
@@ -73,9 +73,9 @@ export default async function ClientOverviewPage({ params }: { params: Promise<{
         <div className="client-portal-welcome-mark"><Building2 size={31} strokeWidth={1.25}/><span>KRAM</span></div>
       </section>
       <section className="client-portal-grid" aria-label="Your account summary">
-        <article className="client-portal-stat"><span>{t.assets}</span><strong>{assets.length}</strong><small>{assets.length===1?"asset":"assets"}</small></article>
-        <article className="client-portal-stat"><span>{t.conversations}</span><strong>{chats.length}</strong><small>{chats.filter((c:any)=>!["closed","resolved"].includes(c.status)).length} active</small></article>
-        <article className="client-portal-stat"><span>{t.reports}</span><strong>{reports.length}</strong><small>Available to you</small></article>
+        <article className="client-portal-stat"><span>{t.assets}</span><strong>{assetsResult.count ?? assets.length}</strong><small>{assets.length===1?"asset":"assets"}</small></article>
+        <article className="client-portal-stat"><span>{t.conversations}</span><strong>{chatsResult.count ?? chats.length}</strong><small>{chats.filter((c:any)=>!["closed","resolved"].includes(c.status)).length} active</small></article>
+        <article className="client-portal-stat"><span>{t.reports}</span><strong>{reportsResult.count ?? reports.length}</strong><small>Available to you</small></article>
       </section>
       <section className="client-portal-chat-banner">
         <div className="client-portal-chat-icon"><MessageCircle size={23}/></div>
