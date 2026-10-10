@@ -21,9 +21,9 @@ export function KramBrand({ locale = "en", compact = false, href, className = ""
         src={compact ? "/brand/kram-mark.svg" : "/brand/kram-logo.svg"}
         alt="KRAM — Kore Remote Asset Management"
         width={compact ? 40 : 186}
-        height={compact ? 40 : 57}
+        height={compact ? 10 : 57}
         priority
-        className={`${compact ? "h-10 w-10 shrink-0" : "h-auto w-[186px] shrink-0"} ${logoClassName}`} style={{ width: compact ? 40 : 186, height: "auto" }}
+        className={`${compact ? "h-auto w-10 shrink-0" : "h-auto w-[186px] shrink-0"} ${logoClassName}`} style={{ width: compact ? 40 : 186, height: "auto", objectFit: "contain" }}
       />
     </Link>
   );
