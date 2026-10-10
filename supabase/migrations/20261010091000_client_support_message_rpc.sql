@@ -23,7 +23,8 @@ BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM public.client_conversations cc
     WHERE cc.id = p_conversation_id AND cc.client_id = v_client_id AND cc.organization_id = v_org_id
-  ) THEN RAISE EXCEPTION 'Conversation not found'; END IF;
+      AND cc.status NOT IN ('closed', 'resolved')
+  ) THEN RAISE EXCEPTION 'Open client conversation not found'; END IF;
   INSERT INTO public.client_conversation_messages (
     organization_id, conversation_id, sender_client_id, sender_user_id, body, visibility, message_type
   ) VALUES (v_org_id, p_conversation_id, v_client_id, NULL, v_body, 'client', 'message')
