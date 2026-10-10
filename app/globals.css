@@ -168,3 +168,66 @@
 @media (prefers-reduced-motion: reduce) {
   .public-home *, .public-home *::before, .public-home *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+
+/* About page — same KRAM design system, distinct editorial composition */
+.about-page .main-nav .nav-active { color: var(--public-ink); }
+.about-hero { min-height: clamp(570px, 57vw, 760px); position: relative; isolation: isolate; display: flex; align-items: center; color: #fff; background: #454943; }
+.about-hero-image, .about-hero-shade { position: absolute; inset: 0; }
+.about-hero-image { z-index: -2; background-image: url("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2400&q=85"); background-size: cover; background-position: center 58%; }
+.about-hero-shade { z-index: -1; background: linear-gradient(90deg, rgba(19,22,20,.83) 0%, rgba(19,22,20,.68) 36%, rgba(19,22,20,.2) 72%, rgba(19,22,20,.05) 100%), linear-gradient(0deg, rgba(17,19,17,.22), transparent 40%); }
+.about-hero-content { width: min(790px, 72%); padding: 100px 0 110px clamp(24px, 8.5vw, 136px); }
+.about-hero-content h1 { max-width: 730px; margin: 0; font-size: clamp(46px, 5.7vw, 82px); font-weight: 520; letter-spacing: -.055em; line-height: 1.02; text-wrap: balance; }
+.about-hero-content > p:not(.eyebrow) { max-width: 550px; margin: 26px 0 30px; color: rgba(255,255,255,.86); font-size: 15px; line-height: 1.9; }
+.about-scroll-link { display: inline-flex; align-items: center; gap: 13px; margin-top: 6px; color: rgba(255,255,255,.9) !important; font-size: 12px; }
+.about-scroll-link span { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid rgba(255,255,255,.55); border-radius: 50%; font-size: 17px; }
+.about-hero-index { position: absolute; right: clamp(24px, 5.5vw, 88px); bottom: 34px; color: rgba(255,255,255,.72); font-size: 10px; letter-spacing: .14em; }
+.about-story { display: grid; grid-template-columns: .65fr 1.35fr; gap: clamp(50px, 10vw, 150px); padding-top: clamp(100px, 11vw, 160px); padding-bottom: clamp(100px, 11vw, 160px); }
+.about-story-label { display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; }
+.about-story-label .eyebrow { margin-bottom: 30px; }
+.about-story-mark { color: var(--public-orange); font-size: clamp(100px, 15vw, 205px); font-weight: 500; letter-spacing: -.1em; line-height: .8; }
+.about-story-copy h2, .about-belief-heading h2, .about-closing-copy h2 { margin: 0; font-size: clamp(38px, 4.6vw, 64px); font-weight: 520; letter-spacing: -.052em; line-height: 1.08; text-wrap: balance; }
+.about-story-copy > p { max-width: 650px; margin: 28px 0 0; color: #666660; font-size: 15px; line-height: 2; }
+.about-pullquote { display: flex; align-items: center; gap: 16px; max-width: 450px; margin-top: 40px; font-size: 13px; font-weight: 650; line-height: 1.7; }
+.about-belief { padding: clamp(86px, 9vw, 130px) 0; background: #eaeae5; }
+.about-belief-inner { display: grid; grid-template-columns: .85fr 1fr; gap: clamp(50px, 8vw, 120px); }
+.about-belief-heading h2 { max-width: 480px; }
+.about-belief-lead { max-width: 540px; margin: 0 0 36px; color: #666660; font-size: 14px; line-height: 1.95; }
+.about-principles { border-top: 1px solid #cfcfc8; }
+.about-principle { display: grid; grid-template-columns: 34px 1fr 18px; gap: 18px; align-items: start; padding: 26px 0; border-bottom: 1px solid #cfcfc8; }
+.about-principle-number { padding-top: 4px; color: var(--public-orange); font-size: 11px; letter-spacing: .08em; }
+.about-principle h3 { margin: 0; font-size: 18px; font-weight: 620; letter-spacing: -.025em; line-height: 1.4; }
+.about-principle p { margin: 9px 0 0; color: #696963; font-size: 13px; line-height: 1.85; }
+.about-principle-arrow { color: #8a8a82; font-size: 16px; }
+.about-closing { display: grid; grid-template-columns: 1fr .92fr; min-height: 480px; background: #f8f8f5; }
+.about-closing-copy { align-self: center; padding: 80px clamp(24px, 8.5vw, 136px); }
+.about-closing-copy h2 { max-width: 600px; }
+.about-closing-copy > p:not(.eyebrow) { max-width: 490px; margin: 22px 0 28px; color: #666660; font-size: 14px; line-height: 1.9; }
+.about-closing-image { min-height: 400px; background: url("https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1600&q=85") center / cover no-repeat; }
+@media (max-width: 1050px) {
+  .about-hero-content { width: 82%; padding-left: 7vw; }
+  .about-story { gap: 55px; }
+  .about-belief-inner { gap: 50px; }
+  .about-closing-copy { padding-inline: 7vw; }
+}
+@media (max-width: 720px) {
+  .about-hero { min-height: max(650px, calc(100svh - 118px)); align-items: flex-end; }
+  .about-hero-image { background-position: 61% center; }
+  .about-hero-shade { background: linear-gradient(0deg, rgba(18,21,19,.92) 0%, rgba(18,21,19,.76) 48%, rgba(18,21,19,.24) 100%); }
+  .about-hero-content { width: 100%; padding: 80px 24px 90px; }
+  .about-hero-content h1 { font-size: clamp(43px, 11vw, 60px); }
+  .about-hero-content > p:not(.eyebrow) { font-size: 13px; line-height: 1.8; margin: 22px 0 25px; }
+  .about-hero-index { right: 24px; bottom: 25px; }
+  .about-story { grid-template-columns: 1fr; gap: 34px; padding-top: 78px; padding-bottom: 82px; }
+  .about-story-mark { font-size: 96px; }
+  .about-story-copy h2, .about-belief-heading h2, .about-closing-copy h2 { font-size: clamp(36px, 9vw, 48px); }
+  .about-story-copy > p { font-size: 14px; line-height: 1.9; }
+  .about-belief { padding: 78px 0; }
+  .about-belief-inner { grid-template-columns: 1fr; gap: 30px; }
+  .about-belief-lead { font-size: 13px; margin-bottom: 28px; }
+  .about-principle { grid-template-columns: 26px 1fr 16px; gap: 12px; padding: 23px 0; }
+  .about-principle h3 { font-size: 17px; }
+  .about-closing { grid-template-columns: 1fr; }
+  .about-closing-copy { padding: 76px 24px 68px; }
+  .about-closing-copy > p:not(.eyebrow) { font-size: 13px; }
+  .about-closing-image { min-height: 280px; }
+}
