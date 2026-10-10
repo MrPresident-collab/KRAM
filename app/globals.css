@@ -19,7 +19,7 @@
 .brand-mark { display: inline-flex; align-items: center; flex-shrink: 0; }
 .site-logo { display: block; width: 132px; height: auto; }
 .site-logo-footer { filter: brightness(0) invert(1); }
-.brand-mark-footer .site-logo-footer { filter: brightness(0) invert(1); }
+.brand-mark-footer .site-logo-footer { filter: none; background: #F5F5F1; border-radius: 4px; padding: 3px 5px; }
 .brand-symbol {
   width: 34px; height: 34px; display: grid; place-items: center; background: var(--public-orange);
   color: white; font-size: 23px; font-weight: 800; letter-spacing: -2px; line-height: 1;
@@ -689,3 +689,18 @@
 .enquiry-page .enquiry-field input:invalid:not(:placeholder-shown){border-color:#c96b54}
 .enquiry-page .enquiry-field input[type=tel]{font-variant-numeric:tabular-nums;letter-spacing:.025em}
 @media(max-width:520px){.enquiry-page .enquiry-field-grid{row-gap:20px}.enquiry-page .enquiry-fieldset{margin-bottom:28px;padding-bottom:26px}}
+
+/* Multi-asset public enquiry form */
+.enquiry-page .enquiry-assets-list{display:grid;gap:18px}
+.enquiry-page .enquiry-asset-card{min-width:0;padding:20px;border:1px solid #E4E4DE;border-radius:12px;background:#FBFBF8}
+.enquiry-page .enquiry-asset-card-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+.enquiry-page .enquiry-asset-card-heading h3{margin:0;color:#292925;font-size:15px;font-weight:650}
+.enquiry-page .enquiry-asset-help{margin-top:24px}
+.enquiry-page .enquiry-add-asset,.enquiry-page .enquiry-remove-asset{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #D8D8D0;border-radius:8px;background:#fff;padding:11px 14px;color:#292925;font-size:13px;font-weight:600;transition:border-color .18s ease,background .18s ease}
+.enquiry-page .enquiry-add-asset{justify-self:start;color:#B95512;border-color:#E8C6AC}
+.enquiry-page .enquiry-add-asset:hover{background:#FFF6EF;border-color:#D97935}
+.enquiry-page .enquiry-remove-asset{padding:7px 10px;color:#66665F;font-size:12px}
+.enquiry-page .enquiry-remove-asset:hover{border-color:#D97935;color:#B95512}
+.enquiry-page .enquiry-asset-limit{font-size:12px;color:#77776F}
+.enquiry-page .enquiry-general-details{display:flex;margin-top:24px}
+@media(max-width:520px){.enquiry-page .enquiry-asset-card{padding:14px}.enquiry-page .enquiry-asset-card-heading{align-items:flex-start}.enquiry-page .enquiry-remove-asset{max-width:145px}}
