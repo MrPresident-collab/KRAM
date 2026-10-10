@@ -12,9 +12,7 @@ const routeMap: Record<string, LegalDocument> = {
 };
 
 export function generateStaticParams() {
-  return locales.flatMap((locale) =>
-    Object.keys(routeMap).map((legalPage) => ({ locale, legalPage }))
-  );
+  return Object.keys(routeMap).map((legalPage) => ({ legalPage }));
 }
 
 export default async function LegalPage({
