@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { isLocale, type Locale } from "@/lib/i18n";
+import { KramLogo } from "@/components/brand/kram-logo";
 
 type Copy = {
   nav: { home: string; about: string; services: string; login: string; start: string };
@@ -153,8 +154,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     <main className="public-home" id="top">
       <header className="site-header">
         <Link href={`/${locale}`} className="brand-mark" aria-label="KRAM home">
-          <span className="brand-symbol" aria-hidden="true">K</span>
-          <span className="brand-word">KRAM</span>
+          <KramLogo className="site-logo" />
         </Link>
         <nav className="main-nav" aria-label="Main navigation">
           <Link className="nav-active" href={`/${locale}`}>{t.nav.home}</Link>
@@ -240,17 +240,17 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <p className="eyebrow eyebrow-light"><span className="eyebrow-line" />KRAM</p>
           <h2>{t.closing.title}</h2>
           <p>{t.closing.body}</p>
-          <a className="button button-orange" href="mailto:info@kram.global">{t.closing.cta}<span aria-hidden="true">↗</span></a>
+          <a className="button button-orange" href="#top">{t.closing.cta}<span aria-hidden="true">↑</span></a>
         </div>
       </section>
 
       <footer className="site-footer">
         <div className="footer-top">
           <Link href={`/${locale}`} className="brand-mark brand-mark-footer" aria-label="KRAM home">
-            <span className="brand-symbol" aria-hidden="true">K</span><span className="brand-word">KRAM</span>
+            <KramLogo className="site-logo site-logo-footer" />
           </Link>
           <p>{t.footer.line}</p>
-          <div className="footer-contact"><span>{t.footer.contact}</span><a href="mailto:info@kram.global">info@kram.global ↗</a></div>
+          <div className="footer-contact"><span>{t.footer.contact}</span><a href="#contact">{t.nav.start} ↗</a></div>
         </div>
         <div className="footer-bottom">
           <span>© {new Date().getFullYear()} KRAM. {t.footer.rights}</span>
