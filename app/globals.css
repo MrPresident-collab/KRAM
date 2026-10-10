@@ -516,3 +516,48 @@
 .client-portal-footer a{color:#62625B;text-decoration:none}
 @media(max-width:800px){.client-portal-main{padding-top:44px}.client-portal-columns{grid-template-columns:1fr}.client-portal-chat-banner{align-items:flex-start;flex-wrap:wrap}.client-portal-chat-copy{min-width:calc(100% - 72px)}.client-portal-chat-banner .button{margin-left:68px}.client-portal-welcome-mark{width:82px;height:82px}.client-portal-welcome-mark svg{width:24px}}
 @media(max-width:560px){.client-portal-header{height:72px;padding:0 18px}.client-portal-logo{width:105px}.client-portal-header nav{gap:12px}.client-portal-header nav a{font-size:10px}.client-portal-header nav a:last-child{display:none}.client-portal-main{padding:38px 18px 55px}.client-portal-welcome{align-items:flex-start}.client-portal-welcome h1{font-size:40px}.client-portal-lead{font-size:13px}.client-portal-welcome-mark{display:none}.client-portal-grid{gap:8px}.client-portal-stat{padding:15px 12px;min-height:110px}.client-portal-stat span{font-size:10px}.client-portal-stat strong{font-size:30px}.client-portal-stat small{font-size:9px}.client-portal-chat-banner{padding:22px 18px;gap:13px}.client-portal-chat-icon{width:40px;height:40px}.client-portal-chat-copy{min-width:calc(100% - 54px)}.client-portal-chat-copy h2{font-size:12px}.client-portal-chat-banner .button{margin-left:53px;font-size:11px;padding:12px}.client-portal-panel{padding:21px 16px}.client-portal-panel-heading h2{font-size:21px}.client-portal-status{display:none}.client-portal-footer{flex-wrap:wrap;padding:18px}.client-portal-footer span:nth-child(2){display:none}}
+
+/* Client support conversation pages */
+.client-form-layout,.client-chat-layout{max-width:900px;margin:0 auto;padding:44px 24px 100px}
+.client-form-back{display:inline-flex;align-items:center;gap:9px;color:#66665F;text-decoration:none;font-size:12px;font-weight:600}
+.client-form-heading{max-width:720px;padding:52px 0 34px}
+.client-form-heading h1,.client-chat-heading h1{margin:20px 0 14px;font-size:clamp(42px,6vw,66px);font-weight:500;line-height:1.02;letter-spacing:-.055em}
+.client-form-heading>p:last-child,.client-chat-heading>p:not(.eyebrow){max-width:650px;color:#73736C;font-size:14px;line-height:1.8}
+.client-form-panel{padding:clamp(22px,4vw,38px);background:#FBFBF9;border:1px solid #E1E1DB}
+.client-form-panel>label{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;color:#454540;font-size:13px;font-weight:600}
+.client-form-panel input,.client-form-panel select,.client-form-panel textarea,.client-chat-reply textarea{width:100%;border:1px solid #D6D6D0;border-radius:2px;background:#fff;padding:14px;color:#242424;font:inherit;font-size:14px;font-weight:400;outline:none}
+.client-form-panel input,.client-form-panel select{min-height:50px}
+.client-form-panel textarea,.client-chat-reply textarea{resize:vertical;line-height:1.7}
+.client-form-panel input:focus,.client-form-panel select:focus,.client-form-panel textarea:focus,.client-chat-reply textarea:focus{border-color:#F47721;box-shadow:0 0 0 3px rgba(244,119,33,.1)}
+.client-form-panel input::placeholder,.client-form-panel textarea::placeholder,.client-chat-reply textarea::placeholder{color:#999991}
+.client-form-muted{margin:-12px 0 20px;color:#8A6A4C;font-size:12px}
+.client-form-submit-row{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-top:8px}
+.client-form-submit-row>p{display:flex;align-items:flex-start;gap:9px;max-width:390px;margin:0;color:#797970;font-size:11px;line-height:1.7}
+.client-form-submit-row>p svg{flex-shrink:0;color:#F47721}
+.client-form-submit-row button{display:flex;align-items:center;justify-content:center;gap:10px;white-space:nowrap}
+.client-form-note{display:flex;align-items:center;gap:12px;margin-top:22px;color:#F47721}
+.client-form-note p{color:#85857D;font-size:11px;line-height:1.7}
+.client-chat-layout{max-width:920px}
+.client-chat-heading{padding:48px 0 28px;border-bottom:1px solid #DEDED9}
+.client-chat-heading h1{font-size:clamp(36px,5vw,56px);overflow-wrap:anywhere}
+.client-chat-heading .client-portal-status{display:inline-block;margin-top:8px}
+.client-chat-panel{margin-top:24px;background:#FBFBF9;border:1px solid #E1E1DB}
+.client-chat-message-list{display:flex;flex-direction:column;gap:15px;max-height:620px;overflow-y:auto;padding:clamp(18px,4vw,34px)}
+.client-chat-message{max-width:82%;padding:16px 18px;background:#F0F0EB;border:1px solid #E5E5DE}
+.client-chat-message-own{align-self:flex-end;background:#FFF3E9;border-color:#F3D7C1}
+.client-chat-message-team{align-self:flex-start}
+.client-chat-message-meta{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-bottom:9px}
+.client-chat-message-meta strong{font-size:11px;font-weight:700}
+.client-chat-message-meta time{color:#85857D;font-size:10px}
+.client-chat-message>p{margin:0;color:#42423D;font-size:13px;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere}
+.client-chat-reply{padding:22px clamp(18px,4vw,34px) 28px;border-top:1px solid #E1E1DB}
+.client-chat-reply>div{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-top:14px}
+.client-chat-reply>div>span{display:flex;align-items:flex-start;gap:8px;color:#85857D;font-size:10px;line-height:1.6}
+.client-chat-reply>div>span svg{color:#F47721;flex-shrink:0}
+.client-chat-reply button{display:flex;align-items:center;gap:9px;white-space:nowrap}
+.client-chat-closed{margin:0;padding:22px 30px;border-top:1px solid #E1E1DB;color:#76766F;font-size:12px;line-height:1.7}
+.client-chat-loading{padding:80px 0;color:#77776F}
+.client-chat-not-found{margin-top:40px;padding:40px;background:#FBFBF9;border:1px solid #E1E1DB;display:flex;flex-direction:column;align-items:flex-start;gap:18px;color:#F47721}
+.client-chat-not-found p{color:#6D6D65;font-size:14px;line-height:1.7}
+.client-chat-not-found .button{display:inline-flex;align-items:center;text-decoration:none}
+@media(max-width:600px){.client-form-layout,.client-chat-layout{padding:30px 18px 64px}.client-form-heading{padding:38px 0 25px}.client-form-heading h1,.client-chat-heading h1{font-size:40px}.client-form-submit-row{align-items:stretch;flex-direction:column}.client-form-submit-row button{width:100%}.client-chat-message{max-width:95%}.client-chat-message-list{padding:15px}.client-chat-reply{padding:18px 15px}.client-chat-reply>div{align-items:stretch;flex-direction:column}.client-chat-reply button{justify-content:center;width:100%}}
