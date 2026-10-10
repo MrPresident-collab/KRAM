@@ -4,9 +4,9 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { ArrowLeft, ArrowUpRight, Check, ChevronDown, LoaderCircle } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Check, ChevronDown, LoaderCircle, Plus, Trash2 } from "lucide-react";
 import { isLocale, type Locale } from "@/lib/i18n";
-import { KramLogo } from "@/components/brand/kram-logo";
+import { KramBrand } from "@/components/brand/kram-brand";
 
 const copy = {
   en: {
@@ -24,6 +24,7 @@ const copy = {
     assetStreet: "Street address, building or neighbourhood", assetCity: "Asset city", assetCountry: "Asset country",
     residence: "Where are you based?",
     asset: "About the asset",
+    addAsset: "Add another asset", removeAsset: "Remove asset", assetNumber: "Asset", assetLimit: "You can add up to 20 assets.", assetRequiredHelp: "Choose at least one service for each asset.",
     assetLocation: "Where is the asset located?",
     assetType: "Asset type",
     chooseType: "Choose an asset type",
@@ -55,6 +56,7 @@ const copy = {
     assetStreet: "Adresse, bâtiment ou quartier", assetCity: "Ville de l’actif", assetCountry: "Pays de l’actif",
     residence: "Où résidez-vous ?",
     asset: "À propos de l’actif",
+    addAsset: "Ajouter un autre actif", removeAsset: "Supprimer l’actif", assetNumber: "Actif", assetLimit: "Vous pouvez ajouter jusqu’à 20 actifs.", assetRequiredHelp: "Choisissez au moins un service pour chaque actif.",
     assetLocation: "Où se situe l’actif ?",
     assetType: "Type d’actif",
     chooseType: "Choisir un type d’actif",
@@ -86,6 +88,7 @@ const copy = {
     assetStreet: "Morada, edifício ou bairro", assetCity: "Cidade do ativo", assetCountry: "País do ativo",
     residence: "Onde reside?",
     asset: "Sobre o ativo",
+    addAsset: "Adicionar outro ativo", removeAsset: "Remover ativo", assetNumber: "Ativo", assetLimit: "Pode adicionar até 20 ativos.", assetRequiredHelp: "Escolha pelo menos um serviço para cada ativo.",
     assetLocation: "Onde está localizado o ativo?",
     assetType: "Tipo de ativo",
     chooseType: "Escolha o tipo de ativo",
@@ -111,11 +114,13 @@ export default function EnquiryPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [assets, setAssets] = useState([{ id: 1, street: "", city: "", country: "", type: "", helpNeeded: [] as string[] }]);
+  const [nextAssetId, setNextAssetId] = useState(2);
 
   return (
     <main className="public-home enquiry-page" id="top">
       <header className="site-header">
-        <Link href={`/${locale}`} className="brand-mark" aria-label="KRAM home"><KramLogo className="site-logo" /></Link>
+        <KramBrand locale={locale} href={`/${locale}`} className="brand-mark" />
         <nav className="main-nav" aria-label="Main navigation">
           <Link href={`/${locale}`}>{t.nav.home}</Link>
           <Link href={`/${locale}/about`}>{t.nav.about}</Link>
@@ -154,25 +159,33 @@ export default function EnquiryPage() {
           setSubmitting(true); setSubmitError("");
           const form = event.currentTarget;
           const data = new FormData(form);
-          const helpNeeded = data.getAll("helpNeeded").map(String);
-          if (!helpNeeded.length) { setSubmitError(t.error); setSubmitting(false); return; }
+          if (assets.some((asset) => asset.helpNeeded.length === 0)) { setSubmitError(t.assetRequiredHelp); setSubmitting(false); return; }
+          const submittedAssets = assets.map((asset) => ({
+            asset_type: asset.type,
+            asset_location: [asset.street, asset.city, asset.country].map((part) => part.trim()).filter(Boolean).join(", "),
+            help_needed: asset.helpNeeded
+          }));
+          const firstAsset = submittedAssets[0];
           const supabase = createClient();
           const { error } = await supabase.rpc("submit_public_client_enquiry", {
             p_full_name: String(data.get("fullName") || ""),
             p_email: String(data.get("email") || ""),
             p_phone: String(data.get("phone") || ""),
             p_residence: `${String(data.get("residenceCity") || "").trim()}, ${String(data.get("residenceCountry") || "").trim()}`,
-            p_asset_location: `${String(data.get("assetStreet") || "").trim()}, ${String(data.get("assetCity") || "").trim()}, ${String(data.get("assetCountry") || "").trim()}`,
-            p_asset_type: String(data.get("assetType") || ""),
-            p_help_needed: helpNeeded,
+            p_asset_location: firstAsset.asset_location,
+            p_asset_type: firstAsset.asset_type,
+            p_help_needed: firstAsset.help_needed,
             p_details: String(data.get("details") || ""),
             p_preferred_contact: String(data.get("preferredContact") || "email"),
-            p_language: locale
+            p_language: locale,
+            p_assets: submittedAssets
           });
           setSubmitting(false);
           if (error) { setSubmitError(t.error); return; }
           setSubmitted(true);
           form.reset();
+          setAssets([{ id: nextAssetId, street: "", city: "", country: "", type: "", helpNeeded: [] }]);
+          setNextAssetId((id) => id + 1);
         }}>
           <fieldset className="enquiry-fieldset">
             <legend>{t.contact}</legend>
@@ -187,14 +200,25 @@ export default function EnquiryPage() {
 
           <fieldset className="enquiry-fieldset">
             <legend>{t.asset}</legend>
-            <div className="enquiry-field-grid">
-              <label className="enquiry-field enquiry-field-full"><span>{t.assetStreet} *</span><input name="assetStreet" autoComplete="street-address" required maxLength={180} /></label>
-              <label className="enquiry-field"><span>{t.assetCity} *</span><input name="assetCity" required maxLength={100} /></label>
-              <label className="enquiry-field"><span>{t.assetCountry} *</span><input name="assetCountry" autoComplete="country-name" required maxLength={100} /></label>
-              <label className="enquiry-field"><span>{t.assetType} *</span><span className="enquiry-select-wrap"><select name="assetType" required defaultValue=""><option value="" disabled>{t.chooseType}</option>{t.types.map((type) => <option key={type} value={type}>{type}</option>)}</select><ChevronDown size={16} /></span></label>
+            <div className="enquiry-assets-list">
+              {assets.map((asset, index) => (
+                <section className="enquiry-asset-card" key={asset.id} aria-labelledby={`asset-heading-${asset.id}`}>
+                  <div className="enquiry-asset-card-heading">
+                    <h3 id={`asset-heading-${asset.id}`}>{t.assetNumber} {index + 1}</h3>
+                    {assets.length > 1 && <button type="button" className="enquiry-remove-asset" onClick={() => setAssets((current) => current.filter((item) => item.id !== asset.id))}><Trash2 size={15} />{t.removeAsset}</button>}
+                  </div>
+                  <div className="enquiry-field-grid">
+                    <label className="enquiry-field enquiry-field-full"><span>{t.assetStreet} *</span><input name={`assetStreet-${asset.id}`} autoComplete={index === 0 ? "street-address" : "off"} required maxLength={180} value={asset.street} onChange={(event) => setAssets((current) => current.map((item) => item.id === asset.id ? { ...item, street: event.currentTarget.value } : item))} /></label>
+                    <label className="enquiry-field"><span>{t.assetCity} *</span><input name={`assetCity-${asset.id}`} required maxLength={100} value={asset.city} onChange={(event) => setAssets((current) => current.map((item) => item.id === asset.id ? { ...item, city: event.currentTarget.value } : item))} /></label>
+                    <label className="enquiry-field"><span>{t.assetCountry} *</span><input name={`assetCountry-${asset.id}`} autoComplete="country-name" required maxLength={100} value={asset.country} onChange={(event) => setAssets((current) => current.map((item) => item.id === asset.id ? { ...item, country: event.currentTarget.value } : item))} /></label>
+                    <label className="enquiry-field"><span>{t.assetType} *</span><span className="enquiry-select-wrap"><select name={`assetType-${asset.id}`} required value={asset.type} onChange={(event) => setAssets((current) => current.map((item) => item.id === asset.id ? { ...item, type: event.currentTarget.value } : item))}><option value="" disabled>{t.chooseType}</option>{t.types.map((type) => <option key={type} value={type}>{type}</option>)}</select><ChevronDown size={16} /></span></label>
+                  </div>
+                  <div className="enquiry-field enquiry-field-full enquiry-asset-help"><span>{t.help} *</span><div className="enquiry-options">{t.helpOptions.map((option) => <label key={option} className="enquiry-option"><input type="checkbox" name={`helpNeeded-${asset.id}`} value={option} checked={asset.helpNeeded.includes(option)} onChange={(event) => setAssets((current) => current.map((item) => item.id === asset.id ? { ...item, helpNeeded: event.currentTarget.checked ? [...item.helpNeeded, option] : item.helpNeeded.filter((value) => value !== option) } : item))} /><span>{option}</span></label>)}</div></div>
+                </section>
+              ))}
+              {assets.length < 20 ? <button type="button" className="enquiry-add-asset" onClick={() => { setAssets((current) => [...current, { id: nextAssetId, street: "", city: "", country: "", type: "", helpNeeded: [] }]); setNextAssetId((id) => id + 1); }}><Plus size={17} />{t.addAsset}</button> : <p className="enquiry-asset-limit">{t.assetLimit}</p>}
             </div>
-            <div className="enquiry-field enquiry-field-full"><span>{t.help} *</span><div className="enquiry-options">{t.helpOptions.map((option) => <label key={option} className="enquiry-option"><input type="checkbox" name="helpNeeded" value={option} /><span>{option}</span></label>)}</div></div>
-            <label className="enquiry-field enquiry-field-full"><span>{t.details}</span><textarea name="details" rows={4} maxLength={2000} placeholder={t.detailsPlaceholder} /></label>
+            <label className="enquiry-field enquiry-field-full enquiry-general-details"><span>{t.details}</span><textarea name="details" rows={4} maxLength={2000} placeholder={t.detailsPlaceholder} /></label>
           </fieldset>
 
           <fieldset className="enquiry-fieldset">
@@ -216,7 +240,7 @@ export default function EnquiryPage() {
 
       <footer className="site-footer">
         <div className="footer-top">
-          <Link href={`/${locale}`} className="brand-mark brand-mark-footer" aria-label="KRAM home"><KramLogo className="site-logo site-logo-footer" /></Link>
+          <KramBrand locale={locale} href={`/${locale}`} className="brand-mark brand-mark-footer" logoClassName="site-logo site-logo-footer" />
           <p>{t.footer}</p>
           <div className="footer-contact"><span>{t.contactLabel}</span><Link href={`/${locale}/services`}>{t.nav.services} ↗</Link></div>
         </div>
