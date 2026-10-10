@@ -104,7 +104,7 @@
 .site-footer { padding: 30px clamp(24px, 5.4vw, 86px) 18px; background: #1d1e1c; color: white; }
 .footer-brand-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 28px; padding-bottom: 22px; }
 .footer-brand-copy { max-width: 430px; }
-.footer-wordmark { display: inline-flex; align-items: center; color: #fff; font-family: "Dancing Script", "Segoe Script", "Brush Script MT", cursive; font-size: 43px; font-weight: 700; letter-spacing: -.035em; line-height: 1; text-decoration: none; }
+.footer-wordmark { display: inline-flex; align-items: center; color: #f4f3ee; font-family: "Dancing Script", "Segoe Script", "Brush Script MT", cursive; font-size: 29px; font-weight: 600; letter-spacing: -.02em; line-height: 1.1; text-decoration: none; opacity: .92; }
 .footer-wordmark span { display: inline-block; }
 .footer-company { margin: 8px 0 3px; color: #f0efe9; font-size: 12px; font-weight: 550; letter-spacing: .01em; }
 .footer-tagline { max-width: 330px; margin: 0; color: #c0c0b9; font-size: 11px; line-height: 1.6; }
@@ -113,6 +113,17 @@
 .footer-contact a { font-size: 13px; }
 .footer-columns { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px clamp(18px, 2.4vw, 34px); padding: 20px 0 22px; border-top: 1px solid #3b3c38; }
 .footer-column { min-width: 0; }
+.footer-contact-links { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.footer-contact-links a, .footer-contact-links .footer-link-pending { display: inline-flex; align-items: center; gap: 9px; color: #c0c0b9; font-size: 11px; line-height: 1.5; text-decoration: none; }
+.footer-contact-links svg { flex: 0 0 auto; color: #c0c0b9; stroke-width: 1.7; }
+.footer-contact-links a:hover { color: #fff; }
+.footer-contact-links a:hover svg { color: #fff; }
+.footer-address { min-width: 0; color: #c0c0b9; font-size: 11px; line-height: 1.7; }
+.footer-address-heading { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; color: #f4f3ee; font-size: 10px; font-weight: 650; letter-spacing: .085em; text-transform: uppercase; }
+.footer-address-heading svg { flex: 0 0 auto; color: #c0c0b9; stroke-width: 1.7; }
+.footer-address-link { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; color: #c0c0b9; text-decoration: none; overflow-wrap: anywhere; }
+.footer-address-link:hover { color: #fff; }
+.footer-address-link .footer-muted-note { margin: 0; color: #85867f; font-size: 10px; line-height: 1.65; }
 .footer-column h2 { margin: 0 0 9px; color: #f4f3ee; font-size: 10px; font-weight: 650; letter-spacing: .085em; text-transform: uppercase; }
 .footer-column p, .footer-plain-list { margin: 0 0 9px; color: #c0c0b9; font-size: 11px; line-height: 1.75; overflow-wrap: anywhere; }
 .footer-plain-list { padding: 0; list-style: none; }
