@@ -24,6 +24,6 @@ export default async function OpsEnquiriesPage({params}:{params:Promise<{locale:
  const items=(data??[]) as Enquiry[];
  return <div className="mx-auto max-w-6xl space-y-6 p-5 md:p-8">
   <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="mb-2 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.18em] text-[var(--kram-orange)]"><Inbox size={14}/> KRAM / INTAKE</p><h1 className="text-3xl font-semibold tracking-tight text-[var(--kram-ink)]">{t.title}</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--kram-metal)]">{t.desc}</p></div><div className="flex items-center gap-3 rounded-xl border border-[var(--kram-border)] bg-white px-4 py-3"><ClipboardList size={19} className="text-[var(--kram-orange)]"/><div><strong className="block text-lg text-[var(--kram-ink)]">{items.length}</strong><span className="text-[10px] text-[var(--kram-metal)]">Recent enquiries</span></div></div></div>
-  {error?<p role="alert" className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">{t.error}</p>:<EnquiriesInbox initialItems={items} locale={locale} labels={t}/>}
+  {error?<p role="alert" className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">{t.error}</p>:<EnquiriesInbox initialItems={items} assignees={assignees} locale={locale} labels={t}/>}
  </div>;
 }
