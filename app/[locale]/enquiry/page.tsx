@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ArrowLeft, ArrowUpRight, Check, ChevronDown } from "lucide-react";
+import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { ArrowLeft, ArrowUpRight, Check, ChevronDown, LoaderCircle } from "lucide-react";
 import { isLocale, type Locale } from "@/lib/i18n";
 import { KramLogo } from "@/components/brand/kram-logo";
 
@@ -30,8 +32,7 @@ const copy = {
     preferred: "Preferred way to contact you",
     emailOption: "Email", phoneOption: "Phone call", whatsappOption: "WhatsApp",
     privacy: "Submitting an enquiry does not create a client account or commit you to a service. Our team will review your request and contact you about the next step.",
-    submit: "Review enquiry",
-    layoutNote: "Enquiry submission will be connected to KRAM’s intake workflow in the next implementation phase.",
+    submit: "Send enquiry", sending: "Sending…", successTitle: "Your enquiry has been received.", successBody: "Thank you. Your request has been securely recorded for KRAM’s team to review. It does not create a client account.", error: "We couldn’t submit your enquiry. Please check your details and try again.",
     back: "Back to Login",
     footer: "Asset oversight with clarity and accountability.",
     contactLabel: "Contact", rights: "All rights reserved."
@@ -59,8 +60,7 @@ const copy = {
     preferred: "Moyen de contact préféré",
     emailOption: "E-mail", phoneOption: "Appel téléphonique", whatsappOption: "WhatsApp",
     privacy: "Envoyer une demande ne crée pas de compte client et ne vous engage pas à acheter un service. Notre équipe examinera votre demande et vous contactera pour la suite.",
-    submit: "Vérifier la demande",
-    layoutNote: "L’envoi de la demande sera relié au processus d’admission de KRAM lors de la prochaine phase d’implémentation.",
+    submit: "Envoyer la demande", sending: "Envoi…", successTitle: "Votre demande a été reçue.", successBody: "Merci. Votre demande a été enregistrée de manière sécurisée pour examen par l’équipe KRAM. Aucun compte client n’a été créé.", error: "Impossible d’envoyer votre demande. Vérifiez les informations et réessayez.",
     back: "Retour à la connexion",
     footer: "Le suivi des actifs, avec clarté et responsabilité.",
     contactLabel: "Contact", rights: "Tous droits réservés."
@@ -88,8 +88,7 @@ const copy = {
     preferred: "Forma preferida de contacto",
     emailOption: "E-mail", phoneOption: "Chamada telefónica", whatsappOption: "WhatsApp",
     privacy: "O envio de um pedido não cria uma conta de cliente nem o compromete com um serviço. A nossa equipa irá analisar o pedido e contactá-lo sobre os próximos passos.",
-    submit: "Rever pedido",
-    layoutNote: "O envio do pedido será ligado ao processo de entrada da KRAM na próxima fase de implementação.",
+    submit: "Enviar pedido", sending: "A enviar…", successTitle: "O seu pedido foi recebido.", successBody: "Obrigado. O pedido foi registado em segurança para análise pela equipa KRAM. Não foi criada nenhuma conta de cliente.", error: "Não foi possível enviar o pedido. Verifique os dados e tente novamente.",
     back: "Voltar ao início de sessão",
     footer: "Acompanhamento de ativos com clareza e responsabilidade.",
     contactLabel: "Contacto", rights: "Todos os direitos reservados."
@@ -100,6 +99,9 @@ export default function EnquiryPage() {
   const params = useParams<{ locale: string }>();
   const locale: Locale = isLocale(params.locale) ? params.locale : "fr";
   const t = copy[locale];
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   return (
     <main className="public-home enquiry-page" id="top">
@@ -137,7 +139,32 @@ export default function EnquiryPage() {
           <Link className="enquiry-back-link" href={`/${locale}/login`}><ArrowLeft size={16} />{t.back}</Link>
         </aside>
 
-        <form className="enquiry-form" onSubmit={(event) => event.preventDefault()}>
+        <form className="enquiry-form" onSubmit={async (event) => {
+          event.preventDefault();
+          if (submitting || submitted) return;
+          setSubmitting(true); setSubmitError("");
+          const form = event.currentTarget;
+          const data = new FormData(form);
+          const helpNeeded = data.getAll("helpNeeded").map(String);
+          if (!helpNeeded.length) { setSubmitError(t.error); setSubmitting(false); return; }
+          const supabase = createClient();
+          const { error } = await supabase.rpc("submit_public_client_enquiry", {
+            p_full_name: String(data.get("fullName") || ""),
+            p_email: String(data.get("email") || ""),
+            p_phone: String(data.get("phone") || ""),
+            p_residence: String(data.get("residence") || ""),
+            p_asset_location: String(data.get("assetLocation") || ""),
+            p_asset_type: String(data.get("assetType") || ""),
+            p_help_needed: helpNeeded,
+            p_details: String(data.get("details") || ""),
+            p_preferred_contact: String(data.get("preferredContact") || "email"),
+            p_language: locale
+          });
+          setSubmitting(false);
+          if (error) { setSubmitError(t.error); return; }
+          setSubmitted(true);
+          form.reset();
+        }}>
           <fieldset className="enquiry-fieldset">
             <legend>{t.contact}</legend>
             <div className="enquiry-field-grid">
@@ -168,9 +195,11 @@ export default function EnquiryPage() {
           </fieldset>
 
           <div className="enquiry-submit-row">
-            <p>{t.layoutNote}</p>
-            <button type="submit" className="button button-orange" disabled>{t.submit}<ArrowUpRight size={17} /></button>
+            <p>{t.privacy}</p>
+            <button type="submit" className="button button-orange" disabled={submitting || submitted}>{submitting ? <><LoaderCircle size={16} className="enquiry-spinner"/>{t.sending}</> : submitted ? <><Check size={16}/>{t.successTitle}</> : <>{t.submit}<ArrowUpRight size={17}/></>}</button>
           </div>
+          {submitError && <p className="enquiry-form-feedback enquiry-form-error" role="alert">{submitError}</p>}
+          {submitted && <div className="enquiry-form-feedback enquiry-form-success" role="status"><Check size={18}/><div><strong>{t.successTitle}</strong><p>{t.successBody}</p></div></div>}
         </form>
       </section>
 
