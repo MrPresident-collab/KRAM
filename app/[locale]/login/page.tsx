@@ -118,7 +118,7 @@ export default function ClientLoginPage() {
               <h2>{t.newTitle}</h2>
               <p>{t.newBody}</p>
             </div>
-            <Link className="client-choice-action" href={`/${locale}/services#contact`}><span>{t.newAction}</span><ArrowUpRight size={19} /></Link>
+            <Link className="client-choice-action" href={`/${locale}/enquiry`}><span>{t.newAction}</span><ArrowUpRight size={19} /></Link>
           </article>
           <article className="client-choice-card client-choice-existing">
             <div className="client-choice-topline"><span>{t.existingLabel}</span><KeyRound size={19} strokeWidth={1.5} /></div>
@@ -126,7 +126,7 @@ export default function ClientLoginPage() {
               <h2>{t.existingTitle}</h2>
               <p>{t.existingBody}</p>
             </div>
-            <Link className="client-choice-action" href="#existing-client-access"><span>{t.existingAction}</span><ArrowRight size={19} /></Link>
+            <Link className="client-choice-action" href={`/${locale}/client-login`}><span>{t.existingAction}</span><ArrowRight size={19} /></Link>
           </article>
         </div>
         <div className="client-choice-reassurance"><ShieldCheck size={16} strokeWidth={1.6} /><span>{t.reassurance}</span></div>
