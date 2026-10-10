@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, MessageCircle, ShieldCheck } from "lucide-react";
@@ -19,7 +19,7 @@ export default function NewClientConversationPage(){
   const locale:Locale=isLocale(params.locale)?params.locale:"fr";
   const t=copy[locale];
   const router=useRouter();
-  const supabase=createClient();
+  const supabase=useMemo(()=>createClient(),[]);
   const [assets,setAssets]=useState<{id:string;name:string;reference_code:string|null}[]>([]);
   const [assetError,setAssetError]=useState(false);
   const [subject,setSubject]=useState("");
