@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Mail, Phone, MessageCircle, MapPin } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { isLocale, locales, type Locale } from "@/lib/i18n";
@@ -101,7 +102,7 @@ export default async function LegalPage({
       <footer className="site-footer legal-site-footer">
         <div className="footer-brand-row">
           <div className="footer-brand-copy">
-            <Link className="footer-wordmark" href={`/${locale}`} aria-label="KRAM — Kore Remote Asset Management"><span>KRAM</span><i aria-hidden="true" /></Link>
+            <Link className="footer-wordmark" href={`/${locale}`} aria-label="KRAM — Kore Remote Asset Management"><span>KRAM</span></Link>
             <p className="footer-company">{footerLabels[locale].company}</p>
             <p className="footer-tagline">{footerLabels[locale].tagline}</p>
           </div>
@@ -115,23 +116,33 @@ export default async function LegalPage({
             <Link href={pathFor("enquiry")}>{nav.enquiry}</Link><Link href={pathFor("login")}>{nav.portal}</Link><Link href={pathFor("faqs")}>{nav.faqs}</Link>
           </nav></section>
           <section className="footer-column"><h2>{footerLabels[locale].footprint}</h2><ul className="footer-plain-list">{publicFooter.footprint.map((place) => <li key={place}>{place}</li>)}</ul><p className="footer-muted-note">{footerLabels[locale].growing}</p></section>
-          <section className="footer-column"><h2>{footerLabels[locale].getInTouch}</h2><div className="footer-column-links">
-              {publicFooter.email ? <a href={`mailto:${publicFooter.email}`}>{footerLabels[locale].email}</a> : <span className="footer-link-pending">{footerLabels[locale].email}</span>}
-              <Link href={pathFor("enquiry")}>{footerLabels[locale].contactUs}</Link>
-              {publicFooter.whatsappNumber ? <a href={`https://wa.me/${publicFooter.whatsappNumber}`} target="_blank" rel="noreferrer">{footerLabels[locale].whatsapp}</a> : <span className="footer-link-pending">{footerLabels[locale].whatsapp}</span>}
-            </div></section>
+          <section className="footer-column">
+            <h2>{footerLabels[locale].getInTouch}</h2>
+            <div className="footer-contact-links">
+              {publicFooter.email ? <a href={`mailto:${publicFooter.email}`}><Mail aria-hidden="true" size={14} /> <span>{footerLabels[locale].email}</span></a> : <span className="footer-link-pending"><Mail aria-hidden="true" size={14} /> <span>{footerLabels[locale].email}</span></span>}
+              {publicFooter.phoneNumber ? <a href={`tel:+${publicFooter.phoneNumber}`}><Phone aria-hidden="true" size={14} /> <span>{footerLabels[locale].phone}</span></a> : <span className="footer-link-pending"><Phone aria-hidden="true" size={14} /> <span>{footerLabels[locale].phone}</span></span>}
+              {publicFooter.whatsappNumber ? <a href={`https://wa.me/${publicFooter.whatsappNumber}`} target="_blank" rel="noreferrer"><MessageCircle aria-hidden="true" size={14} /> <span>{footerLabels[locale].whatsapp}</span></a> : <span className="footer-link-pending"><MessageCircle aria-hidden="true" size={14} /> <span>{footerLabels[locale].whatsapp}</span></span>}
+            </div>
+          </section>
           <section className="footer-column"><h2>{footerLabels[locale].legal}</h2><div className="footer-column-links">
             <Link href={pathFor("privacy-policy")}>{nav.privacy}</Link><Link href={pathFor("terms-of-service")}>{nav.terms}</Link><Link href={pathFor("cookie-policy")}>{nav.cookies}</Link>
           </div></section>
-          <section className="footer-column"><h2>{footerLabels[locale].branch}</h2><p>{publicFooter.branch.address}</p><p className="footer-muted-note">{footerLabels[locale].reference}: {publicFooter.branch.reference}</p><p>{publicFooter.branch.city}</p></section>
-          {Object.values(publicFooter.socials).some(Boolean) ? <section className="footer-column">
+          <section className="footer-address" aria-label={footerLabels[locale].branch}>
+            <div className="footer-address-heading"><MapPin aria-hidden="true" size={15} /><span>{footerLabels[locale].branch}</span></div>
+            <a className="footer-address-link" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${publicFooter.branch.address}, ${publicFooter.branch.city}`)}`} target="_blank" rel="noreferrer">
+              <span>{publicFooter.branch.address}</span>
+              <span className="footer-muted-note">{footerLabels[locale].reference}: {publicFooter.branch.reference}</span>
+              <span>{publicFooter.branch.city}</span>
+            </a>
+          </section>
+          <section className="footer-column">
             <h2>{footerLabels[locale].socials}</h2>
             <div className="footer-column-links">
               {publicFooter.socials.linkedin ? <a href={publicFooter.socials.linkedin} target="_blank" rel="noreferrer">LinkedIn</a> : <span className="footer-link-pending">LinkedIn</span>}
               {publicFooter.socials.instagram ? <a href={publicFooter.socials.instagram} target="_blank" rel="noreferrer">Instagram</a> : <span className="footer-link-pending">Instagram</span>}
               {publicFooter.socials.facebook ? <a href={publicFooter.socials.facebook} target="_blank" rel="noreferrer">Facebook</a> : <span className="footer-link-pending">Facebook</span>}
             </div>
-          </section> : null}
+          </section>
         </div>
         <div className="footer-bottom"><span>© {new Date().getFullYear()} KRAM. {footerLabels[locale].rights}</span><div className="footer-languages">{locales.map((language) => <Link key={language} href={`/${language}/${legalPage}`} aria-current={locale === language ? "page" : undefined}>{language.toUpperCase()}</Link>)}</div></div>
       </footer>
