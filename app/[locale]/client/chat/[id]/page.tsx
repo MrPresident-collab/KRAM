@@ -7,6 +7,7 @@ import { ArrowLeft, ArrowRight, MessageCircle, ShieldCheck } from "lucide-react"
 import { createClient } from "@/lib/supabase/client";
 import { isLocale, type Locale } from "@/lib/i18n";
 import { KramLogo } from "@/components/brand/kram-logo";
+import { ClientSignOut } from "@/components/client-portal-sign-out";
 
 type ChatMessage={id:string;body:string;sender_client_id:string|null;sender_user_id:string|null;sent_at:string|null;created_at:string;visibility:string};
 type Chat={id:string;subject:string;status:string;created_at:string;last_message_at:string|null};
@@ -53,7 +54,7 @@ export default function ClientConversationPage(){
  }
 
  return <main className="client-portal">
-  <header className="client-portal-header"><Link href={"/"+locale} aria-label="KRAM home"><KramLogo className="client-portal-logo"/></Link><nav><Link href={"/"+locale+"/client"}>{t.back}</Link></nav></header>
+  <header className="client-portal-header"><Link href={"/"+locale} aria-label="KRAM home"><KramLogo className="client-portal-logo"/></Link><nav><Link href={"/"+locale+"/client"}>{t.back}</Link><ClientSignOut locale={locale} label={locale==="fr"?"Se déconnecter":locale==="pt"?"Terminar sessão":"Sign out"}/></nav></header>
   <div className="client-chat-layout">
    <Link className="client-form-back" href={"/"+locale+"/client"}><ArrowLeft size={15}/>{t.back}</Link>
    {loading?<div className="client-chat-loading">{t.title}…</div>:chat?<>
