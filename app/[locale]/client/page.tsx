@@ -4,6 +4,7 @@ import { ArrowRight, ArrowUpRight, FileText, MessageCircle, ShieldCheck, Buildin
 import { createClient } from "@/lib/supabase/server";
 import { isLocale, type Locale } from "@/lib/i18n";
 import { KramLogo } from "@/components/brand/kram-logo";
+import { ClientSignOut } from "@/components/client-portal-sign-out";
 
 const words = {
   en: {
@@ -13,7 +14,7 @@ const words = {
     emptyReports:"Published reports for your assets will appear here when they are ready.",
     chat:"Talk to KRAM", chatDesc:"Tell our team what help you need. This is a direct client-to-KRAM conversation, separate from internal operations.",
     newChat:"Start a conversation", private:"Private by design", privateDesc:"You can only access the assets, published reports and client-visible messages associated with your own account.",
-    status:"Status", updated:"Last activity", back:"KRAM home", login:"Client access"
+    status:"Status", updated:"Last activity", back:"KRAM home", login:"Sign out"
   },
   fr: {
     eyebrow:"ESPACE CLIENT", title:"Vos actifs, en toute visibilité.", intro:"Une vision plus claire des actifs confiés à KRAM, ainsi que des échanges et des informations qui s’y rapportent.",
@@ -22,7 +23,7 @@ const words = {
     emptyReports:"Les rapports publiés concernant vos actifs apparaîtront ici dès qu’ils seront disponibles.",
     chat:"Échanger avec KRAM", chatDesc:"Expliquez à notre équipe l’aide dont vous avez besoin. Cet échange est réservé à la relation client-KRAM, séparément des opérations internes.",
     newChat:"Démarrer une conversation", private:"La confidentialité avant tout", privateDesc:"Vous accédez uniquement à vos actifs, aux rapports publiés et aux messages destinés à votre compte.",
-    status:"Statut", updated:"Dernière activité", back:"Accueil KRAM", login:"Accès client"
+    status:"Statut", updated:"Dernière activité", back:"Accueil KRAM", login:"Se déconnecter"
   },
   pt: {
     eyebrow:"ÁREA DO CLIENTE", title:"Os seus ativos, com clareza.", intro:"Uma visão mais clara dos ativos confiados à KRAM e das conversas e atualizações relacionadas.",
@@ -31,7 +32,7 @@ const words = {
     emptyReports:"Os relatórios publicados dos seus ativos aparecerão aqui quando estiverem disponíveis.",
     chat:"Falar com a KRAM", chatDesc:"Diga à nossa equipa de que ajuda precisa. Esta conversa é exclusivamente entre o cliente e a KRAM, separada das operações internas.",
     newChat:"Iniciar conversa", private:"Privacidade desde a conceção", privateDesc:"Só pode aceder aos ativos, relatórios publicados e mensagens destinadas à sua própria conta.",
-    status:"Estado", updated:"Atividade recente", back:"Página inicial KRAM", login:"Acesso de cliente"
+    status:"Estado", updated:"Atividade recente", back:"Página inicial KRAM", login:"Terminar sessão"
   }
 } as const;
 
@@ -65,7 +66,7 @@ export default async function ClientOverviewPage({ params }: { params: Promise<{
   return <main className="client-portal">
     <header className="client-portal-header">
       <Link href={"/"+locale} aria-label="KRAM home"><KramLogo className="client-portal-logo" /></Link>
-      <nav aria-label="Client navigation"><Link href={"/"+locale+"/client"} className="client-nav-active">{t.eyebrow}</Link><Link href={"/"+locale+"/client-login"}>{t.login}</Link><Link href={"/"+locale}>{t.back}</Link></nav>
+      <nav aria-label="Client navigation"><Link href={"/"+locale+"/client"} className="client-nav-active">{t.eyebrow}</Link><ClientSignOut locale={locale} label={t.login}/><Link href={"/"+locale}>{t.back}</Link></nav>
     </header>
     <div className="client-portal-main">
       <section className="client-portal-welcome">
