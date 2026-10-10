@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Mail, Phone, MessageCircle, MapPin } from "lucide-react";
 import type { Metadata } from "next";
 import { isLocale, type Locale } from "@/lib/i18n";
 import { KramBrand } from "@/components/brand/kram-brand";
@@ -246,7 +247,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <footer className="site-footer">
         <div className="footer-brand-row">
           <div className="footer-brand-copy">
-            <Link className="footer-wordmark" href={`/${locale}`} aria-label="KRAM — Kore Remote Asset Management"><span>KRAM</span><i aria-hidden="true" /></Link>
+            <Link className="footer-wordmark" href={`/${locale}`} aria-label="KRAM — Kore Remote Asset Management"><span>KRAM</span></Link>
             <p className="footer-company">{footerLabels[locale].company}</p>
             <p className="footer-tagline">{footerLabels[locale].tagline}</p>
           </div>
@@ -279,10 +280,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </section>
           <section className="footer-column">
             <h2>{footerLabels[locale].getInTouch}</h2>
-            <div className="footer-column-links">
-              {publicFooter.email ? <a href={`mailto:${publicFooter.email}`}>{footerLabels[locale].email}</a> : <span className="footer-link-pending">{footerLabels[locale].email}</span>}
-              <Link href={`/${locale}/enquiry`}>{footerLabels[locale].contactUs}</Link>
-              {publicFooter.whatsappNumber ? <a href={`https://wa.me/${publicFooter.whatsappNumber}`} target="_blank" rel="noreferrer">{footerLabels[locale].whatsapp}</a> : <span className="footer-link-pending">{footerLabels[locale].whatsapp}</span>}
+            <div className="footer-contact-links">
+              {publicFooter.email ? <a href={`mailto:${publicFooter.email}`}><Mail aria-hidden="true" size={14} /> <span>{footerLabels[locale].email}</span></a> : <span className="footer-link-pending"><Mail aria-hidden="true" size={14} /> <span>{footerLabels[locale].email}</span></span>}
+              {publicFooter.phoneNumber ? <a href={`tel:+${publicFooter.phoneNumber}`}><Phone aria-hidden="true" size={14} /> <span>{footerLabels[locale].phone}</span></a> : <span className="footer-link-pending"><Phone aria-hidden="true" size={14} /> <span>{footerLabels[locale].phone}</span></span>}
+              {publicFooter.whatsappNumber ? <a href={`https://wa.me/${publicFooter.whatsappNumber}`} target="_blank" rel="noreferrer"><MessageCircle aria-hidden="true" size={14} /> <span>{footerLabels[locale].whatsapp}</span></a> : <span className="footer-link-pending"><MessageCircle aria-hidden="true" size={14} /> <span>{footerLabels[locale].whatsapp}</span></span>}
             </div>
           </section>
           <section className="footer-column">
@@ -293,11 +294,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               <Link href={`/${locale}/cookie-policy`}>{footerLabels[locale].cookies}</Link>
             </div>
           </section>
-          <section className="footer-column">
-            <h2>{footerLabels[locale].branch}</h2>
-            <p>{publicFooter.branch.address}</p>
-            <p className="footer-muted-note">{footerLabels[locale].reference}: {publicFooter.branch.reference}</p>
-            <p>{publicFooter.branch.city}</p>
+          <section className="footer-address" aria-label={footerLabels[locale].branch}>
+            <div className="footer-address-heading"><MapPin aria-hidden="true" size={15} /><span>{footerLabels[locale].branch}</span></div>
+            <a className="footer-address-link" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${publicFooter.branch.address}, ${publicFooter.branch.city}`)}`} target="_blank" rel="noreferrer">
+              <span>{publicFooter.branch.address}</span>
+              <span className="footer-muted-note">{footerLabels[locale].reference}: {publicFooter.branch.reference}</span>
+              <span>{publicFooter.branch.city}</span>
+            </a>
           </section>
           <section className="footer-column">
             <h2>{footerLabels[locale].socials}</h2>
