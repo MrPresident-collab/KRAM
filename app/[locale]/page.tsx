@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { isLocale, type Locale } from "@/lib/i18n";
-import { KramLogo } from "@/components/brand/kram-logo";
+import { KramBrand } from "@/components/brand/kram-brand";
 
 type Copy = {
   nav: { home: string; about: string; services: string; login: string; start: string };
@@ -153,9 +153,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   return (
     <main className="public-home" id="top">
       <header className="site-header">
-        <Link href={`/${locale}`} className="brand-mark" aria-label="KRAM home">
-          <KramLogo className="site-logo" />
-        </Link>
+        <KramBrand locale={locale} href={`/${locale}`} className="brand-mark" />
         <nav className="main-nav" aria-label="Main navigation">
           <Link className="nav-active" href={`/${locale}`}>{t.nav.home}</Link>
           <Link href={`/${locale}/about`}>{t.nav.about}</Link>
@@ -246,9 +244,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       <footer className="site-footer">
         <div className="footer-top">
-          <Link href={`/${locale}`} className="brand-mark brand-mark-footer" aria-label="KRAM home">
-            <KramLogo className="site-logo site-logo-footer" />
-          </Link>
+          <KramBrand locale={locale} href={`/${locale}`} className="brand-mark brand-mark-footer" logoClassName="site-logo site-logo-footer" />
           <p>{t.footer.line}</p>
           <div className="footer-contact"><span>{t.footer.contact}</span><a href={`/${locale}/enquiry`}>{t.nav.start} ↗</a></div>
         </div>
