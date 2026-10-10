@@ -180,10 +180,10 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           <section className="footer-column">
             <h2>{footerLabels[locale].explore}</h2>
             <nav className="footer-column-links" aria-label={footerLabels[locale].explore}>
-            <Link href={`/${locale}`}>t.nav.home</Link>
-            <Link href={`/${locale}/about`}>t.nav.about</Link>
-            <Link href={`/${locale}/services`}>t.nav.services</Link>
-            <Link href={`/${locale}/login`}>t.nav.login</Link>
+            <Link href={`/${locale}`}>{t.nav.home}</Link>
+            <Link href={`/${locale}/about`}>{t.nav.about}</Link>
+            <Link href={`/${locale}/services`}>{t.nav.services}</Link>
+            <Link href={`/${locale}/login`}>{t.nav.login}</Link>
             </nav>
           </section>
           <section className="footer-column">
@@ -191,6 +191,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             <nav className="footer-column-links" aria-label={footerLabels[locale].resources}>
               <Link href={`/${locale}/enquiry`}>{footerLabels[locale].enquiry}</Link>
               <Link href={`/${locale}/login`}>{footerLabels[locale].portal}</Link>
+              <Link href={`/${locale}/faqs`}>{footerLabels[locale].faqs}</Link>
             </nav>
           </section>
           <section className="footer-column">
@@ -206,6 +207,14 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
               {publicFooter.email ? <a href={`mailto:${publicFooter.email}`}>{footerLabels[locale].email}</a> : null}
               <Link href={`/${locale}#contact`}>{footerLabels[locale].contactUs}</Link>
               {publicFooter.whatsappNumber ? <a href={`https://wa.me/${publicFooter.whatsappNumber}`} target="_blank" rel="noreferrer">{footerLabels[locale].whatsapp}</a> : null}
+            </div>
+          </section>
+          <section className="footer-column">
+            <h2>{footerLabels[locale].legal}</h2>
+            <div className="footer-column-links">
+              <Link href={`/${locale}/privacy-policy`}>{footerLabels[locale].privacy}</Link>
+              <Link href={`/${locale}/terms-of-service`}>{footerLabels[locale].terms}</Link>
+              <Link href={`/${locale}/cookie-policy`}>{footerLabels[locale].cookies}</Link>
             </div>
           </section>
           <section className="footer-column">
