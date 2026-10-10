@@ -195,7 +195,6 @@ export default function EnquiryPage() {
           </fieldset>
 
           <div className="enquiry-submit-row">
-            <p>{t.privacy}</p>
             <button type="submit" className="button button-orange" disabled={submitting || submitted}>{submitting ? <><LoaderCircle size={16} className="enquiry-spinner"/>{t.sending}</> : submitted ? <><Check size={16}/>{t.successTitle}</> : <>{t.submit}<ArrowUpRight size={17}/></>}</button>
           </div>
           {submitError && <p className="enquiry-form-feedback enquiry-form-error" role="alert">{submitError}</p>}
