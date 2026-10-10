@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { isLocale, type Locale } from "@/lib/i18n";
 import { KramBrand } from "@/components/brand/kram-brand";
+import { footerLabels, publicFooter } from "@/lib/public-footer";
 
 const copy = {
   en: {
@@ -219,15 +220,64 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
       </section>
 
       <footer className="site-footer">
-        <div className="footer-top">
-          <KramBrand locale={locale} href={`/${locale}`} className="brand-mark brand-mark-footer" logoClassName="site-logo site-logo-footer" />
-          <p>{t.footerLine}</p>
-          <div className="footer-contact"><span>{t.contact}</span><a href={`/${locale}/enquiry`}>{t.finalCta} ↗</a></div>
+        <div className="footer-brand-row">
+          <div className="footer-brand-copy">
+            <Link className="footer-wordmark" href={`/${locale}`}>KRAM</Link>
+            <p className="footer-company">{footerLabels[locale].company}</p>
+            <p className="footer-tagline">{footerLabels[locale].tagline}</p>
+          </div>
+          <div className="footer-contact"><span>{footerLabels[locale].contact}</span><Link href={`/${locale}/enquiry`}>{t.finalCta} ↗</Link></div>
+        </div>
+        <div className="footer-columns">
+          <section className="footer-column">
+            <h2>{footerLabels[locale].explore}</h2>
+            <nav className="footer-column-links" aria-label={footerLabels[locale].explore}>
+            <Link href={`/${locale}`}>t.nav.home</Link>
+            <Link href={`/${locale}/about`}>t.nav.about</Link>
+            <Link href={`/${locale}/services`}>t.nav.services</Link>
+            <Link href={`/${locale}/login`}>t.nav.login</Link>
+            </nav>
+          </section>
+          <section className="footer-column">
+            <h2>{footerLabels[locale].resources}</h2>
+            <nav className="footer-column-links" aria-label={footerLabels[locale].resources}>
+              <Link href={`/${locale}/enquiry`}>{footerLabels[locale].enquiry}</Link>
+              <Link href={`/${locale}/login`}>{footerLabels[locale].portal}</Link>
+            </nav>
+          </section>
+          <section className="footer-column">
+            <h2>{footerLabels[locale].footprint}</h2>
+            <ul className="footer-plain-list">
+              {publicFooter.footprint.map((place) => <li key={place}>{place}</li>)}
+            </ul>
+            <p className="footer-muted-note">{footerLabels[locale].growing}</p>
+          </section>
+          <section className="footer-column">
+            <h2>{footerLabels[locale].getInTouch}</h2>
+            <div className="footer-column-links">
+              {publicFooter.email ? <a href={`mailto:${publicFooter.email}`}>{footerLabels[locale].email}</a> : null}
+              <Link href={`/${locale}/enquiry`}>{footerLabels[locale].contactUs}</Link>
+              {publicFooter.whatsappNumber ? <a href={`https://wa.me/${publicFooter.whatsappNumber}`} target="_blank" rel="noreferrer">{footerLabels[locale].whatsapp}</a> : null}
+            </div>
+          </section>
+          <section className="footer-column">
+            <h2>{footerLabels[locale].branch}</h2>
+            <p>{publicFooter.branch.address}</p>
+            <p className="footer-muted-note">{footerLabels[locale].reference}: {publicFooter.branch.reference}</p>
+            <p>{publicFooter.branch.city}</p>
+          </section>
+          {Object.values(publicFooter.socials).some(Boolean) ? <section className="footer-column">
+            <h2>{footerLabels[locale].socials}</h2>
+            <div className="footer-column-links">
+              {publicFooter.socials.linkedin ? <a href={publicFooter.socials.linkedin} target="_blank" rel="noreferrer">LinkedIn</a> : null}
+              {publicFooter.socials.instagram ? <a href={publicFooter.socials.instagram} target="_blank" rel="noreferrer">Instagram</a> : null}
+              {publicFooter.socials.facebook ? <a href={publicFooter.socials.facebook} target="_blank" rel="noreferrer">Facebook</a> : null}
+            </div>
+          </section> : null}
         </div>
         <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} KRAM. {t.rights}</span>
-          <div className="footer-links"><Link href={`/${locale}`}>{t.nav.home}</Link><Link href={`/${locale}/about`}>{t.nav.about}</Link><Link href={`/${locale}/services`}>{t.nav.services}</Link><Link href={`/${locale}/login`}>{t.nav.login}</Link></div>
-          <div className="footer-languages">{(["en", "fr", "pt"] as const).map((language) => <Link key={language} href={`/${language}/services`}>{language.toUpperCase()}</Link>)}</div>
+          <span>© {new Date().getFullYear()} KRAM. {footerLabels[locale].rights}</span>
+          <div className="footer-languages">{(["en", "fr", "pt"] as const).map((language) => <Link key={language} href={`/${language}`} aria-current={locale === language ? "page" : undefined}>{language.toUpperCase()}</Link>)}</div>
         </div>
       </footer>
     </main>
