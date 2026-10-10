@@ -577,3 +577,8 @@
 .client-asset-description .eyebrow{margin-bottom:12px}
 .client-asset-description>p:last-child{font-size:13px;line-height:1.8;color:#6F6F68;white-space:pre-wrap}
 @media(max-width:600px){.client-asset-layout{padding:30px 18px 65px}.client-asset-hero{padding-top:38px}.client-asset-hero h1{font-size:40px}.client-asset-details{grid-template-columns:1fr}.client-asset-details>div{padding:14px 16px;gap:6px}}
+
+.client-portal-signout{display:inline-flex;align-items:center;gap:7px;padding:7px 0;border:0;background:transparent;color:#66665F;font:inherit;font-size:12px;cursor:pointer}
+.client-portal-signout:hover{color:#242424}
+.client-portal-signout:disabled{opacity:.55;cursor:wait}
+@media(max-width:560px){.client-portal-signout{font-size:10px;gap:4px}.client-portal-signout svg{width:12px;height:12px}}
