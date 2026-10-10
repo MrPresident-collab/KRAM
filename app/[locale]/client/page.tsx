@@ -67,7 +67,7 @@ export default async function ClientOverviewPage({ params }: { params: Promise<{
   return <main className="client-portal">
     <header className="client-portal-header">
       <Link href={"/"+locale} aria-label="KRAM home"><KramLogo className="client-portal-logo" /></Link>
-      <nav aria-label="Client navigation"><Link href={"/"+locale+"/client"} className="client-nav-active">{t.eyebrow}</Link><ClientSignOut locale={locale} label={t.login}/><Link href={"/"+locale}>{t.back}</Link></nav>
+      <nav aria-label="Client navigation"><Link href={"/"+locale+"/client"} className="client-nav-active">{t.eyebrow}</Link><Link href={"/"+locale+"/client/approvals"}>{t.approvals}</Link><ClientSignOut locale={locale} label={t.login}/><Link href={"/"+locale}>{t.back}</Link></nav>
     </header>
     <div className="client-portal-main">
       <section className="client-portal-welcome">
