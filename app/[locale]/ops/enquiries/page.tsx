@@ -18,10 +18,14 @@ export default async function OpsEnquiriesPage({params}:{params:Promise<{locale:
  const supabase=await createClient();
  const {data:{user}}=await supabase.auth.getUser();
  if(!user)redirect("/"+locale+"/login");
- const {data:membership}=await supabase.from("organization_members").select("role").eq("user_id",user.id).eq("status","active").limit(1).maybeSingle();
+ const {data:membership}=await supabase.from("organization_members").select("organization_id,role").eq("user_id",user.id).eq("status","active").limit(1).maybeSingle();
  if(!membership||!["owner","admin","regional_admin","support","operations"].includes(membership.role))redirect("/"+locale+"/ops");
- const {data,error}=await supabase.from("client_enquiries").select("id,full_name,email,phone,residence,asset_location,asset_type,help_needed,details,preferred_contact,preferred_language,status,created_at").order("created_at",{ascending:false}).limit(100);
+ const [{data,error},{data:staff}] = await Promise.all([
+  supabase.from("client_enquiries").select("id,full_name,email,phone,residence,asset_location,asset_type,help_needed,details,preferred_contact,preferred_language,status,assigned_to,created_at").order("created_at",{ascending:false}).limit(100),
+  supabase.from("organization_members").select("user_id,role,profiles(full_name,work_email)").eq("organization_id",membership.organization_id).eq("status","active").in("role",["owner","admin","regional_admin","support"]).order("created_at",{ascending:true})
+ ]);
  const items=(data??[]) as Enquiry[];
+ const assignees=(staff??[]).map((s:any)=>({id:s.user_id,name:Array.isArray(s.profiles)?s.profiles[0]?.full_name??s.profiles[0]?.work_email??"Support team member":s.profiles?.full_name??s.profiles?.work_email??"Support team member",role:s.role}));
  return <div className="mx-auto max-w-6xl space-y-6 p-5 md:p-8">
   <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="mb-2 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.18em] text-[var(--kram-orange)]"><Inbox size={14}/> KRAM / INTAKE</p><h1 className="text-3xl font-semibold tracking-tight text-[var(--kram-ink)]">{t.title}</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--kram-metal)]">{t.desc}</p></div><div className="flex items-center gap-3 rounded-xl border border-[var(--kram-border)] bg-white px-4 py-3"><ClipboardList size={19} className="text-[var(--kram-orange)]"/><div><strong className="block text-lg text-[var(--kram-ink)]">{items.length}</strong><span className="text-[10px] text-[var(--kram-metal)]">Recent enquiries</span></div></div></div>
   {error?<p role="alert" className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">{t.error}</p>:<EnquiriesInbox initialItems={items} assignees={assignees} locale={locale} labels={t}/>}
