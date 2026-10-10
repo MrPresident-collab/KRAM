@@ -4,6 +4,7 @@ import { ArrowLeft, Building2, FileText, MapPin, ShieldCheck } from "lucide-reac
 import { createClient } from "@/lib/supabase/server";
 import { isLocale, type Locale } from "@/lib/i18n";
 import { KramLogo } from "@/components/brand/kram-logo";
+import { ClientSignOut } from "@/components/client-portal-sign-out";
 
 const words={
  en:{eyebrow:"YOUR ASSET",back:"Your overview",reports:"Published reports",documents:"Shared documents",status:"Status",location:"Location",reference:"Reference",description:"Asset details",private:"Private to your account",privateDesc:"This page shows information KRAM has made available to your client account. Internal notes and operational records are not shown.",noReports:"No published reports are available for this asset yet.",noDocs:"No documents have been explicitly shared with you for this asset."},
@@ -29,7 +30,7 @@ export default async function ClientAssetPage({params}:{params:Promise<{locale:s
  const date=(value:string|null)=>value?new Intl.DateTimeFormat(locale,{dateStyle:"medium"}).format(new Date(value)):"—";
  const pretty=(value:string)=>value.replaceAll("_"," ").replace(/\b\w/g,c=>c.toUpperCase());
  return <main className="client-portal">
-  <header className="client-portal-header"><Link href={"/"+locale} aria-label="KRAM home"><KramLogo className="client-portal-logo"/></Link><nav><Link href={"/"+locale+"/client"}>{t.back}</Link></nav></header>
+  <header className="client-portal-header"><Link href={"/"+locale} aria-label="KRAM home"><KramLogo className="client-portal-logo"/></Link><nav><Link href={"/"+locale+"/client"}>{t.back}</Link><ClientSignOut locale={locale} label={locale==="fr"?"Se déconnecter":locale==="pt"?"Terminar sessão":"Sign out"}/></nav></header>
   <div className="client-asset-layout">
    <Link className="client-form-back" href={"/"+locale+"/client"}><ArrowLeft size={15}/>{t.back}</Link>
    <section className="client-asset-hero"><div className="client-asset-icon"><Building2 size={29}/></div><p className="eyebrow"><span className="eyebrow-line"/>{t.eyebrow}</p><h1>{asset.name}</h1><p>{[asset.city,asset.region,asset.country_code].filter(Boolean).join(", ")||"—"}</p><span className="client-portal-status">{pretty(asset.status)}</span></section>
