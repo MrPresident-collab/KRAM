@@ -202,8 +202,8 @@
   .closing-content { width: 100%; padding: 70px 24px; }
   .closing-content h2 { font-size: clamp(38px, 10vw, 52px); }
   .closing-content > p:not(.eyebrow) { font-size: 13px; }
-  .site-footer { padding: 36px 24px 22px; }
-  .footer-brand-row { flex-direction: row; gap: 18px; padding-bottom: 20px; }
+  .site-footer { padding: 28px 24px 18px; }
+  .footer-brand-row { flex-direction: column; gap: 14px; padding-bottom: 18px; }
   .footer-contact { align-items: flex-start; }
   .footer-columns, .legal-site-footer .footer-columns { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 18px; padding: 20px 0 22px; }
   .legal-layout { grid-template-columns: 1fr; gap: 35px; padding-top: 48px; padding-bottom: 70px; }
