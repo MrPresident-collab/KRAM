@@ -7,6 +7,7 @@ import { ArrowLeft, ArrowRight, MessageCircle, ShieldCheck } from "lucide-react"
 import { createClient } from "@/lib/supabase/client";
 import { isLocale, type Locale } from "@/lib/i18n";
 import { KramLogo } from "@/components/brand/kram-logo";
+import { ClientSignOut } from "@/components/client-portal-sign-out";
 
 const copy = {
   en:{eyebrow:"CLIENT SUPPORT",title:"How can we help?",intro:"Tell KRAM what you need help with. This conversation is between you and the KRAM team—not an internal operations chat.",subject:"What do you need help with?",subjectHint:"A short subject",asset:"Related asset (optional)",none:"Not linked to a specific asset",message:"Tell us a little more",messageHint:"Describe what you need, what you have noticed, or what you would like us to help arrange.",submit:"Send to KRAM",sending:"Sending…",privacy:"Only you and authorised KRAM team members can see this client conversation.",back:"Back to your overview",required:"Please add a subject and message.",failed:"We couldn’t send your message. Please try again.",assetError:"Your asset list could not be loaded. You can still contact KRAM without selecting an asset."},
@@ -57,7 +58,7 @@ export default function NewClientConversationPage(){
   }
 
   return <main className="client-portal">
-    <header className="client-portal-header"><Link href={"/"+locale} aria-label="KRAM home"><KramLogo className="client-portal-logo"/></Link><nav><Link href={"/"+locale+"/client"}>{t.back}</Link></nav></header>
+    <header className="client-portal-header"><Link href={"/"+locale} aria-label="KRAM home"><KramLogo className="client-portal-logo"/></Link><nav><Link href={"/"+locale+"/client"}>{t.back}</Link><ClientSignOut locale={locale} label={locale==="fr"?"Se déconnecter":locale==="pt"?"Terminar sessão":"Sign out"}/></nav></header>
     <div className="client-form-layout">
       <Link className="client-form-back" href={"/"+locale+"/client"}><ArrowLeft size={15}/>{t.back}</Link>
       <section className="client-form-heading"><p className="eyebrow"><span className="eyebrow-line"/>{t.eyebrow}</p><h1>{t.title}</h1><p>{t.intro}</p></section>
