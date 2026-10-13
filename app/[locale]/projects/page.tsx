@@ -39,8 +39,8 @@ const copy: Record<Locale, {
   },
   fr: {
     nav: { home: "Accueil", about: "À propos", services: "Services", projects: "Projets", login: "Portail client", start: "Parlons de votre actif" },
-    title: "Projets KRAM — Travaux immobiliers documentés",
-    description: "Découvrez les projets documentés de KRAM au fur et à mesure que les travaux sont terminés et autorisés à la publication. Les services expliquent ce que nous faisons ; les projets montrent ce que nous avons fait.",
+    title: "Projets KRAM — Sélection de travaux immobiliers",
+    description: "Découvrez une sélection de photographies liées à la rénovation, à la maintenance, aux installations et au suivi de biens immobiliers.",
     eyebrow: "Projets",
     headline: "Une sélection de travaux, présentée clairement.",
     hero: "Une sélection visuelle de travaux liés aux biens immobiliers, classés par type. Les photographies illustrent les interventions que KRAM peut aider à coordonner ; le périmètre et les livrables sont convenus pour chaque mission.",
@@ -62,8 +62,8 @@ const copy: Record<Locale, {
   },
   pt: {
     nav: { home: "Início", about: "Sobre", services: "Serviços", projects: "Projetos", login: "Portal do cliente", start: "Vamos conversar" },
-    title: "Projetos KRAM — Trabalhos imobiliários documentados",
-    description: "Conheça os projetos documentados da KRAM à medida que os trabalhos são concluídos e autorizados para publicação. Os serviços explicam o que fazemos; os projetos mostram o que fizemos.",
+    title: "Projetos KRAM — Seleção de trabalhos imobiliários",
+    description: "Explore uma seleção de fotografias relacionadas com renovação, manutenção, instalações e acompanhamento de imóveis.",
     eyebrow: "Projetos",
     headline: "Trabalhos selecionados, apresentados com clareza.",
     hero: "Uma seleção visual de trabalhos relacionados com imóveis, organizada por tipo. As fotografias dão contexto aos trabalhos que a KRAM pode ajudar a coordenar; o âmbito e os resultados a entregar são acordados em cada serviço.",
