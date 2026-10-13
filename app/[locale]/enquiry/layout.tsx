@@ -23,7 +23,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: rawLocale } = await params;
   const locale = isLocale(rawLocale) ? rawLocale : "fr";
-  return metadataCopy[locale];
+  return { ...metadataCopy[locale], title: `${metadataCopy[locale].title} | KRAM` };
 }
 
 export default function EnquiryLayout({
