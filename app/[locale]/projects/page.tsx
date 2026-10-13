@@ -15,7 +15,7 @@ const copy: Record<Locale, {
   standards: { title: string; body: string }[]; ctaTitle: string; ctaBody: string; cta: string;
 }> = {
   en: {
-    nav: { home: "Home", about: "About", services: "Services", projects: "Projects", login: "Login", start: "Get started" },
+    nav: { home: "Home", about: "About", services: "Services", projects: "Projects", login: "Client Portal", start: "Get started" },
     title: "KRAM Projects — Documented property work and outcomes",
     description: "Explore property care, maintenance, renovation, installations and project coordination associated with KRAM.",
     eyebrow: "Projects",
@@ -38,7 +38,7 @@ const copy: Record<Locale, {
     cta: "Tell us about your project"
   },
   fr: {
-    nav: { home: "Accueil", about: "À propos", services: "Services", projects: "Projets", login: "Connexion", start: "Parlons de votre actif" },
+    nav: { home: "Accueil", about: "À propos", services: "Services", projects: "Projets", login: "Portail client", start: "Parlons de votre actif" },
     title: "Projets KRAM — Travaux immobiliers documentés",
     description: "Découvrez les projets documentés de KRAM au fur et à mesure que les travaux sont terminés et autorisés à la publication. Les services expliquent ce que nous faisons ; les projets montrent ce que nous avons fait.",
     eyebrow: "Projets",
@@ -61,7 +61,7 @@ const copy: Record<Locale, {
     cta: "Parlez-nous de votre projet"
   },
   pt: {
-    nav: { home: "Início", about: "Sobre", services: "Serviços", projects: "Projetos", login: "Entrar", start: "Vamos conversar" },
+    nav: { home: "Início", about: "Sobre", services: "Serviços", projects: "Projetos", login: "Portal do cliente", start: "Vamos conversar" },
     title: "Projetos KRAM — Trabalhos imobiliários documentados",
     description: "Conheça os projetos documentados da KRAM à medida que os trabalhos são concluídos e autorizados para publicação. Os serviços explicam o que fazemos; os projetos mostram o que fizemos.",
     eyebrow: "Projetos",
@@ -101,15 +101,15 @@ export default async function ProjectsPage({ params }: { params: Promise<{ local
     <main className="public-home projects-page" id="top">
       <header className="site-header">
         <KramBrand locale={locale} href={`/${locale}`} className="brand-mark" />
-        <nav className="main-nav" aria-label="Main navigation">
+        <nav className="main-nav" aria-label={locale === "fr" ? "Navigation principale" : locale === "pt" ? "Navegação principal" : "Main navigation"}>
           <Link href={`/${locale}`}>{t.nav.home}</Link>
           <Link href={`/${locale}/about`}>{t.nav.about}</Link>
           <Link href={`/${locale}/services`}>{t.nav.services}</Link>
           <Link className="nav-active" href={`/${locale}/projects`}>{t.nav.projects}</Link>
-          <Link href={`/${locale}/login`}>{t.nav.login}</Link>
+          <Link href={`/${locale}/client-login`}>{t.nav.login}</Link>
         </nav>
         <div className="header-actions">
-          <div className="language-switch" aria-label="Language">
+          <div className="language-switch" aria-label={locale === "fr" ? "Langue" : locale === "pt" ? "Idioma" : "Language"}>
             {(["en", "fr", "pt"] as const).map((language) => <Link key={language} href={`/${language}/projects`} aria-current={locale === language ? "page" : undefined} className={locale === language ? "language-current" : ""}>{language.toUpperCase()}</Link>)}
           </div>
           <Link className="button button-small button-orange header-cta" href={`/${locale}/enquiry`}>{t.nav.start}<span aria-hidden="true">↗</span></Link>
@@ -203,14 +203,13 @@ export default async function ProjectsPage({ params }: { params: Promise<{ local
               <Link href={`/${locale}/about`}>{t.nav.about}</Link>
               <Link href={`/${locale}/services`}>{t.nav.services}</Link>
               <Link href={`/${locale}/projects`}>{t.nav.projects}</Link>
-              <Link href={`/${locale}/login`}>{t.nav.login}</Link>
             </nav>
           </section>
           <section className="footer-column">
             <h2>{footerLabels[locale].resources}</h2>
             <nav className="footer-column-links" aria-label={footerLabels[locale].resources}>
               <Link href={`/${locale}/enquiry`}>{footerLabels[locale].enquiry}</Link>
-              <Link href={`/${locale}/login`}>{footerLabels[locale].portal}</Link>
+              <Link href={`/${locale}/client-login`}>{footerLabels[locale].portal}</Link>
               <Link href={`/${locale}/faqs`}>{footerLabels[locale].faqs}</Link>
             </nav>
           </section>
