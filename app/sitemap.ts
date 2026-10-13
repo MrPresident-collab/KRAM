@@ -42,7 +42,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
               ]),
             ),
             "x-default": `${baseUrl}${path ? `/fr/${path}` : "/fr"}`,
-          },,
+          },
         },
       };
     }),
