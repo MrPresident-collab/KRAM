@@ -11,7 +11,7 @@ import { footerLabels, publicFooter } from "@/lib/public-footer";
 
 const copy = {
   en: {
-    nav: { home: "Home", about: "About", services: "Services", login: "Login" },
+    nav: { home: "Home", about: "About", services: "Services", login: "Client Portal" },
     eyebrow: "A first conversation",
     title: "Tell us what your asset needs.",
     intro: "Every situation is different. Share a little about what you need, and our team can review your enquiry and guide you through the next step.",
@@ -42,12 +42,12 @@ const copy = {
     emailOption: "Email", phoneOption: "Phone call", whatsappOption: "WhatsApp",
     privacy: "Submitting an enquiry does not create a client account or commit you to a service. Our team will review your request and contact you about the next step.",
     submit: "Send enquiry", sending: "Sending…", successTitle: "Your enquiry has been received.", successBody: "Thank you. Your request has been securely recorded for KRAM’s team to review. It does not create a client account.", error: "We couldn’t submit your enquiry. Please check your details and try again.",
-    back: "Back to Login",
+    back: "Back to client options",
     footer: "Asset oversight with clarity and accountability.",
     contactLabel: "Contact", rights: "All rights reserved."
   },
   fr: {
-    nav: { home: "Accueil", about: "À propos", services: "Services", login: "Connexion" },
+    nav: { home: "Accueil", about: "À propos", services: "Services", login: "Portail client" },
     eyebrow: "Un premier échange",
     title: "Parlez-nous des besoins de votre actif.",
     intro: "Chaque situation est différente. Présentez-nous brièvement vos besoins afin que notre équipe puisse examiner votre demande et vous guider vers la prochaine étape.",
@@ -78,12 +78,12 @@ const copy = {
     emailOption: "E-mail", phoneOption: "Appel téléphonique", whatsappOption: "WhatsApp",
     privacy: "Envoyer une demande ne crée pas de compte client et ne vous engage pas à acheter un service. Notre équipe examinera votre demande et vous contactera pour la suite.",
     submit: "Envoyer la demande", sending: "Envoi…", successTitle: "Votre demande a été reçue.", successBody: "Merci. Votre demande a été enregistrée de manière sécurisée pour examen par l’équipe KRAM. Aucun compte client n’a été créé.", error: "Impossible d’envoyer votre demande. Vérifiez les informations et réessayez.",
-    back: "Retour à la connexion",
+    back: "Retour aux options client",
     footer: "Le suivi des actifs, avec clarté et responsabilité.",
     contactLabel: "Contact", rights: "Tous droits réservés."
   },
   pt: {
-    nav: { home: "Início", about: "Sobre", services: "Serviços", login: "Entrar" },
+    nav: { home: "Início", about: "Sobre", services: "Serviços", login: "Portal do cliente" },
     eyebrow: "Uma primeira conversa",
     title: "Conte-nos do que o seu ativo precisa.",
     intro: "Cada situação é diferente. Partilhe um pouco sobre o que precisa para que a nossa equipa possa analisar o pedido e orientar os próximos passos.",
@@ -114,7 +114,7 @@ const copy = {
     emailOption: "E-mail", phoneOption: "Chamada telefónica", whatsappOption: "WhatsApp",
     privacy: "O envio de um pedido não cria uma conta de cliente nem o compromete com um serviço. A nossa equipa irá analisar o pedido e contactá-lo sobre os próximos passos.",
     submit: "Enviar pedido", sending: "A enviar…", successTitle: "O seu pedido foi recebido.", successBody: "Obrigado. O pedido foi registado em segurança para análise pela equipa KRAM. Não foi criada nenhuma conta de cliente.", error: "Não foi possível enviar o pedido. Verifique os dados e tente novamente.",
-    back: "Voltar ao início de sessão",
+    back: "Voltar às opções de cliente",
     footer: "Acompanhamento de ativos com clareza e responsabilidade.",
     contactLabel: "Contacto", rights: "Todos os direitos reservados."
   }
@@ -139,14 +139,14 @@ export default function EnquiryPage() {
     <main className="public-home enquiry-page" id="top">
       <header className="site-header">
         <KramBrand locale={locale} href={`/${locale}`} className="brand-mark" />
-        <nav className="main-nav" aria-label="Main navigation">
+        <nav className="main-nav" aria-label={locale === "fr" ? "Navigation principale" : locale === "pt" ? "Navegação principal" : "Main navigation"}>
           <Link href={`/${locale}`}>{t.nav.home}</Link>
           <Link href={`/${locale}/about`}>{t.nav.about}</Link>
           <Link href={`/${locale}/services`}>{t.nav.services}</Link>
-          <Link href={`/${locale}/login`}>{t.nav.login}</Link>
+          <Link href={`/${locale}/client-login`}>{t.nav.login}</Link>
         </nav>
         <div className="header-actions">
-          <div className="language-switch" aria-label="Language">
+          <div className="language-switch" aria-label={locale === "fr" ? "Langue" : locale === "pt" ? "Idioma" : "Language"}>
             {(["en", "fr", "pt"] as const).map((language) => <Link key={language} href={`/${language}/enquiry`} aria-current={locale === language ? "page" : undefined} className={locale === language ? "language-current" : ""}>{language.toUpperCase()}</Link>)}
           </div>
         </div>
@@ -168,7 +168,7 @@ export default function EnquiryPage() {
           <p className="eyebrow"><span className="eyebrow-line" />{t.step}</p>
           <h2>{t.contact}</h2>
           <p>{t.privacy}</p>
-          <Link className="enquiry-back-link" href={`/${locale}/login`}><ArrowLeft size={16} />{t.back}</Link>
+          <Link className="enquiry-back-link" href={`/${locale}/client-login`}><ArrowLeft size={16} />{t.back}</Link>
         </aside>
 
         <form className="enquiry-form" onSubmit={async (event) => {
@@ -273,7 +273,7 @@ export default function EnquiryPage() {
             <p className="footer-company">{footerLabels[locale].company}</p>
             <p className="footer-tagline">{footerLabels[locale].tagline}</p>
           </div>
-          <div className="footer-contact"><span>{footerLabels[locale].contact}</span><Link href={`/${locale}/services`}>{t.nav.services} ↗</Link></div>
+          <div className="footer-contact"><Link href={`/${locale}/services`}>{footerLabels[locale].contact} ↗</Link></div>
         </div>
         <div className="footer-columns">
           <section className="footer-column">
@@ -282,14 +282,14 @@ export default function EnquiryPage() {
             <Link href={`/${locale}`}>{t.nav.home}</Link>
             <Link href={`/${locale}/about`}>{t.nav.about}</Link>
             <Link href={`/${locale}/services`}>{t.nav.services}</Link>
-            <Link href={`/${locale}/login`}>{t.nav.login}</Link>
+            <Link href={`/${locale}/client-login`}>{t.nav.login}</Link>
             </nav>
           </section>
           <section className="footer-column">
             <h2>{footerLabels[locale].resources}</h2>
             <nav className="footer-column-links" aria-label={footerLabels[locale].resources}>
               <Link href={`/${locale}/enquiry`}>{footerLabels[locale].enquiry}</Link>
-              <Link href={`/${locale}/login`}>{footerLabels[locale].portal}</Link>
+              <Link href={`/${locale}/client-login`}>{footerLabels[locale].portal}</Link>
               <Link href={`/${locale}/faqs`}>{footerLabels[locale].faqs}</Link>
             </nav>
           </section>
