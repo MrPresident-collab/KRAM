@@ -11,7 +11,7 @@ const copy = {
     title: "KRAM Services — Asset oversight, maintenance and reporting",
     description: "Explore KRAM's asset oversight services, from inspections and maintenance coordination to project follow-up and clear reporting.",
     eyebrow: "Services",
-    headline: "Your asset deserves more than someone checking in.",
+    headline: "Your asset deserves more than occasional checks.",
     hero: "From understanding its condition to coordinating the work that keeps it cared for, KRAM helps make asset oversight clearer, more organised and easier to account for.",
     cta: "Tell us what you need",
     note: "A considered approach. Clear communication. Work that can be followed through.",
