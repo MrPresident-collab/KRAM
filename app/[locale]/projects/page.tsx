@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Mail, Phone, MessageCircle, MapPin } from "lucide-react";
 import type { Metadata } from "next";
 import { isLocale, type Locale } from "@/lib/i18n";
@@ -134,22 +135,47 @@ export default async function ProjectsPage({ params }: { params: Promise<{ local
         <p>{t.introBody}</p>
       </section>
 
-      <section className="projects-portfolio">
-        <div className="projects-portfolio-inner">
-          <div className="projects-empty-mark" aria-hidden="true"><span>K.</span><i /></div>
-          <p className="eyebrow"><span className="eyebrow-line" />{t.emptyEyebrow}</p>
-          <h2>{t.emptyTitle}</h2>
-          <p className="projects-empty-copy">{t.emptyBody}</p>
-          <div className="projects-standards">
-            <h3>{t.standardsTitle}</h3>
-            {t.standards.map((item, index) => (
-              <article className="projects-standard" key={item.title}>
-                <span>{String(index + 1).padStart(2, "0")}</span>
-                <div><h4>{item.title}</h4><p>{item.body}</p></div>
-              </article>
-            ))}
+
+      <section className="projects-gallery section-shell" aria-labelledby="projects-gallery-title">
+        <div className="projects-gallery-heading">
+          <div>
+            <p className="eyebrow"><span className="eyebrow-line" />{locale === "fr" ? "Travaux sélectionnés" : locale === "pt" ? "Trabalhos selecionados" : "Selected work"}</p>
+            <h2 id="projects-gallery-title">{locale === "fr" ? "Un aperçu plus concret des travaux." : locale === "pt" ? "Veja de perto o trabalho." : "A closer look at the work."}</h2>
           </div>
+          <p>{locale === "fr" ? "Une sélection de travaux immobiliers organisée par type de projet. Chaque série rassemble des photos liées pour présenter les travaux de manière cohérente." : locale === "pt" ? "Uma seleção de trabalhos imobiliários organizada por tipo de projeto. Cada conjunto reúne fotografias relacionadas para apresentar o trabalho de forma coerente." : "A selection of property work, organised by project type. Related photographs are grouped together to tell a clearer story."}</p>
         </div>
+        <div className="projects-grid">
+          {[
+            { title: locale === "fr" ? "Rénovation de salle de bain" : locale === "pt" ? "Renovação de casa de banho" : "Bathroom renovation", category: locale === "fr" ? "Rénovation & finitions" : locale === "pt" ? "Renovações e acabamentos" : "Renovations & finishing", summary: locale === "fr" ? "Amélioration et finitions de salle de bain." : locale === "pt" ? "Melhorias e acabamentos de casa de banho." : "Bathroom improvement and finishing work.", cover: "/images/projects/bathroom_renovate.jpg", images: ["/images/projects/bathroom_renovate.jpg", "/images/projects/bathroom_renovate2.jpg"] },
+            { title: locale === "fr" ? "Rénovation de cuisine" : locale === "pt" ? "Renovação de cozinha" : "Kitchen renovation", category: locale === "fr" ? "Rénovation & finitions" : locale === "pt" ? "Renovações e acabamentos" : "Renovations & finishing", summary: locale === "fr" ? "Photos de rénovation de cuisine réunies dans un même projet." : locale === "pt" ? "Fotografias de renovação de cozinha reunidas num projeto." : "Kitchen renovation photographs grouped as one project story.", cover: "/images/projects/kitchen_renovate3.png", images: ["/images/projects/kitchen_renovate1.png", "/images/projects/kitchen_renovate3.png", "/images/projects/kitchen_renovate4.png", "/images/projects/kitchen_renovate5.png"] },
+            { title: locale === "fr" ? "Construction & peinture" : locale === "pt" ? "Construção e pintura" : "Construction & painting", category: locale === "fr" ? "Construction" : locale === "pt" ? "Construção" : "Construction", summary: locale === "fr" ? "Travaux de construction, rénovation et peinture." : locale === "pt" ? "Trabalhos de construção, renovação e pintura." : "Construction, renovation and painting-related work.", cover: "/images/projects/constructe&renovate1.png", images: ["/images/projects/constructe&renovate1.png", "/images/projects/painting_1.jpeg"] },
+            { title: locale === "fr" ? "Installation d’éclairage" : locale === "pt" ? "Instalação de iluminação" : "Lighting installation", category: locale === "fr" ? "Installations techniques" : locale === "pt" ? "Instalações técnicas" : "Technical installations", summary: locale === "fr" ? "Planification et installation d’éclairage documentées." : locale === "pt" ? "Planeamento e instalação de iluminação documentados." : "Lighting planning and installation photographs in one sequence.", cover: "/images/projects/lights_install1.jpeg", images: ["/images/projects/technical-installations.jpg", "/images/projects/lights_begin.jpeg", "/images/projects/lights_design.jpeg", "/images/projects/lights_install1.jpeg", "/images/projects/lights_install2.jpeg"] },
+            { title: locale === "fr" ? "Plomberie & réseaux" : locale === "pt" ? "Canalização e utilidades" : "Plumbing & utilities", category: locale === "fr" ? "Maintenance technique" : locale === "pt" ? "Manutenção técnica" : "Technical maintenance", summary: locale === "fr" ? "Photos de plomberie, compteurs et équipements." : locale === "pt" ? "Fotografias de canalização, contadores e equipamentos." : "Plumbing, meter and utility-related maintenance photographs.", cover: "/images/projects/plumbing_1.jpeg", images: ["/images/projects/plumbing_1.jpeg", "/images/projects/plumbing_2.jpeg", "/images/projects/plumbing_meter.jpeg", "/images/projects/meterbox_mainten.jpg"] },
+            { title: locale === "fr" ? "Entretien & inspections" : locale === "pt" ? "Manutenção e inspeções" : "Property care & inspections", category: locale === "fr" ? "Maintenance immobilière" : locale === "pt" ? "Manutenção imobiliária" : "Property maintenance", summary: locale === "fr" ? "Coordination de maintenance, inspections et suivi des actifs." : locale === "pt" ? "Coordenação de manutenção, inspeções e acompanhamento de imóveis." : "Maintenance coordination, routine inspection and ongoing asset care.", cover: "/images/projects/property-maintenance.jpg", images: ["/images/projects/property-maintenance.jpg", "/images/projects/maintenance_coordination1.png", "/images/projects/maintenance_coordination2.png", "/images/projects/maintenance_coordination3.png", "/images/projects/maintenance_coordination4.png", "/images/projects/routine_inspection.png", "/images/projects/ongoing_asset1.png", "/images/projects/ongoing_asset2.png", "/images/projects/ongoing_asset3.png"] },
+            { title: locale === "fr" ? "Suivi de projet" : locale === "pt" ? "Acompanhamento de projetos" : "Project oversight", category: locale === "fr" ? "Coordination & suivi" : locale === "pt" ? "Coordenação e acompanhamento" : "Coordination & oversight", summary: locale === "fr" ? "Photographies liées au suivi de chantier et à la coordination." : locale === "pt" ? "Fotografias de acompanhamento de obras e coordenação." : "Photographs associated with site oversight and project coordination.", cover: "/images/projects/project_oversight1.png", images: ["/images/projects/project_oversight1.png", "/images/projects/project_oversight2.png", "/images/projects/project_oversight3.png", "/images/projects/project_oversight4.png"] }
+          ].map((project, index) => (
+            <article className="project-card" key={project.title}>
+              <div className="project-card-cover">
+                <Image src={project.cover} alt={project.title} fill sizes="(max-width: 720px) 100vw, (max-width: 1050px) 50vw, 33vw" />
+                <span className="project-card-number">{String(index + 1).padStart(2, "0")}</span>
+              </div>
+              <div className="project-card-copy">
+                <p className="project-card-category">{project.category}</p>
+                <h3>{project.title}</h3>
+                <p>{project.summary}</p>
+                <div className="project-card-gallery">
+                  {project.images.slice(0, 4).map((src, imageIndex) => (
+                    <div className="project-card-thumb" key={src}>
+                      <Image src={src} alt={project.title + " — " + (imageIndex + 1)} fill sizes="100px" />
+                    </div>
+                  ))}
+                  {project.images.length > 4 && <span className="project-card-more">+{project.images.length - 4}</span>}
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+        <p className="projects-gallery-note">{locale === "fr" ? "Les détails propres à chaque intervention seront ajoutés lorsqu’ils auront été confirmés et validés pour publication." : locale === "pt" ? "Os detalhes de cada intervenção serão acrescentados depois de confirmados e aprovados para publicação." : "Details specific to each engagement will be added once confirmed and approved for publication."}</p>
       </section>
 
       <section className="projects-cta" id="contact">
@@ -159,6 +185,7 @@ export default async function ProjectsPage({ params }: { params: Promise<{ local
           <p className="eyebrow eyebrow-light"><span className="eyebrow-line" />KRAM</p>
           <h2>{t.ctaTitle}</h2>
           <p>{t.ctaBody}</p>
+          <p className="projects-cta-note">{locale === "fr" ? "Vous avez un projet en tête ? Parlons-en et transformons votre idée en réalité." : locale === "pt" ? "Tem um projeto em mente? Conte-nos e vamos transformar a sua ideia em realidade." : "Have a project in mind? Tell us about it. We’ll help take it from idea to realisation."}</p>
           <Link className="button button-orange" href={`/${locale}/enquiry`}>{t.cta}<span aria-hidden="true">↗</span></Link>
         </div>
       </section>
