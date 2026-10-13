@@ -163,7 +163,7 @@ export default function ClientLoginPage() {
             <p className="footer-company">{footerLabels[locale].company}</p>
             <p className="footer-tagline">{footerLabels[locale].tagline}</p>
           </div>
-          <div className="footer-contact"><span>{footerLabels[locale].contact}</span><Link href={`/${locale}/services`}>{t.contactAction} ↗</Link></div>
+          <div className="footer-contact"><Link href={`/${locale}/services`}>{footerLabels[locale].contact} ↗</Link></div>
         </div>
         <div className="footer-columns">
           <section className="footer-column">
