@@ -174,7 +174,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </header>
 
       <section className="hero-section" aria-labelledby="hero-title">
-        <div className="hero-image" role="img" aria-label="Contemporary, carefully maintained residence surrounded by mature trees" />
+        <div className="hero-image" role="img" aria-label={locale === "fr" ? "Maison contemporaine entretenue avec soin, entourée de verdure" : locale === "pt" ? "Residência contemporânea bem cuidada, rodeada de vegetação" : "Contemporary, carefully maintained residence surrounded by greenery"} />
         <div className="hero-shade" />
         <div className="hero-content">
           <p className="eyebrow eyebrow-light"><span className="eyebrow-line" />{t.hero.note}</p>
