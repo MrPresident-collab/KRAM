@@ -6,7 +6,10 @@ export default function robots(): MetadataRoute.Robots {
 
   if (configuredUrl) {
     try {
-      sitemapUrl = new URL("/sitemap.xml", configuredUrl).toString();
+      const parsedUrl = new URL(configuredUrl);
+      if (parsedUrl.protocol === "https:" || parsedUrl.protocol === "http:") {
+        sitemapUrl = new URL("/sitemap.xml", parsedUrl.origin).toString();
+      }
     } catch {
       sitemapUrl = undefined;
     }
@@ -16,26 +19,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: [
-        "/en/client$",
-        "/en/client/",
-        "/fr/client$",
-        "/fr/client/",
-        "/pt/client$",
-        "/pt/client/",
-        "/en/ops$",
-        "/en/ops/",
-        "/fr/ops$",
-        "/fr/ops/",
-        "/pt/ops$",
-        "/pt/ops/",
-        "/en/ops-login",
-        "/fr/ops-login",
-        "/pt/ops-login",
-        "/en/accept-invite",
-        "/fr/accept-invite",
-        "/pt/accept-invite",
-      ],
+      // Let crawlers read page-level noindex metadata; robots.txt is not access control.
+      disallow: ["/api/ops/"],
     },
     ...(sitemapUrl ? { sitemap: sitemapUrl } : {}),
   };
