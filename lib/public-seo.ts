@@ -34,6 +34,11 @@ export function publicPageMetadata(
   return {
     title,
     description,
+    keywords: locale === "fr"
+      ? ["gestion immobilière à distance", "suivi immobilier", "maintenance immobilière", "inspection de biens", "KRAM"]
+      : locale === "pt"
+        ? ["gestão remota de imóveis", "acompanhamento de ativos", "manutenção imobiliária", "inspeção de imóveis", "KRAM"]
+        : ["remote property management", "asset oversight", "property maintenance", "property inspections", "KRAM"],
     ...(canonical
       ? {
           alternates: {
