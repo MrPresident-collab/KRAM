@@ -202,12 +202,11 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             <ul className="footer-plain-list">
               {publicFooter.footprint.map((place) => <li key={place}>{place}</li>)}
             </ul>
-            <p className="footer-muted-note">{footerLabels[locale].growing}</p>
           </section>
           <section className="footer-column">
             <h2>{footerLabels[locale].getInTouch}</h2>
             <div className="footer-contact-links">
-              {publicFooter.email ? <a href={`mailto:${publicFooter.email}`}><Mail aria-hidden="true" size={14} /> <span>{footerLabels[locale].email}</span></a> : <span className="footer-link-pending"><Mail aria-hidden="true" size={14} /> <span>{footerLabels[locale].email}</span></span>}
+              {publicFooter.email ? <a href={`mailto:${publicFooter.email}`}><Mail aria-hidden="true" size={14} /> <span>{footerLabels[locale].email}</span></a> : null}
               {publicFooter.phoneNumber ? <a href={`tel:+${publicFooter.phoneNumber}`}><Phone aria-hidden="true" size={14} /> <span>{footerLabels[locale].phone}</span></a> : <span className="footer-link-pending"><Phone aria-hidden="true" size={14} /> <span>{footerLabels[locale].phone}</span></span>}
               {publicFooter.whatsappNumber ? <a href={`https://wa.me/${publicFooter.whatsappNumber}`} target="_blank" rel="noreferrer"><MessageCircle aria-hidden="true" size={14} /> <span>{footerLabels[locale].whatsapp}</span></a> : <span className="footer-link-pending"><MessageCircle aria-hidden="true" size={14} /> <span>{footerLabels[locale].whatsapp}</span></span>}
             </div>
@@ -228,14 +227,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
               <span>{publicFooter.branch.city}</span>
             </a>
           </section>
-          <section className="footer-column">
-            <h2>{footerLabels[locale].socials}</h2>
-            <div className="footer-column-links">
-              {publicFooter.socials.linkedin ? <a href={publicFooter.socials.linkedin} target="_blank" rel="noreferrer">LinkedIn</a> : <span className="footer-link-pending">LinkedIn</span>}
-              {publicFooter.socials.instagram ? <a href={publicFooter.socials.instagram} target="_blank" rel="noreferrer">Instagram</a> : <span className="footer-link-pending">Instagram</span>}
-              {publicFooter.socials.facebook ? <a href={publicFooter.socials.facebook} target="_blank" rel="noreferrer">Facebook</a> : <span className="footer-link-pending">Facebook</span>}
-            </div>
-          </section>
+          {(publicFooter.socials.linkedin || publicFooter.socials.instagram || publicFooter.socials.facebook) ? <section className="footer-column"><h2>{footerLabels[locale].socials}</h2><div className="footer-column-links">{publicFooter.socials.linkedin ? <a href={publicFooter.socials.linkedin} target="_blank" rel="noreferrer">LinkedIn</a> : null}{publicFooter.socials.instagram ? <a href={publicFooter.socials.instagram} target="_blank" rel="noreferrer">Instagram</a> : null}{publicFooter.socials.facebook ? <a href={publicFooter.socials.facebook} target="_blank" rel="noreferrer">Facebook</a> : null}</div></section> : null}
         </div>
         <div className="footer-bottom">
           <span>© {new Date().getFullYear()} KRAM. {footerLabels[locale].rights}</span>
