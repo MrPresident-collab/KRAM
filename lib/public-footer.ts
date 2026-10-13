@@ -1,13 +1,13 @@
 import type { Locale } from "@/lib/i18n";
 
 /**
- * Public footer details are sourced centrally. Contact and social links stay
- * unpublished until the corresponding deployment environment variables exist.
+ * Public contact and social details come from deployment environment variables.
+ * No fallback contact values are hardcoded into the public website.
  */
 export const publicFooter = {
   email: process.env.NEXT_PUBLIC_KRAM_EMAIL?.trim() || "",
-  phoneNumber: process.env.NEXT_PUBLIC_KRAM_PHONE_NUMBER?.replace(/\D/g, "") || String.fromCharCode(50, 52, 52, 57, 51, 50, 52, 53, 56, 51, 49, 51),
-  whatsappNumber: process.env.NEXT_PUBLIC_KRAM_WHATSAPP_NUMBER?.replace(/\D/g, "") || String.fromCharCode(50, 52, 52, 57, 53, 56, 51, 49, 54, 52, 56, 54),
+  phoneNumber: process.env.NEXT_PUBLIC_KRAM_PHONE_NUMBER?.replace(/\D/g, "") || "",
+  whatsappNumber: process.env.NEXT_PUBLIC_KRAM_WHATSAPP_NUMBER?.replace(/\D/g, "") || "",
   socials: {
     linkedin: process.env.NEXT_PUBLIC_KRAM_LINKEDIN_URL?.trim() || "",
     instagram: process.env.NEXT_PUBLIC_KRAM_INSTAGRAM_URL?.trim() || "",
@@ -37,7 +37,7 @@ export const footerLabels: Record<Locale, Record<string, string>> = {
     faqs: "FAQs", privacy: "Privacy Policy", terms: "Terms of Service", cookies: "Cookie Policy",
     enquiry: "Submit an Enquiry",
     portal: "Client Portal",
-    footprint: "Current footprint",
+    footprint: "Our presence",
     getInTouch: "Get in touch",
     email: "Email",
     phone: "Phone",
@@ -59,7 +59,7 @@ export const footerLabels: Record<Locale, Record<string, string>> = {
     faqs: "Questions fréquentes", privacy: "Confidentialité", terms: "Conditions d’utilisation", cookies: "Politique relative aux cookies",
     enquiry: "Envoyer une demande",
     portal: "Portail client",
-    footprint: "Présence actuelle",
+    footprint: "Notre présence",
     getInTouch: "Nous contacter",
     email: "E-mail",
     phone: "Téléphone",
@@ -81,7 +81,7 @@ export const footerLabels: Record<Locale, Record<string, string>> = {
     faqs: "Perguntas frequentes", privacy: "Política de Privacidade", terms: "Termos de Serviço", cookies: "Política de Cookies",
     enquiry: "Enviar uma solicitação",
     portal: "Portal do cliente",
-    footprint: "Presença atual",
+    footprint: "A nossa presença",
     getInTouch: "Entre em contacto",
     email: "E-mail",
     phone: "Telefone",
