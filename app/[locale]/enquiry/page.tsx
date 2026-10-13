@@ -15,6 +15,7 @@ const copy = {
     eyebrow: "A first conversation",
     title: "Tell us what your asset needs.",
     intro: "Every situation is different. Share a little about what you need, and our team can review your enquiry and guide you through the next step.",
+    projectTitle: "Tell us about your project.", projectIntro: "Have a clear plan or just an early idea? Tell us what you want to achieve, and KRAM can help you clarify the scope and coordinate the next steps.", projectAssetLegend: "About the project",
     enquiryType: "What would you like to discuss with KRAM?", projectOption: "A project I have in mind", assetOption: "An existing property", otherOption: "Something else about a property",
     projectHint: "For construction, renovation, installations or another property project. If you do not know the exact address yet, enter the area or neighbourhood.",
     projectLocation: "Project address or area", projectType: "Project or property type", chooseProjectType: "Choose a project or property type", projectDetailsPlaceholder: "Describe your idea, what you want to achieve, the work you have in mind, and any timing or budget you already know (optional).",
@@ -50,6 +51,7 @@ const copy = {
     eyebrow: "Un premier échange",
     title: "Parlez-nous des besoins de votre actif.",
     intro: "Chaque situation est différente. Présentez-nous brièvement vos besoins afin que notre équipe puisse examiner votre demande et vous guider vers la prochaine étape.",
+    projectTitle: "Parlez-nous de votre projet.", projectIntro: "Votre projet est déjà défini ou encore au stade d’idée ? Expliquez-nous ce que vous souhaitez réaliser afin que KRAM vous aide à préciser le périmètre et à coordonner les prochaines étapes.", projectAssetLegend: "À propos du projet",
     enquiryType: "Quel sujet souhaitez-vous aborder avec KRAM ?", projectOption: "Un projet que j’envisage", assetOption: "Un bien immobilier existant", otherOption: "Autre besoin lié à un bien immobilier",
     projectHint: "Pour une construction, une rénovation, des installations ou un autre projet immobilier. Si l’adresse exacte n’est pas encore connue, indiquez le quartier ou la zone.",
     projectLocation: "Adresse ou zone du projet", projectType: "Type de projet ou de bien", chooseProjectType: "Choisir un type de projet ou de bien", projectDetailsPlaceholder: "Décrivez votre idée, votre objectif, les travaux envisagés et, si vous les connaissez, le calendrier ou le budget (facultatif).",
@@ -85,6 +87,7 @@ const copy = {
     eyebrow: "Uma primeira conversa",
     title: "Conte-nos do que o seu ativo precisa.",
     intro: "Cada situação é diferente. Partilhe um pouco sobre o que precisa para que a nossa equipa possa analisar o pedido e orientar os próximos passos.",
+    projectTitle: "Conte-nos o seu projeto.", projectIntro: "Já tem um plano definido ou apenas uma ideia inicial? Conte-nos o que pretende alcançar para que a KRAM o ajude a definir o âmbito e coordenar os próximos passos.", projectAssetLegend: "Sobre o projeto",
     enquiryType: "O que gostaria de conversar com a KRAM?", projectOption: "Tenho um projeto em mente", assetOption: "Um imóvel existente", otherOption: "Outro assunto relacionado com um imóvel",
     projectHint: "Para construção, renovação, instalações ou outro projeto imobiliário. Se ainda não souber a morada exata, indique a zona ou o bairro.",
     projectLocation: "Morada ou zona do projeto", projectType: "Tipo de projeto ou imóvel", chooseProjectType: "Escolha o tipo de projeto ou imóvel", projectDetailsPlaceholder: "Descreva a sua ideia, o que pretende alcançar, os trabalhos previstos e, se já souber, o prazo ou orçamento (opcional).",
@@ -154,8 +157,8 @@ export default function EnquiryPage() {
         <div className="enquiry-hero-shade" />
         <div className="enquiry-hero-copy">
           <p className="eyebrow eyebrow-light"><span className="eyebrow-line" />{t.eyebrow}</p>
-          <h1>{t.title}</h1>
-          <p>{t.intro}</p>
+          <h1>{enquiryType === "project" ? t.projectTitle : t.title}</h1>
+          <p>{enquiryType === "project" ? t.projectIntro : t.intro}</p>
           <span className="enquiry-hero-index">{t.step}</span>
         </div>
       </section>
@@ -224,7 +227,7 @@ export default function EnquiryPage() {
           </fieldset>
 
           <fieldset className="enquiry-fieldset">
-            <legend>{t.asset}</legend>
+            <legend>{enquiryType === "project" ? t.projectAssetLegend : t.asset}</legend>
             <div className="enquiry-assets-list">
               {assets.map((asset, index) => (
                 <section className="enquiry-asset-card" key={asset.id} aria-labelledby={`asset-heading-${asset.id}`}>
