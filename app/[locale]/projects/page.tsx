@@ -33,7 +33,7 @@ const copy: Record<Locale, {
       { title: "The outcome", body: "What was completed, what remains open and any follow-up recommendations or records." }
     ],
     ctaTitle: "Have a project in mind? Let’s bring it to life.",
-    ctaBody: "Tell us about the asset and the work you need help coordinating. We'll start by understanding your situation.",
+    ctaBody: "Tell us what you have in mind, even if it is still an idea. We’ll help define the next steps and coordinate the work toward realisation.",
     cta: "Tell us about your project"
   },
   fr: {
