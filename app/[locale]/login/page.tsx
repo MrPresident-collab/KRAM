@@ -173,7 +173,6 @@ export default function ClientLoginPage() {
             <Link href={`/${locale}/about`}>{t.nav.about}</Link>
             <Link href={`/${locale}/services`}>{t.nav.services}</Link>
             <Link href={`/${locale}/projects`}>{locale === "fr" ? "Projets" : locale === "pt" ? "Projetos" : "Projects"}</Link>
-            <Link href={`/${locale}/client-login`}>{t.nav.login}</Link>
             </nav>
           </section>
           <section className="footer-column">
