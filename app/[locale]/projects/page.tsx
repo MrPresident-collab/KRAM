@@ -17,16 +17,16 @@ const copy: Record<Locale, {
   en: {
     nav: { home: "Home", about: "About", services: "Services", projects: "Projects", login: "Login", start: "Get started" },
     title: "KRAM Projects — Documented property work and outcomes",
-    description: "Explore documented KRAM projects as work is completed and approved for publication. Services explain what we do; projects show what we did.",
+    description: "Explore property care, maintenance, renovation, installations and project coordination associated with KRAM.",
     eyebrow: "Projects",
     headline: "The work, documented.",
     hero: "A clear record of the work carried out, the decisions made and the outcomes delivered—so clients can see the difference between a service promise and documented work.",
-    introEyebrow: "What belongs here",
-    introTitle: "Services explain what we do. Projects show what we did.",
-    introBody: "This is where KRAM will share real, documented work: the situation, the scope agreed, the work carried out and the evidence available. We will only publish project stories when the details and images are approved for sharing.",
-    emptyEyebrow: "Project portfolio",
-    emptyTitle: "A considered record takes time.",
-    emptyBody: "Our public project gallery will be updated as completed work is documented and cleared for publication. We won't use illustrative stock photography as evidence of completed KRAM work.",
+    introEyebrow: "Our work",
+    introTitle: "A closer look at the work.",
+    introBody: "Explore photographs related to property care, maintenance, installations, renovations and project oversight. Each engagement is shaped around the asset, the agreed scope and the owner’s priorities.",
+    emptyEyebrow: "Selected work",
+    emptyTitle: "Work carried out with care.",
+    emptyBody: "Our work spans property inspections, maintenance coordination, installations and renovation oversight. Contact KRAM to discuss the needs of your property or project.",
     standardsTitle: "What each project story will make clear",
     standards: [
       { title: "The brief", body: "The property or issue involved, the client's priorities and the agreed scope of work." },
@@ -45,11 +45,11 @@ const copy: Record<Locale, {
     headline: "Les travaux, documentés.",
     hero: "Un compte rendu clair des interventions, des décisions et des résultats, pour distinguer une promesse de service d’un travail réellement documenté.",
     introEyebrow: "Ce qui a sa place ici",
-    introTitle: "Les services expliquent ce que nous faisons. Les projets montrent ce que nous avons fait.",
-    introBody: "KRAM partagera ici des travaux réels et documentés : la situation, le périmètre convenu, les interventions réalisées et les éléments disponibles. Les projets ne seront publiés qu’après validation des informations et des images.",
-    emptyEyebrow: "Portfolio de projets",
-    emptyTitle: "Un dossier fiable se construit avec soin.",
-    emptyBody: "Notre galerie sera mise à jour au fur et à mesure que les travaux terminés seront documentés et autorisés à la publication. Les photos d’illustration ne seront pas présentées comme preuve de travaux réalisés par KRAM.",
+    introTitle: "Un aperçu de nos interventions.",
+    introBody: "Découvrez des photographies liées à l’entretien immobilier, à la maintenance, aux installations, aux rénovations et au suivi de projets. Chaque intervention est adaptée au bien, au périmètre convenu et aux priorités du propriétaire.",
+    emptyEyebrow: "Nos interventions",
+    emptyTitle: "Des interventions menées avec soin.",
+    emptyBody: "Nos interventions couvrent les inspections, la coordination de maintenance, les installations et le suivi de rénovations. Contactez KRAM pour discuter des besoins de votre bien ou de votre projet.",
     standardsTitle: "Ce que chaque projet présentera clairement",
     standards: [
       { title: "Le besoin", body: "Le bien ou le problème concerné, les priorités du client et le périmètre convenu." },
@@ -68,11 +68,11 @@ const copy: Record<Locale, {
     headline: "O trabalho, documentado.",
     hero: "Um registo claro dos trabalhos realizados, das decisões tomadas e dos resultados alcançados, distinguindo uma promessa de serviço de trabalho devidamente documentado.",
     introEyebrow: "O que pertence aqui",
-    introTitle: "Os serviços explicam o que fazemos. Os projetos mostram o que fizemos.",
-    introBody: "Aqui, a KRAM irá partilhar trabalhos reais e documentados: a situação, o âmbito acordado, as intervenções realizadas e as evidências disponíveis. Só publicaremos projetos depois de as informações e imagens serem aprovadas para divulgação.",
-    emptyEyebrow: "Portefólio de projetos",
-    emptyTitle: "Um registo credível exige cuidado.",
-    emptyBody: "A galeria pública será atualizada à medida que os trabalhos concluídos forem documentados e autorizados para publicação. Não apresentaremos fotografias ilustrativas como prova de trabalhos realizados pela KRAM.",
+    introTitle: "Uma visão mais próxima do nosso trabalho.",
+    introBody: "Explore fotografias relacionadas com inspeções, manutenção, instalações, renovações e acompanhamento de projetos. Cada intervenção é definida de acordo com o imóvel, o âmbito acordado e as prioridades do proprietário.",
+    emptyEyebrow: "O nosso trabalho",
+    emptyTitle: "Trabalho acompanhado com cuidado.",
+    emptyBody: "O nosso trabalho inclui inspeções imobiliárias, coordenação de manutenção, instalações e acompanhamento de renovações. Contacte a KRAM para conversar sobre as necessidades do seu imóvel ou projeto.",
     standardsTitle: "O que cada projeto irá esclarecer",
     standards: [
       { title: "O pedido", body: "O imóvel ou problema em causa, as prioridades do cliente e o âmbito acordado." },
@@ -173,7 +173,6 @@ export default async function ProjectsPage({ params }: { params: Promise<{ local
             </article>
           ))}
         </div>
-        <p className="projects-gallery-note">{locale === "fr" ? "Les détails propres à chaque intervention seront ajoutés lorsqu’ils auront été confirmés et validés pour publication." : locale === "pt" ? "Os detalhes de cada intervenção serão acrescentados depois de confirmados e aprovados para publicação." : "Details specific to each engagement will be added once confirmed and approved for publication."}</p>
       </section>
 
       <section className="projects-cta" id="contact">
