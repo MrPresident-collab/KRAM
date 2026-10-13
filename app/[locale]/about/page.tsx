@@ -176,7 +176,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             <p className="footer-company">{footerLabels[locale].company}</p>
             <p className="footer-tagline">{footerLabels[locale].tagline}</p>
           </div>
-          <div className="footer-contact"><Link href={`/${locale}#contact`}>{footerLabels[locale].contact} ↗</Link></div>
+          <div className="footer-contact"><Link href={`/${locale}#contact`}>{footerLabels[locale].start} ↗</Link></div>
         </div>
         <div className="footer-columns">
           <section className="footer-column">
