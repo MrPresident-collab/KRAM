@@ -4,7 +4,7 @@ export type LegalDocument = "privacy-policy" | "terms-of-service" | "cookie-poli
 export type LegalSection = { heading: string; paragraphs?: string[]; bullets?: string[] };
 export type LegalCopy = { title: string; intro: string; updated: string; sections: LegalSection[] };
 
-const updated = "10 October 2026";
+const updated = "13 October 2026";
 
 export const legalContent: Record<Locale, Record<LegalDocument, LegalCopy>> = {
   en: {
@@ -191,7 +191,7 @@ export const legalContent: Record<Locale, Record<LegalDocument, LegalCopy>> = {
         { heading: "8. Serviços e ligações de terceiros", paragraphs: ["O website ou os nossos processos podem referir ferramentas, serviços de mensagens ou profissionais terceiros. Essas partes podem ter termos e práticas de privacidade próprios. A KRAM não controla nem é responsável por websites ou serviços independentes de terceiros."] },
         { heading: "9. Disponibilidade e exclusões", paragraphs: ["Procuramos manter o website útil e disponível, mas não garantimos acesso ininterrupto, sem erros ou permanente. O conteúdo é informativo e pode não descrever todos os serviços ou locais onde a KRAM pode operar. Na medida permitida pela lei, o website é disponibilizado sem garantias que não estejam expressamente previstas num acordo escrito. Nada nestes termos exclui direitos ou responsabilidades que não possam legalmente ser excluídos.", "Na medida permitida pela lei, a KRAM não é responsável por perdas indiretas decorrentes apenas da utilização deste website informativo, de interrupções de acesso ou da confiança no conteúdo geral. A responsabilidade relativa a serviços contratados é regida pelo acordo aplicável e pela lei imperativa."] },
         { heading: "10. Suspensão, alterações e lei aplicável", paragraphs: ["Podemos alterar, suspender ou remover funcionalidades por razões de manutenção, segurança, legais ou operacionais. Podemos atualizar estes termos publicando uma nova versão com uma data revista.", "A lei aplicável e o processo de resolução de litígios de cada serviço devem constar do respetivo acordo escrito. Estes termos do website não designam uma única lei aplicável a todos os países onde a KRAM ou os seus clientes possam operar."] },
-        { heading: "11. Contacto", paragraphs: ["Para dúvidas sobre estes termos, utilize os links Contactar ou Enviar pedido no website da KRAM. Para dúvidas ou pedidos de privacidade, envie uma solicitação através do website da KRAM e indique “Pedido de privacidade”."] }
+        { heading: "11. Contacto", paragraphs: ["Para dúvidas sobre estes termos, utilize os links de contacto ou envie um pedido através do website da KRAM."] }
       ]
     },
     "cookie-policy": {
