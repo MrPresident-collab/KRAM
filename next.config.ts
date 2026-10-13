@@ -11,6 +11,8 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   typedRoutes: false,
+  // Keep Turbopack scoped to this repository rather than a parent directory lockfile.
+  turbopack: { root: process.cwd() },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
