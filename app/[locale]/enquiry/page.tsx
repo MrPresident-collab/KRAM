@@ -168,7 +168,7 @@ export default function EnquiryPage() {
           <p className="eyebrow"><span className="eyebrow-line" />{t.step}</p>
           <h2>{t.contact}</h2>
           <p>{t.privacy}</p>
-          <Link className="enquiry-back-link" href={`/${locale}/client-login`}><ArrowLeft size={16} />{t.back}</Link>
+          <Link className="enquiry-back-link" href={`/${locale}/login`}><ArrowLeft size={16} />{t.back}</Link>
         </aside>
 
         <form className="enquiry-form" onSubmit={async (event) => {
