@@ -16,10 +16,7 @@ const siteDescription =
 
 export const metadata: Metadata = {
   ...(metadataBase ? { metadataBase } : {}),
-  title: {
-    default: "KRAM — Remote Asset Management",
-    template: "%s | KRAM",
-  },
+  title: "KRAM — Remote Asset Management",
   description: siteDescription,
   applicationName: "KRAM",
   openGraph: {
