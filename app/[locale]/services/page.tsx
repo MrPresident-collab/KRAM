@@ -151,7 +151,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
       </header>
 
       <section className="services-hero" aria-labelledby="services-title">
-        <div className="services-hero-image" role="img" aria-label="A carefully maintained contemporary residence surrounded by greenery" />
+        <div className="services-hero-image" role="img" aria-label={locale === "fr" ? "Résidence contemporaine bien entretenue, entourée de verdure" : locale === "pt" ? "Residência contemporânea bem cuidada, rodeada de vegetação" : "A carefully maintained contemporary residence surrounded by greenery"} />
         <div className="services-hero-shade" />
         <div className="services-hero-content">
           <p className="eyebrow eyebrow-light"><span className="eyebrow-line" />{t.eyebrow}</p>
