@@ -17,7 +17,7 @@ type Copy = {
 
 const content: Record<Locale, Copy> = {
   en: {
-    nav: { home: "Home", about: "About", services: "Services", login: "Login", start: "Get started" },
+    nav: { home: "Home", about: "About", services: "Services", login: "Client Portal", start: "Get started" },
     hero: {
       title: "Your property is an asset. We help you care for it.",
       description: "Your property deserves more than occasional attention. KRAM helps property owners at home and abroad oversee their assets through property inspections, maintenance coordination, and clear reporting—giving you better visibility, greater accountability, and confidence in how your property is cared for.",
@@ -56,7 +56,7 @@ const content: Record<Locale, Copy> = {
     footer: { contact: "Contact", line: "Asset oversight with clarity and accountability.", rights: "All rights reserved." }
   },
   fr: {
-    nav: { home: "Accueil", about: "À propos", services: "Services", login: "Connexion", start: "Parlons de votre actif" },
+    nav: { home: "Accueil", about: "À propos", services: "Services", login: "Portail client", start: "Parlons de votre actif" },
     hero: {
       title: "Votre propriété est un actif. Nous vous aidons à en prendre soin.",
       description: "Votre propriété mérite plus qu’une attention occasionnelle. KRAM aide les propriétaires, sur place ou à l’étranger, à suivre leurs actifs grâce aux inspections, à la coordination de la maintenance et à des rapports clairs — pour une meilleure visibilité, davantage de responsabilité et plus de sérénité.",
@@ -95,7 +95,7 @@ const content: Record<Locale, Copy> = {
     footer: { contact: "Contact", line: "Le suivi des actifs, avec clarté et responsabilité.", rights: "Tous droits réservés." }
   },
   pt: {
-    nav: { home: "Início", about: "Sobre", services: "Serviços", login: "Entrar", start: "Vamos conversar" },
+    nav: { home: "Início", about: "Sobre", services: "Serviços", login: "Portal do cliente", start: "Vamos conversar" },
     hero: {
       title: "O seu imóvel é um ativo. Ajudamos a cuidar dele.",
       description: "O seu imóvel merece mais do que atenção ocasional. A KRAM ajuda proprietários, em casa ou no estrangeiro, a acompanhar os seus ativos através de inspeções, coordenação de manutenção e relatórios claros — proporcionando maior visibilidade, responsabilidade e confiança no acompanhamento.",
@@ -156,15 +156,15 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     <main className="public-home" id="top">
       <header className="site-header">
         <KramBrand locale={locale} href={`/${locale}`} className="brand-mark" />
-        <nav className="main-nav" aria-label="Main navigation">
+        <nav className="main-nav" aria-label={locale === "fr" ? "Navigation principale" : locale === "pt" ? "Navegação principal" : "Main navigation"}>
           <Link className="nav-active" href={`/${locale}`}>{t.nav.home}</Link>
           <Link href={`/${locale}/about`}>{t.nav.about}</Link>
           <Link href={`/${locale}/services`}>{t.nav.services}</Link>
           <Link href={`/${locale}/projects`}>{locale === "fr" ? "Projets" : locale === "pt" ? "Projetos" : "Projects"}</Link>
-          <Link href={`/${locale}/login`}>{t.nav.login}</Link>
+          <Link href={`/${locale}/client-login`}>{t.nav.login}</Link>
         </nav>
         <div className="header-actions">
-          <div className="language-switch" aria-label="Language">
+          <div className="language-switch" aria-label={locale === "fr" ? "Langue" : locale === "pt" ? "Idioma" : "Language"}>
             {(["en", "fr", "pt"] as const).map((language) => (
               <Link key={language} href={`/${language}`} aria-current={locale === language ? "page" : undefined} className={locale === language ? "language-current" : ""}>{language.toUpperCase()}</Link>
             ))}
@@ -252,7 +252,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <p className="footer-company">{footerLabels[locale].company}</p>
             <p className="footer-tagline">{footerLabels[locale].tagline}</p>
           </div>
-          <div className="footer-contact"><span>{footerLabels[locale].contact}</span><Link href={`/${locale}/enquiry`}>{t.nav.start} ↗</Link></div>
+          <div className="footer-contact"><Link href={`/${locale}/enquiry`}>{footerLabels[locale].contact} ↗</Link></div>
         </div>
         <div className="footer-columns">
           <section className="footer-column">
@@ -262,14 +262,14 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <Link href={`/${locale}/about`}>{t.nav.about}</Link>
             <Link href={`/${locale}/services`}>{t.nav.services}</Link>
             <Link href={`/${locale}/projects`}>{locale === "fr" ? "Projets" : locale === "pt" ? "Projetos" : "Projects"}</Link>
-            <Link href={`/${locale}/login`}>{t.nav.login}</Link>
+            <Link href={`/${locale}/client-login`}>{t.nav.login}</Link>
             </nav>
           </section>
           <section className="footer-column">
             <h2>{footerLabels[locale].resources}</h2>
             <nav className="footer-column-links" aria-label={footerLabels[locale].resources}>
               <Link href={`/${locale}/enquiry`}>{footerLabels[locale].enquiry}</Link>
-              <Link href={`/${locale}/login`}>{footerLabels[locale].portal}</Link>
+              <Link href={`/${locale}/client-login`}>{footerLabels[locale].portal}</Link>
               <Link href={`/${locale}/faqs`}>{footerLabels[locale].faqs}</Link>
             </nav>
           </section>
