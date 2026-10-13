@@ -42,7 +42,7 @@ const copy: Record<Locale, {
     title: "Projets KRAM — Travaux immobiliers documentés",
     description: "Découvrez les projets documentés de KRAM au fur et à mesure que les travaux sont terminés et autorisés à la publication. Les services expliquent ce que nous faisons ; les projets montrent ce que nous avons fait.",
     eyebrow: "Projets",
-    headline: "Les travaux, documentés.",
+    headline: "Une sélection de travaux, présentée clairement.",
     hero: "Une sélection visuelle de travaux liés aux biens immobiliers, classés par type. Les photographies illustrent les interventions que KRAM peut aider à coordonner ; le périmètre et les livrables sont convenus pour chaque mission.",
     introEyebrow: "Ce qui a sa place ici",
     introTitle: "Un aperçu de nos interventions.",
@@ -56,7 +56,7 @@ const copy: Record<Locale, {
       { title: "Un aperçu visuel", body: "Des photographies regroupées par type pour illustrer les interventions concernées." },
       { title: "Le résultat", body: "Ce qui a été réalisé, les points restant ouverts et les recommandations ou documents de suivi." }
     ],
-    ctaTitle: "Un projet en tête ? Donnons-lui vie.",
+    ctaTitle: "Un projet en tête ? Parlons de la prochaine étape.",
     ctaBody: "Présentez-nous votre idée, même si elle n’en est qu’au début. Nous vous aiderons à définir les prochaines étapes et à coordonner sa réalisation.",
     cta: "Parlez-nous de votre projet"
   },
@@ -65,7 +65,7 @@ const copy: Record<Locale, {
     title: "Projetos KRAM — Trabalhos imobiliários documentados",
     description: "Conheça os projetos documentados da KRAM à medida que os trabalhos são concluídos e autorizados para publicação. Os serviços explicam o que fazemos; os projetos mostram o que fizemos.",
     eyebrow: "Projetos",
-    headline: "O trabalho, documentado.",
+    headline: "Trabalhos selecionados, apresentados com clareza.",
     hero: "Uma seleção visual de trabalhos relacionados com imóveis, organizada por tipo. As fotografias dão contexto aos trabalhos que a KRAM pode ajudar a coordenar; o âmbito e os resultados a entregar são acordados em cada serviço.",
     introEyebrow: "O que pertence aqui",
     introTitle: "Uma visão mais próxima do nosso trabalho.",
