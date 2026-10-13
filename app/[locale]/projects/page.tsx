@@ -32,9 +32,9 @@ const copy: Record<Locale, {
       { title: "The work", body: "Documented actions, relevant progress updates and photographs from the actual work where available." },
       { title: "The outcome", body: "What was completed, what remains open and any follow-up recommendations or records." }
     ],
-    ctaTitle: "Have a property or project that needs oversight?",
+    ctaTitle: "Have a project in mind? Let’s bring it to life.",
     ctaBody: "Tell us about the asset and the work you need help coordinating. We'll start by understanding your situation.",
-    cta: "Discuss your project"
+    cta: "Tell us about your project"
   },
   fr: {
     nav: { home: "Accueil", about: "À propos", services: "Services", projects: "Projets", login: "Connexion", start: "Parlons de votre actif" },
@@ -55,9 +55,9 @@ const copy: Record<Locale, {
       { title: "Les travaux", body: "Les actions documentées, les mises à jour pertinentes et, lorsque disponibles, des photos des travaux réels." },
       { title: "Le résultat", body: "Ce qui a été réalisé, les points restant ouverts et les recommandations ou documents de suivi." }
     ],
-    ctaTitle: "Un bien ou un projet nécessite un suivi ?",
-    ctaBody: "Présentez-nous votre actif et les travaux à coordonner. Nous commencerons par comprendre votre situation.",
-    cta: "Parlons de votre projet"
+    ctaTitle: "Un projet en tête ? Donnons-lui vie.",
+    ctaBody: "Présentez-nous votre idée, même si elle n’en est qu’au début. Nous vous aiderons à définir les prochaines étapes et à coordonner sa réalisation.",
+    cta: "Parlez-nous de votre projet"
   },
   pt: {
     nav: { home: "Início", about: "Sobre", services: "Serviços", projects: "Projetos", login: "Entrar", start: "Vamos conversar" },
@@ -78,9 +78,9 @@ const copy: Record<Locale, {
       { title: "O trabalho", body: "Ações documentadas, atualizações relevantes e, quando disponíveis, fotografias do trabalho real." },
       { title: "O resultado", body: "O que foi concluído, o que continua pendente e eventuais recomendações ou registos de acompanhamento." }
     ],
-    ctaTitle: "Tem um imóvel ou projeto que precisa de acompanhamento?",
-    ctaBody: "Conte-nos sobre o ativo e os trabalhos que precisa de coordenar. Começamos por compreender a sua situação.",
-    cta: "Falar sobre o projeto"
+    ctaTitle: "Tem um projeto em mente? Vamos dar-lhe vida.",
+    ctaBody: "Conte-nos a sua ideia, mesmo que ainda esteja no início. Vamos ajudar a definir os próximos passos e coordenar o trabalho até à sua concretização.",
+    cta: "Conte-nos o seu projeto"
   }
 };
 
