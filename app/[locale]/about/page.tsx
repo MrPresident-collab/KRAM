@@ -115,7 +115,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
       </header>
 
       <section className="about-hero" aria-labelledby="about-title">
-        <div className="about-hero-image" role="img" aria-label="A thoughtfully maintained contemporary home in natural surroundings" />
+        <div className="about-hero-image" role="img" aria-label={locale === "fr" ? "Maison contemporaine bien entretenue dans un cadre naturel" : locale === "pt" ? "Casa contemporânea bem cuidada num ambiente natural" : "A thoughtfully maintained contemporary home in natural surroundings"} />
         <div className="about-hero-shade" />
         <div className="about-hero-content">
           <p className="eyebrow eyebrow-light"><span className="eyebrow-line" />{t.heroEyebrow}</p>
@@ -166,7 +166,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           <p>{t.closingBody}</p>
           <a className="button button-orange" href={`/${locale}#contact`}>{t.cta}<span aria-hidden="true">↗</span></a>
         </div>
-        <div className="about-closing-image" role="img" aria-label="Natural materials and soft light in a well-kept interior" />
+        <div className="about-closing-image" role="img" aria-label={locale === "fr" ? "Matériaux naturels et lumière douce dans un intérieur soigné" : locale === "pt" ? "Materiais naturais e luz suave num interior cuidado" : "Natural materials and soft light in a well-kept interior"} />
       </section>
 
       <footer className="site-footer">
