@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useParams, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { ArrowLeft, ArrowUpRight, Check, ChevronDown, LoaderCircle, Plus, Trash2, Mail, Phone, MessageCircle, MapPin } from "lucide-react";
 import { isLocale, type Locale } from "@/lib/i18n";
@@ -121,14 +121,24 @@ const copy = {
 } as const;
 
 export default function EnquiryPage() {
+  return (
+    <Suspense fallback={<main className="public-home enquiry-page" aria-busy="true" />}>
+      <EnquiryPageContent />
+    </Suspense>
+  );
+}
+
+function EnquiryPageContent() {
   const params = useParams<{ locale: string }>();
+  const searchParams = useSearchParams();
   const locale: Locale = isLocale(params.locale) ? params.locale : "fr";
   const t = copy[locale];
-  const [enquiryType, setEnquiryType] = useState<"project" | "asset" | "other">("asset");
-  useEffect(() => {
-    const requestedType = new URLSearchParams(window.location.search).get("type");
-    if (requestedType === "project" || requestedType === "other" || requestedType === "asset") setEnquiryType(requestedType);
-  }, []);
+  const requestedType = searchParams.get("type");
+  const [enquiryType, setEnquiryType] = useState<"project" | "asset" | "other">(
+    requestedType === "project" || requestedType === "other" || requestedType === "asset"
+      ? requestedType
+      : "asset",
+  );
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
