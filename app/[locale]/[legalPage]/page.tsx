@@ -113,7 +113,7 @@ export default async function LegalPage({
             <Link href={`/${locale}`}>{nav.home}</Link><Link href={`/${locale}/about`}>{nav.about}</Link><Link href={`/${locale}/services`}>{nav.services}</Link><Link href={`/${locale}/login`}>{nav.portal}</Link>
           </nav></section>
           <section className="footer-column"><h2>{footerLabels[locale].resources}</h2><nav className="footer-column-links" aria-label={footerLabels[locale].resources}>
-            <Link href={pathFor("enquiry")}>{nav.enquiry}</Link><Link href={pathFor("login")}>{nav.portal}</Link><Link href={pathFor("faqs")}>{nav.faqs}</Link>
+            <Link href={pathFor("enquiry")}>{nav.enquiry}</Link><Link href={pathFor("client-login")}>{nav.portal}</Link><Link href={pathFor("faqs")}>{nav.faqs}</Link>
           </nav></section>
           <section className="footer-column"><h2>{footerLabels[locale].footprint}</h2><ul className="footer-plain-list">{publicFooter.footprint.map((place) => <li key={place}>{place}</li>)}</ul></section>
           <section className="footer-column">
