@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     locale: "fr_FR",
   },
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
     title: "KRAM — Remote Asset Management",
     description: siteDescription,
   },
