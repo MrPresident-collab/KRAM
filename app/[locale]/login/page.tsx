@@ -215,14 +215,16 @@ export default function ClientLoginPage() {
               <span>{publicFooter.branch.city}</span>
             </a>
           </section>
-          <section className="footer-column">
-            <h2>{footerLabels[locale].socials}</h2>
-            <div className="footer-column-links">
-              {publicFooter.socials.linkedin ? <a href={publicFooter.socials.linkedin} target="_blank" rel="noreferrer">LinkedIn</a> : null}
-              {publicFooter.socials.instagram ? <a href={publicFooter.socials.instagram} target="_blank" rel="noreferrer">Instagram</a> : null}
-              {publicFooter.socials.facebook ? <a href={publicFooter.socials.facebook} target="_blank" rel="noreferrer">Facebook</a> : null}
-            </div>
-          </section>
+          {(publicFooter.socials.linkedin || publicFooter.socials.instagram || publicFooter.socials.facebook) ? (
+            <section className="footer-column">
+              <h2>{footerLabels[locale].socials}</h2>
+              <div className="footer-column-links">
+                {publicFooter.socials.linkedin ? <a href={publicFooter.socials.linkedin} target="_blank" rel="noreferrer">LinkedIn</a> : null}
+                {publicFooter.socials.instagram ? <a href={publicFooter.socials.instagram} target="_blank" rel="noreferrer">Instagram</a> : null}
+                {publicFooter.socials.facebook ? <a href={publicFooter.socials.facebook} target="_blank" rel="noreferrer">Facebook</a> : null}
+              </div>
+            </section>
+          ) : null}
         </div>
         <div className="footer-bottom">
           <span>© {new Date().getFullYear()} KRAM. {footerLabels[locale].rights}</span>
