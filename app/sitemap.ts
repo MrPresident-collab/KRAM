@@ -19,7 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   let baseUrl: string;
   try {
-    baseUrl = new URL(configuredUrl).toString().replace(/\/$/, "");
+    baseUrl = new URL(configuredUrl).origin;
   } catch {
     return [];
   }
