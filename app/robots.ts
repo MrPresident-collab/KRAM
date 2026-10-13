@@ -17,6 +17,12 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
       disallow: [
+        "/en/client-login",
+        "/fr/client-login",
+        "/pt/client-login",
+        "/en/login",
+        "/fr/login",
+        "/pt/login",
         "/en/client$",
         "/en/client/",
         "/fr/client$",
