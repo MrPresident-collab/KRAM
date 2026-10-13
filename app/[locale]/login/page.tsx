@@ -56,7 +56,7 @@ const copy = {
     nav: { home: "Início", about: "Sobre", services: "Serviços", login: "Portal do cliente" },
     eyebrow: "Uma forma mais clara de cuidar dos seus ativos",
     headline: "Como podemos ajudar hoje?",
-    intro: "Está a considerar trabalhar com a KRAM ou já confia-nos o acompanhamento do seu ativo? Escolha a opção certa para si.",
+    intro: "Está a considerar trabalhar com a KRAM ou já nos confia o acompanhamento do seu ativo? Escolha a opção certa para si.",
     newLabel: "01 / COMEÇAR",
     newTitle: "Sou um novo cliente",
     newBody: "Vamos conversar sobre o seu ativo, as suas prioridades e o tipo de acompanhamento ou apoio de que precisa.",
