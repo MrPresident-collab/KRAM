@@ -187,7 +187,7 @@ export default async function ProjectsPage({ params }: { params: Promise<{ local
           <p className="eyebrow eyebrow-light"><span className="eyebrow-line" />KRAM</p>
           <h2>{t.ctaTitle}</h2>
           <p>{t.ctaBody}</p>
-          <Link className="button button-orange" href={`/${locale}/enquiry`}>{t.cta}<span aria-hidden="true">↗</span></Link>
+          <Link className="button button-orange" href={`/${locale}/enquiry?type=project`}>{t.cta}<span aria-hidden="true">↗</span></Link>
         </div>
       </section>
 
