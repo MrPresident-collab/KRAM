@@ -110,7 +110,7 @@ export default async function LegalPage({
         </div>
         <div className="footer-columns">
           <section className="footer-column"><h2>{footerLabels[locale].explore}</h2><nav className="footer-column-links" aria-label={footerLabels[locale].explore}>
-            <Link href={`/${locale}`}>{nav.home}</Link><Link href={`/${locale}/about`}>{nav.about}</Link><Link href={`/${locale}/services`}>{nav.services}</Link><Link href={`/${locale}/client-login`}>{nav.portal}</Link>
+            <Link href={`/${locale}`}>{nav.home}</Link><Link href={`/${locale}/about`}>{nav.about}</Link><Link href={`/${locale}/services`}>{nav.services}</Link>
           </nav></section>
           <section className="footer-column"><h2>{footerLabels[locale].resources}</h2><nav className="footer-column-links" aria-label={footerLabels[locale].resources}>
             <Link href={pathFor("enquiry")}>{nav.enquiry}</Link><Link href={pathFor("client-login")}>{nav.portal}</Link><Link href={pathFor("faqs")}>{nav.faqs}</Link>
