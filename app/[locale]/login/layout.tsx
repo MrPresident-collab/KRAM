@@ -14,7 +14,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: rawLocale } = await params;
   const locale = isLocale(rawLocale) ? rawLocale : "fr";
-  return { ...metadataCopy[locale], robots: { index: false, follow: true } };
+  return { ...metadataCopy[locale], title: `${metadataCopy[locale].title} | KRAM`, robots: { index: false, follow: true } };
 }
 
 export default function ClientOptionsLayout({
