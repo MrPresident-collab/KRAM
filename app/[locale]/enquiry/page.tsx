@@ -282,7 +282,6 @@ export default function EnquiryPage() {
             <Link href={`/${locale}`}>{t.nav.home}</Link>
             <Link href={`/${locale}/about`}>{t.nav.about}</Link>
             <Link href={`/${locale}/services`}>{t.nav.services}</Link>
-            <Link href={`/${locale}/client-login`}>{t.nav.login}</Link>
             </nav>
           </section>
           <section className="footer-column">
