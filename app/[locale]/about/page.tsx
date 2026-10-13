@@ -7,7 +7,7 @@ import { footerLabels, publicFooter } from "@/lib/public-footer";
 
 const copy = {
   en: {
-    nav: { home: "Home", about: "About", services: "Services", login: "Login", start: "Get started" },
+    nav: { home: "Home", about: "About", services: "Services", login: "Client Portal", start: "Get started" },
     metaTitle: "About KRAM — A more considered approach to asset care",
     metaDescription: "Learn about KRAM's approach to asset oversight: clear information, practical coordination and accountable follow-through.",
     heroEyebrow: "About KRAM",
@@ -32,7 +32,7 @@ const copy = {
     contact: "Contact", rights: "All rights reserved."
   },
   fr: {
-    nav: { home: "Accueil", about: "À propos", services: "Services", login: "Connexion", start: "Parlons de votre actif" },
+    nav: { home: "Accueil", about: "À propos", services: "Services", login: "Portail client", start: "Parlons de votre actif" },
     metaTitle: "À propos de KRAM — Un suivi plus attentif des actifs",
     metaDescription: "Découvrez l’approche KRAM : des informations claires, une coordination pratique et un suivi responsable.",
     heroEyebrow: "À propos de KRAM",
@@ -57,7 +57,7 @@ const copy = {
     contact: "Contact", rights: "Tous droits réservés."
   },
   pt: {
-    nav: { home: "Início", about: "Sobre", services: "Serviços", login: "Entrar", start: "Vamos conversar" },
+    nav: { home: "Início", about: "Sobre", services: "Serviços", login: "Portal do cliente", start: "Vamos conversar" },
     metaTitle: "Sobre a KRAM — Uma abordagem mais cuidada aos ativos",
     metaDescription: "Conheça a abordagem da KRAM ao acompanhamento de ativos: informação clara, coordenação prática e responsabilidade.",
     heroEyebrow: "Sobre a KRAM",
@@ -99,15 +99,15 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
     <main className="public-home about-page" id="top">
       <header className="site-header">
         <KramBrand locale={locale} href={`/${locale}`} className="brand-mark" />
-        <nav className="main-nav" aria-label="Main navigation">
+        <nav className="main-nav" aria-label={locale === "fr" ? "Navigation principale" : locale === "pt" ? "Navegação principal" : "Main navigation"}>
           <Link href={`/${locale}`}>{t.nav.home}</Link>
           <Link className="nav-active" href={`/${locale}/about`}>{t.nav.about}</Link>
           <Link href={`/${locale}/services`}>{t.nav.services}</Link>
           <Link href={`/${locale}/projects`}>{locale === "fr" ? "Projets" : locale === "pt" ? "Projetos" : "Projects"}</Link>
-          <Link href={`/${locale}/login`}>{t.nav.login}</Link>
+          <Link href={`/${locale}/client-login`}>{t.nav.login}</Link>
         </nav>
         <div className="header-actions">
-          <div className="language-switch" aria-label="Language">
+          <div className="language-switch" aria-label={locale === "fr" ? "Langue" : locale === "pt" ? "Idioma" : "Language"}>
             {(["en", "fr", "pt"] as const).map((language) => <Link key={language} href={`/${language}/about`} aria-current={locale === language ? "page" : undefined} className={locale === language ? "language-current" : ""}>{language.toUpperCase()}</Link>)}
           </div>
           <a className="button button-small button-orange header-cta" href="#contact">{t.nav.start}<span aria-hidden="true">↗</span></a>
@@ -176,7 +176,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             <p className="footer-company">{footerLabels[locale].company}</p>
             <p className="footer-tagline">{footerLabels[locale].tagline}</p>
           </div>
-          <div className="footer-contact"><span>{footerLabels[locale].contact}</span><Link href={`/${locale}#contact`}>{t.cta} ↗</Link></div>
+          <div className="footer-contact"><Link href={`/${locale}#contact`}>{footerLabels[locale].contact} ↗</Link></div>
         </div>
         <div className="footer-columns">
           <section className="footer-column">
@@ -186,14 +186,14 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             <Link href={`/${locale}/about`}>{t.nav.about}</Link>
             <Link href={`/${locale}/services`}>{t.nav.services}</Link>
             <Link href={`/${locale}/projects`}>{locale === "fr" ? "Projets" : locale === "pt" ? "Projetos" : "Projects"}</Link>
-            <Link href={`/${locale}/login`}>{t.nav.login}</Link>
+            <Link href={`/${locale}/client-login`}>{t.nav.login}</Link>
             </nav>
           </section>
           <section className="footer-column">
             <h2>{footerLabels[locale].resources}</h2>
             <nav className="footer-column-links" aria-label={footerLabels[locale].resources}>
               <Link href={`/${locale}/enquiry`}>{footerLabels[locale].enquiry}</Link>
-              <Link href={`/${locale}/login`}>{footerLabels[locale].portal}</Link>
+              <Link href={`/${locale}/client-login`}>{footerLabels[locale].portal}</Link>
               <Link href={`/${locale}/faqs`}>{footerLabels[locale].faqs}</Link>
             </nav>
           </section>
