@@ -16,24 +16,24 @@ const copy: Record<Locale, {
 }> = {
   en: {
     nav: { home: "Home", about: "About", services: "Services", projects: "Projects", login: "Client Portal", start: "Get started" },
-    title: "KRAM Projects — Documented property work and outcomes",
-    description: "Explore property care, maintenance, renovation, installations and project coordination associated with KRAM.",
+    title: "KRAM Projects — Selected property work",
+    description: "Explore selected photographs of property maintenance, renovations, installations and project oversight.",
     eyebrow: "Projects",
-    headline: "The work, documented.",
-    hero: "A clear record of the work carried out, the decisions made and the outcomes delivered—so clients can see the difference between a service promise and documented work.",
+    headline: "Selected work, clearly presented.",
+    hero: "A visual selection of property-related work, grouped by type. The photographs offer context for the kinds of work KRAM can help coordinate; scope and deliverables are agreed for each engagement.",
     introEyebrow: "Our work",
     introTitle: "A closer look at the work.",
     introBody: "Explore photographs related to property care, maintenance, installations, renovations and project oversight. Each engagement is shaped around the asset, the agreed scope and the owner’s priorities.",
     emptyEyebrow: "Selected work",
     emptyTitle: "Work carried out with care.",
     emptyBody: "Our work spans property inspections, maintenance coordination, installations and renovation oversight. Contact KRAM to discuss the needs of your property or project.",
-    standardsTitle: "What each project story will make clear",
+    standardsTitle: "What this selection shows",
     standards: [
-      { title: "The brief", body: "The property or issue involved, the client's priorities and the agreed scope of work." },
-      { title: "The work", body: "Documented actions, relevant progress updates and photographs from the actual work where available." },
-      { title: "The outcome", body: "What was completed, what remains open and any follow-up recommendations or records." }
+      { title: "Different types of work", body: "Examples of renovation, maintenance, installation and project-coordination tasks." },
+      { title: "Visual context", body: "Photographs grouped by type to help illustrate the work involved." },
+      { title: "Agreed scope", body: "The work, records and reporting for each KRAM engagement are agreed with the client individually." }
     ],
-    ctaTitle: "Have a project in mind? Let’s bring it to life.",
+    ctaTitle: "Have a project in mind? Let’s discuss the next step.",
     ctaBody: "Tell us what you have in mind, even if it is still an idea. We’ll help define the next steps and coordinate the work toward realisation.",
     cta: "Tell us about your project"
   },
@@ -43,17 +43,17 @@ const copy: Record<Locale, {
     description: "Découvrez les projets documentés de KRAM au fur et à mesure que les travaux sont terminés et autorisés à la publication. Les services expliquent ce que nous faisons ; les projets montrent ce que nous avons fait.",
     eyebrow: "Projets",
     headline: "Les travaux, documentés.",
-    hero: "Un compte rendu clair des interventions, des décisions et des résultats, pour distinguer une promesse de service d’un travail réellement documenté.",
+    hero: "Une sélection visuelle de travaux liés aux biens immobiliers, classés par type. Les photographies illustrent les interventions que KRAM peut aider à coordonner ; le périmètre et les livrables sont convenus pour chaque mission.",
     introEyebrow: "Ce qui a sa place ici",
     introTitle: "Un aperçu de nos interventions.",
     introBody: "Découvrez des photographies liées à l’entretien immobilier, à la maintenance, aux installations, aux rénovations et au suivi de projets. Chaque intervention est adaptée au bien, au périmètre convenu et aux priorités du propriétaire.",
     emptyEyebrow: "Nos interventions",
     emptyTitle: "Des interventions menées avec soin.",
     emptyBody: "Nos interventions couvrent les inspections, la coordination de maintenance, les installations et le suivi de rénovations. Contactez KRAM pour discuter des besoins de votre bien ou de votre projet.",
-    standardsTitle: "Ce que chaque projet présentera clairement",
+    standardsTitle: "Ce que présente cette sélection",
     standards: [
-      { title: "Le besoin", body: "Le bien ou le problème concerné, les priorités du client et le périmètre convenu." },
-      { title: "Les travaux", body: "Les actions documentées, les mises à jour pertinentes et, lorsque disponibles, des photos des travaux réels." },
+      { title: "Différents types d’intervention", body: "Des exemples de rénovation, de maintenance, d’installation et de coordination de projets." },
+      { title: "Un aperçu visuel", body: "Des photographies regroupées par type pour illustrer les interventions concernées." },
       { title: "Le résultat", body: "Ce qui a été réalisé, les points restant ouverts et les recommandations ou documents de suivi." }
     ],
     ctaTitle: "Un projet en tête ? Donnons-lui vie.",
@@ -66,20 +66,20 @@ const copy: Record<Locale, {
     description: "Conheça os projetos documentados da KRAM à medida que os trabalhos são concluídos e autorizados para publicação. Os serviços explicam o que fazemos; os projetos mostram o que fizemos.",
     eyebrow: "Projetos",
     headline: "O trabalho, documentado.",
-    hero: "Um registo claro dos trabalhos realizados, das decisões tomadas e dos resultados alcançados, distinguindo uma promessa de serviço de trabalho devidamente documentado.",
+    hero: "Uma seleção visual de trabalhos relacionados com imóveis, organizada por tipo. As fotografias dão contexto aos trabalhos que a KRAM pode ajudar a coordenar; o âmbito e os resultados a entregar são acordados em cada serviço.",
     introEyebrow: "O que pertence aqui",
     introTitle: "Uma visão mais próxima do nosso trabalho.",
     introBody: "Explore fotografias relacionadas com inspeções, manutenção, instalações, renovações e acompanhamento de projetos. Cada intervenção é definida de acordo com o imóvel, o âmbito acordado e as prioridades do proprietário.",
     emptyEyebrow: "O nosso trabalho",
     emptyTitle: "Trabalho acompanhado com cuidado.",
     emptyBody: "O nosso trabalho inclui inspeções imobiliárias, coordenação de manutenção, instalações e acompanhamento de renovações. Contacte a KRAM para conversar sobre as necessidades do seu imóvel ou projeto.",
-    standardsTitle: "O que cada projeto irá esclarecer",
+    standardsTitle: "O que esta seleção apresenta",
     standards: [
-      { title: "O pedido", body: "O imóvel ou problema em causa, as prioridades do cliente e o âmbito acordado." },
-      { title: "O trabalho", body: "Ações documentadas, atualizações relevantes e, quando disponíveis, fotografias do trabalho real." },
-      { title: "O resultado", body: "O que foi concluído, o que continua pendente e eventuais recomendações ou registos de acompanhamento." }
+      { title: "Diferentes tipos de trabalho", body: "Exemplos de renovação, manutenção, instalações e coordenação de projetos." },
+      { title: "Contexto visual", body: "Fotografias agrupadas por tipo para ilustrar os trabalhos envolvidos." },
+      { title: "Âmbito acordado", body: "Os trabalhos, documentos e relatórios de cada serviço da KRAM são acordados individualmente com o cliente." }
     ],
-    ctaTitle: "Tem um projeto em mente? Vamos dar-lhe vida.",
+    ctaTitle: "Tem um projeto em mente? Vamos conversar sobre o próximo passo.",
     ctaBody: "Conte-nos a sua ideia, mesmo que ainda esteja no início. Vamos ajudar a definir os próximos passos e coordenar o trabalho até à sua concretização.",
     cta: "Conte-nos o seu projeto"
   }
@@ -123,7 +123,7 @@ export default async function ProjectsPage({ params }: { params: Promise<{ local
           <p className="eyebrow eyebrow-light"><span className="eyebrow-line" />{t.eyebrow}</p>
           <h1 id="projects-title">{t.headline}</h1>
           <p>{t.hero}</p>
-          <span className="projects-hero-note">{locale === "fr" ? "Travaux réels. Dossiers vérifiés. Résultats clairs." : locale === "pt" ? "Trabalho real. Registos verificados. Resultados claros." : "Real work. Verified records. Clear outcomes."}</span>
+          <span className="projects-hero-note">{locale === "fr" ? "Interventions sélectionnées. Contexte clair. Suivi pratique." : locale === "pt" ? "Trabalhos selecionados. Contexto claro. Acompanhamento prático." : "Selected work. Clear context. Practical oversight."}</span>
         </div>
         <span className="projects-hero-index">KRAM / 04</span>
       </section>
@@ -148,13 +148,13 @@ export default async function ProjectsPage({ params }: { params: Promise<{ local
         <div className="projects-grid">
           {[
             { title: locale === "fr" ? "Rénovation de salle de bain" : locale === "pt" ? "Renovação de casa de banho" : "Bathroom renovation", category: locale === "fr" ? "Rénovation & finitions" : locale === "pt" ? "Renovações e acabamentos" : "Renovations & finishing", summary: locale === "fr" ? "Amélioration et finitions de salle de bain." : locale === "pt" ? "Melhorias e acabamentos de casa de banho." : "Bathroom improvement and finishing work.", cover: "/images/projects/bathroom_renovate.jpg", images: ["/images/projects/bathroom_renovate.jpg", "/images/projects/bathroom_renovate2.jpg"] },
-            { title: locale === "fr" ? "Rénovation de cuisine" : locale === "pt" ? "Renovação de cozinha" : "Kitchen renovation", category: locale === "fr" ? "Rénovation & finitions" : locale === "pt" ? "Renovações e acabamentos" : "Renovations & finishing", summary: locale === "fr" ? "Photos de rénovation de cuisine réunies dans un même projet." : locale === "pt" ? "Fotografias de renovação de cozinha reunidas num projeto." : "Kitchen renovation photographs grouped as one project story.", cover: "/images/projects/kitchen_renovate3.png", images: ["/images/projects/kitchen_renovate1.png", "/images/projects/kitchen_renovate3.png", "/images/projects/kitchen_renovate4.png", "/images/projects/kitchen_renovate5.png", "/images/projects/new7.jpg", "/images/projects/new10.jpg", "/images/projects/new11.jpg", "/images/projects/new13.jpg", "/images/projects/new14.jpg", "/images/projects/new16.jpg"] },
-            { title: locale === "fr" ? "Construction & peinture" : locale === "pt" ? "Construção e pintura" : "Construction & painting", category: locale === "fr" ? "Construction" : locale === "pt" ? "Construção" : "Construction", summary: locale === "fr" ? "Travaux de construction, rénovation et peinture." : locale === "pt" ? "Trabalhos de construção, renovação e pintura." : "Construction, renovation and painting-related work.", cover: "/images/projects/constructe&renovate1.png", images: ["/images/projects/constructe&renovate1.png", "/images/projects/painting_1.jpeg", "/images/projects/new1.jpg", "/images/projects/new2.jpg", "/images/projects/new3.jpg", "/images/projects/new4.jpg", "/images/projects/new5.jpg", "/images/projects/new9.jpg", "/images/projects/new17.jpg", "/images/projects/new19.jpg", "/images/projects/new20.jpg", "/images/projects/project_oversight2.png", "/images/projects/maintenance_coordination4.png", "/images/projects/maintenance_coordination2.png", "/images/projects/maintenance_coordination3.png"] },
+            { title: locale === "fr" ? "Rénovation de cuisine" : locale === "pt" ? "Renovação de cozinha" : "Kitchen renovation", category: locale === "fr" ? "Rénovation & finitions" : locale === "pt" ? "Renovações e acabamentos" : "Renovations & finishing", summary: locale === "fr" ? "Photos de rénovation de cuisine réunies dans un même projet." : locale === "pt" ? "Fotografias de renovação de cozinha reunidas num projeto." : "Kitchen renovation photographs grouped as one project story.", cover: "/images/projects/kitchen_renovate3.png", images: ["/images/projects/kitchen_renovate1.png", "/images/projects/kitchen_renovate3.png", "/images/projects/kitchen_renovate4.png", "/images/projects/kitchen_renovate5.png"] },
+            { title: locale === "fr" ? "Construction & peinture" : locale === "pt" ? "Construção e pintura" : "Construction & painting", category: locale === "fr" ? "Construction" : locale === "pt" ? "Construção" : "Construction", summary: locale === "fr" ? "Travaux de construction, rénovation et peinture." : locale === "pt" ? "Trabalhos de construção, renovação e pintura." : "Construction, renovation and painting-related work.", cover: "/images/projects/constructe&renovate1.png", images: ["/images/projects/constructe&renovate1.png", "/images/projects/painting_1.jpeg"] },
             { title: locale === "fr" ? "Installation d’éclairage" : locale === "pt" ? "Instalação de iluminação" : "Lighting installation", category: locale === "fr" ? "Installations techniques" : locale === "pt" ? "Instalações técnicas" : "Technical installations", summary: locale === "fr" ? "Planification et installation d’éclairage documentées." : locale === "pt" ? "Planeamento e instalação de iluminação documentados." : "Lighting planning and installation photographs in one sequence.", cover: "/images/projects/lights_install1.jpeg", images: ["/images/projects/lights_begin.jpeg", "/images/projects/lights_design.jpeg", "/images/projects/lights_install1.jpeg", "/images/projects/lights_install2.jpeg"] },
             { title: locale === "fr" ? "Plomberie & réseaux d’eau" : locale === "pt" ? "Canalização e redes de água" : "Plumbing & water systems", category: locale === "fr" ? "Maintenance technique" : locale === "pt" ? "Manutenção técnica" : "Technical maintenance", summary: locale === "fr" ? "Travaux de plomberie, conduites et équipements d’eau." : locale === "pt" ? "Trabalhos de canalização, tubagens e equipamentos de água." : "Plumbing work, pipework and water-system components.", cover: "/images/projects/plumbing_1.jpeg", images: ["/images/projects/plumbing_1.jpeg", "/images/projects/plumbing_2.jpeg", "/images/projects/plumbing_meter.jpeg"] },
             { title: locale === "fr" ? "Compteurs & installations électriques" : locale === "pt" ? "Contadores e instalações elétricas" : "Electrical meter & installations", category: locale === "fr" ? "Installations électriques" : locale === "pt" ? "Instalações elétricas" : "Electrical installations", summary: locale === "fr" ? "Équipements de comptage électrique et installations associées." : locale === "pt" ? "Equipamentos de contagem de eletricidade e instalações associadas." : "Electricity meter boxes and associated electrical installation work.", cover: "/images/projects/meterbox_mainten.jpg", images: ["/images/projects/meterbox_mainten.jpg", "/images/projects/technical-installations.jpg"] },
-            { title: locale === "fr" ? "Entretien & inspections" : locale === "pt" ? "Manutenção e inspeções" : "Property care & inspections", category: locale === "fr" ? "Maintenance immobilière" : locale === "pt" ? "Manutenção imobiliária" : "Property maintenance", summary: locale === "fr" ? "Coordination de maintenance, inspections et suivi des actifs." : locale === "pt" ? "Coordenação de manutenção, inspeções e acompanhamento de imóveis." : "Maintenance coordination, routine inspection and ongoing asset care.", cover: "/images/projects/maintenance_coordination1.png", images: ["/images/projects/maintenance_coordination1.png", "/images/projects/routine_inspection.png", "/images/projects/ongoing_asset2.png", "/images/projects/ongoing_asset3.png", "/images/projects/new12.jpg", "/images/projects/new15.jpg", "/images/projects/new18.jpg"] },
-            { title: locale === "fr" ? "Suivi de projet" : locale === "pt" ? "Acompanhamento de projetos" : "Project oversight", category: locale === "fr" ? "Coordination & suivi" : locale === "pt" ? "Coordenação e acompanhamento" : "Coordination & oversight", summary: locale === "fr" ? "Photographies liées au suivi de chantier et à la coordination." : locale === "pt" ? "Fotografias de acompanhamento de obras e coordenação." : "Photographs associated with site oversight and project coordination.", cover: "/images/projects/project_oversight1.png", images: ["/images/projects/project_oversight1.png", "/images/projects/project_oversight3.png", "/images/projects/project_oversight4.png", "/images/projects/new6.jpg", "/images/projects/new8.jpg", "/images/projects/ongoing_asset1.png"] }
+            { title: locale === "fr" ? "Entretien & inspections" : locale === "pt" ? "Manutenção e inspeções" : "Property care & inspections", category: locale === "fr" ? "Maintenance immobilière" : locale === "pt" ? "Manutenção imobiliária" : "Property maintenance", summary: locale === "fr" ? "Coordination de maintenance, inspections et suivi des actifs." : locale === "pt" ? "Coordenação de manutenção, inspeções e acompanhamento de imóveis." : "Maintenance coordination, routine inspection and ongoing asset care.", cover: "/images/projects/maintenance_coordination1.png", images: ["/images/projects/maintenance_coordination1.png", "/images/projects/maintenance_coordination2.png", "/images/projects/maintenance_coordination3.png", "/images/projects/maintenance_coordination4.png", "/images/projects/routine_inspection.png", "/images/projects/ongoing_asset1.png", "/images/projects/ongoing_asset2.png", "/images/projects/ongoing_asset3.png", "/images/projects/property-maintenance.jpg"] },
+            { title: locale === "fr" ? "Suivi de projet" : locale === "pt" ? "Acompanhamento de projetos" : "Project oversight", category: locale === "fr" ? "Coordination & suivi" : locale === "pt" ? "Coordenação e acompanhamento" : "Coordination & oversight", summary: locale === "fr" ? "Photographies liées au suivi de chantier et à la coordination." : locale === "pt" ? "Fotografias de acompanhamento de obras e coordenação." : "Photographs associated with site oversight and project coordination.", cover: "/images/projects/project_oversight1.png", images: ["/images/projects/project_oversight1.png", "/images/projects/project_oversight2.png", "/images/projects/project_oversight3.png", "/images/projects/project_oversight4.png"] }
           ].map((project, index) => (
             <article className="project-card" key={project.title}>
               <div className="project-card-cover">
