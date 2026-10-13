@@ -9,7 +9,7 @@ import { footerLabels, publicFooter } from "@/lib/public-footer";
 
 const copy = {
   en: {
-    nav: { home: "Home", about: "About", services: "Services", login: "Login" },
+    nav: { home: "Home", about: "About", services: "Services", login: "Client Portal" },
     eyebrow: "A clearer way to care for your assets",
     headline: "How can we help you today?",
     intro: "Whether you're considering working with KRAM or already trust us with your asset, choose the path that fits you.",
@@ -31,7 +31,7 @@ const copy = {
     contact: "Contact", rights: "All rights reserved."
   },
   fr: {
-    nav: { home: "Accueil", about: "À propos", services: "Services", login: "Connexion" },
+    nav: { home: "Accueil", about: "À propos", services: "Services", login: "Portail client" },
     eyebrow: "Une approche plus claire du suivi de vos actifs",
     headline: "Comment pouvons-nous vous aider aujourd’hui ?",
     intro: "Vous envisagez de travailler avec KRAM ou vous nous confiez déjà le suivi de votre actif ? Choisissez le parcours qui vous correspond.",
@@ -53,7 +53,7 @@ const copy = {
     contact: "Contact", rights: "Tous droits réservés."
   },
   pt: {
-    nav: { home: "Início", about: "Sobre", services: "Serviços", login: "Entrar" },
+    nav: { home: "Início", about: "Sobre", services: "Serviços", login: "Portal do cliente" },
     eyebrow: "Uma forma mais clara de cuidar dos seus ativos",
     headline: "Como podemos ajudar hoje?",
     intro: "Está a considerar trabalhar com a KRAM ou já confia-nos o acompanhamento do seu ativo? Escolha a opção certa para si.",
@@ -85,15 +85,15 @@ export default function ClientLoginPage() {
     <main className="public-home client-login-page" id="top">
       <header className="site-header">
         <KramBrand locale={locale} href={`/${locale}`} className="brand-mark" />
-        <nav className="main-nav" aria-label="Main navigation">
+        <nav className="main-nav" aria-label={locale === "fr" ? "Navigation principale" : locale === "pt" ? "Navegação principal" : "Main navigation"}>
           <Link href={`/${locale}`}>{t.nav.home}</Link>
           <Link href={`/${locale}/about`}>{t.nav.about}</Link>
           <Link href={`/${locale}/services`}>{t.nav.services}</Link>
           <Link href={`/${locale}/projects`}>{locale === "fr" ? "Projets" : locale === "pt" ? "Projetos" : "Projects"}</Link>
-          <Link className="nav-active" href={`/${locale}/login`}>{t.nav.login}</Link>
+          <Link className="nav-active" href={`/${locale}/client-login`}>{t.nav.login}</Link>
         </nav>
         <div className="header-actions">
-          <div className="language-switch" aria-label="Language">
+          <div className="language-switch" aria-label={locale === "fr" ? "Langue" : locale === "pt" ? "Idioma" : "Language"}>
             {(["en", "fr", "pt"] as const).map((language) => <Link key={language} href={`/${language}/login`} aria-current={locale === language ? "page" : undefined} className={locale === language ? "language-current" : ""}>{language.toUpperCase()}</Link>)}
           </div>
           <a className="button button-small button-orange header-cta" href="#client-choices">{t.newAction}<span aria-hidden="true">↗</span></a>
@@ -173,14 +173,14 @@ export default function ClientLoginPage() {
             <Link href={`/${locale}/about`}>{t.nav.about}</Link>
             <Link href={`/${locale}/services`}>{t.nav.services}</Link>
             <Link href={`/${locale}/projects`}>{locale === "fr" ? "Projets" : locale === "pt" ? "Projetos" : "Projects"}</Link>
-            <Link href={`/${locale}/login`}>{t.nav.login}</Link>
+            <Link href={`/${locale}/client-login`}>{t.nav.login}</Link>
             </nav>
           </section>
           <section className="footer-column">
             <h2>{footerLabels[locale].resources}</h2>
             <nav className="footer-column-links" aria-label={footerLabels[locale].resources}>
               <Link href={`/${locale}/enquiry`}>{footerLabels[locale].enquiry}</Link>
-              <Link href={`/${locale}/login`}>{footerLabels[locale].portal}</Link>
+              <Link href={`/${locale}/client-login`}>{footerLabels[locale].portal}</Link>
               <Link href={`/${locale}/faqs`}>{footerLabels[locale].faqs}</Link>
             </nav>
           </section>
