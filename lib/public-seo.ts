@@ -20,13 +20,14 @@ export function publicPageMetadata(
   description: string,
 ): Metadata {
   const siteUrl = getSiteUrl();
+  const siteOrigin = siteUrl?.toString();
   const route = `/${locale}${path ? `/${path.replace(/^\/+/, "")}` : ""}`;
-  const canonical = siteUrl ? new URL(route, siteUrl).toString() : undefined;
+  const canonical = siteUrl ? new URL(route, siteOrigin).toString() : undefined;
   const languageAlternates = siteUrl
     ? Object.fromEntries(
         (["fr", "en", "pt"] as const).map((language) => [
           language,
-          new URL(`/${language}${path ? `/${path.replace(/^\/+/, "")}` : ""}`, siteUrl).toString(),
+          new URL(`/${language}${path ? `/${path.replace(/^\/+/, "")}` : ""}`, siteOrigin).toString(),
         ]),
       )
     : undefined;
@@ -43,7 +44,7 @@ export function publicPageMetadata(
       ? {
           alternates: {
             canonical,
-            languages: { ...languageAlternates, "x-default": new URL(`/fr${path ? `/${path.replace(/^\/+/, "")}` : ""}`, siteUrl).toString() },
+            languages: { ...languageAlternates, "x-default": new URL(`/fr${path ? `/${path.replace(/^\/+/, "")}` : ""}`, siteOrigin).toString() },
           },
           openGraph: {
             type: "website",
