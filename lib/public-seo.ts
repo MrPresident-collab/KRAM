@@ -53,7 +53,7 @@ export function publicPageMetadata(
             siteName: "KRAM",
             locale: locale === "fr" ? "fr_FR" : locale === "pt" ? "pt_PT" : "en_US",
           },
-          twitter: { card: "summary_large_image", title, description },
+          twitter: { card: "summary", title, description },
         }
       : {}),
   };
