@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { isLocale } from "@/lib/i18n";
+import { isLocale, type Locale } from "@/lib/i18n";
+import { publicPageMetadata } from "@/lib/public-seo";
 
 const metadataCopy = {
   en: {
@@ -22,8 +23,8 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale: rawLocale } = await params;
-  const locale = isLocale(rawLocale) ? rawLocale : "fr";
-  return { ...metadataCopy[locale], title: `${metadataCopy[locale].title} | KRAM` };
+  const locale: Locale = isLocale(rawLocale) ? rawLocale : "fr";
+  return publicPageMetadata(locale, "enquiry", `${metadataCopy[locale].title} | KRAM`, metadataCopy[locale].description);
 }
 
 export default function EnquiryLayout({
