@@ -103,6 +103,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           <Link href={`/${locale}`}>{t.nav.home}</Link>
           <Link className="nav-active" href={`/${locale}/about`}>{t.nav.about}</Link>
           <Link href={`/${locale}/services`}>{t.nav.services}</Link>
+          <Link href={`/${locale}/projects`}>{locale === "fr" ? "Projets" : locale === "pt" ? "Projetos" : "Projects"}</Link>
           <Link href={`/${locale}/login`}>{t.nav.login}</Link>
         </nav>
         <div className="header-actions">
@@ -184,6 +185,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             <Link href={`/${locale}`}>{t.nav.home}</Link>
             <Link href={`/${locale}/about`}>{t.nav.about}</Link>
             <Link href={`/${locale}/services`}>{t.nav.services}</Link>
+            <Link href={`/${locale}/projects`}>{locale === "fr" ? "Projets" : locale === "pt" ? "Projetos" : "Projects"}</Link>
             <Link href={`/${locale}/login`}>{t.nav.login}</Link>
             </nav>
           </section>
