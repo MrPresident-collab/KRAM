@@ -144,7 +144,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     en: "KRAM — Clear, accountable asset oversight",
     pt: "KRAM — Acompanhamento de ativos com clareza"
   };
-  return publicPageMetadata(locale, "", titles[locale], content[locale].hero.description);
+  const descriptions = {
+    fr: "KRAM accompagne les propriétaires à distance grâce aux inspections, à la coordination de maintenance et à des rapports clairs sur leurs actifs.",
+    en: "KRAM helps property owners oversee assets remotely with inspections, maintenance coordination, project oversight and clear reporting.",
+    pt: "A KRAM ajuda proprietários a acompanhar ativos à distância com inspeções, coordenação de manutenção, acompanhamento de projetos e relatórios claros.",
+  };
+  return publicPageMetadata(locale, "", titles[locale], descriptions[locale]);
 }
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
