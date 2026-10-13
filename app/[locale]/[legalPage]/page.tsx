@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { isLocale, locales, type Locale } from "@/lib/i18n";
 import { footerLabels, publicFooter } from "@/lib/public-footer";
+import { publicPageMetadata } from "@/lib/public-seo";
 import { legalContent, legalNavigation, type LegalDocument } from "@/lib/legal-content";
 
 const routeMap: Record<string, LegalDocument> = {
@@ -23,10 +24,7 @@ export async function generateMetadata({
   const { locale: localeParam, legalPage } = await params;
   if (!isLocale(localeParam) || !routeMap[legalPage]) return {};
   const document = legalContent[localeParam][routeMap[legalPage]];
-  return {
-    title: `${document.title} | KRAM`,
-    description: document.intro,
-  };
+  return publicPageMetadata(localeParam, legalPage, `${document.title} | KRAM`, document.intro);
 }
 
 export default async function LegalPage({
