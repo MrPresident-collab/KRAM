@@ -25,7 +25,7 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ lo
 
   const { data: asset, error } = await supabase
     .from("assets")
-    .select("id,name,reference_code,type,status,country_code,region,city,address,description,branch_id,organization_id,created_at,updated_at,clients(id,full_name,email,primary_phone)")
+    .select("id,name,reference_code,type,status,country_code,region,city,address,latitude,longitude,description,branch_id,organization_id,created_at,updated_at,clients(id,full_name,email,primary_phone)")
     .eq("id", id).eq("organization_id", membership.organization_id)
     .maybeSingle();
 
