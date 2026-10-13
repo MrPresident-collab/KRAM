@@ -34,12 +34,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
         changeFrequency: path === "" ? "weekly" as const : "monthly" as const,
         priority: path === "" ? 1 : path === "services" || path === "enquiry" ? 0.8 : path === "about" || path === "projects" ? 0.7 : path === "faqs" ? 0.5 : 0.3,
         alternates: {
-          languages: Object.fromEntries(
-            locales.map((language) => [
-              language,
-              `${baseUrl}${path ? `/${language}/${path}` : `/${language}`}`,
-            ]),
-          ),
+          languages: {
+            ...Object.fromEntries(
+              locales.map((language) => [
+                language,
+                `${baseUrl}${path ? `/${language}/${path}` : `/${language}`}`,
+              ]),
+            ),
+            "x-default": `${baseUrl}${path ? `/fr/${path}` : "/fr"}`,
+          },,
         },
       };
     }),
