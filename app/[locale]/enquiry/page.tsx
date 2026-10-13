@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { ArrowLeft, ArrowUpRight, Check, ChevronDown, LoaderCircle, Plus, Trash2, Mail, Phone, MessageCircle, MapPin } from "lucide-react";
 import { isLocale, type Locale } from "@/lib/i18n";
@@ -15,6 +15,9 @@ const copy = {
     eyebrow: "A first conversation",
     title: "Tell us what your asset needs.",
     intro: "Every situation is different. Share a little about what you need, and our team can review your enquiry and guide you through the next step.",
+    enquiryType: "What would you like to discuss with KRAM?", projectOption: "A project I have in mind", assetOption: "An existing property", otherOption: "Something else",
+    projectHint: "For construction, renovation, installations or another property project. If you do not know the exact address yet, enter the area or neighbourhood.",
+    projectLocation: "Project address or area", projectType: "Project or property type", chooseProjectType: "Choose a project or property type", projectDetailsPlaceholder: "Describe your idea, what you want to achieve, the work you have in mind, and any timing or budget you already know (optional).",
     step: "ENQUIRY / 01",
     contact: "Your details",
     name: "Full name",
@@ -47,6 +50,9 @@ const copy = {
     eyebrow: "Un premier échange",
     title: "Parlez-nous des besoins de votre actif.",
     intro: "Chaque situation est différente. Présentez-nous brièvement vos besoins afin que notre équipe puisse examiner votre demande et vous guider vers la prochaine étape.",
+    enquiryType: "Quel sujet souhaitez-vous aborder avec KRAM ?", projectOption: "Un projet que j’envisage", assetOption: "Un bien immobilier existant", otherOption: "Autre demande",
+    projectHint: "Pour une construction, une rénovation, des installations ou un autre projet immobilier. Si l’adresse exacte n’est pas encore connue, indiquez le quartier ou la zone.",
+    projectLocation: "Adresse ou zone du projet", projectType: "Type de projet ou de bien", chooseProjectType: "Choisir un type de projet ou de bien", projectDetailsPlaceholder: "Décrivez votre idée, votre objectif, les travaux envisagés et, si vous les connaissez, le calendrier ou le budget (facultatif).",
     step: "DEMANDE / 01",
     contact: "Vos coordonnées",
     name: "Nom complet",
@@ -79,6 +85,9 @@ const copy = {
     eyebrow: "Uma primeira conversa",
     title: "Conte-nos do que o seu ativo precisa.",
     intro: "Cada situação é diferente. Partilhe um pouco sobre o que precisa para que a nossa equipa possa analisar o pedido e orientar os próximos passos.",
+    enquiryType: "O que gostaria de conversar com a KRAM?", projectOption: "Tenho um projeto em mente", assetOption: "Um imóvel existente", otherOption: "Outro assunto",
+    projectHint: "Para construção, renovação, instalações ou outro projeto imobiliário. Se ainda não souber a morada exata, indique a zona ou o bairro.",
+    projectLocation: "Morada ou zona do projeto", projectType: "Tipo de projeto ou imóvel", chooseProjectType: "Escolha o tipo de projeto ou imóvel", projectDetailsPlaceholder: "Descreva a sua ideia, o que pretende alcançar, os trabalhos previstos e, se já souber, o prazo ou orçamento (opcional).",
     step: "PEDIDO / 01",
     contact: "Os seus dados",
     name: "Nome completo",
@@ -112,6 +121,11 @@ export default function EnquiryPage() {
   const params = useParams<{ locale: string }>();
   const locale: Locale = isLocale(params.locale) ? params.locale : "fr";
   const t = copy[locale];
+  const [enquiryType, setEnquiryType] = useState<"project" | "asset" | "other">("asset");
+  useEffect(() => {
+    const requestedType = new URLSearchParams(window.location.search).get("type");
+    if (requestedType === "project" || requestedType === "other" || requestedType === "asset") setEnquiryType(requestedType);
+  }, []);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -176,7 +190,7 @@ export default function EnquiryPage() {
             p_asset_location: firstAsset.asset_location,
             p_asset_type: firstAsset.asset_type,
             p_help_needed: firstAsset.help_needed,
-            p_details: String(data.get("details") || ""),
+            p_details: `[Enquiry type: ${enquiryType === "project" ? t.projectOption : enquiryType === "other" ? t.otherOption : t.assetOption}] ${String(data.get("details") || "").trim()}`.trim(),
             p_preferred_contact: String(data.get("preferredContact") || "email"),
             p_language: locale,
             p_assets: submittedAssets
@@ -188,6 +202,16 @@ export default function EnquiryPage() {
           setAssets([{ id: nextAssetId, street: "", city: "", country: "", type: "", helpNeeded: [] }]);
           setNextAssetId((id) => id + 1);
         }}>
+          <fieldset className="enquiry-fieldset">
+            <legend>{t.enquiryType}</legend>
+            <div className="enquiry-options enquiry-contact-options enquiry-type-options">
+              <label className="enquiry-option"><input type="radio" name="enquiryType" value="project" checked={enquiryType === "project"} onChange={() => setEnquiryType("project")} /><span>{t.projectOption}</span></label>
+              <label className="enquiry-option"><input type="radio" name="enquiryType" value="asset" checked={enquiryType === "asset"} onChange={() => setEnquiryType("asset")} /><span>{t.assetOption}</span></label>
+              <label className="enquiry-option"><input type="radio" name="enquiryType" value="other" checked={enquiryType === "other"} onChange={() => setEnquiryType("other")} /><span>{t.otherOption}</span></label>
+            </div>
+            {enquiryType === "project" && <p className="enquiry-project-hint">{t.projectHint}</p>}
+          </fieldset>
+
           <fieldset className="enquiry-fieldset">
             <legend>{t.contact}</legend>
             <div className="enquiry-field-grid">
@@ -209,17 +233,17 @@ export default function EnquiryPage() {
                     {assets.length > 1 && <button type="button" className="enquiry-remove-asset" onClick={() => setAssets((current) => current.filter((item) => item.id !== asset.id))}><Trash2 size={15} />{t.removeAsset}</button>}
                   </div>
                   <div className="enquiry-field-grid">
-                    <label className="enquiry-field enquiry-field-full"><span>{t.assetStreet} *</span><input name={`assetStreet-${asset.id}`} autoComplete={index === 0 ? "street-address" : "off"} required maxLength={180} value={asset.street} onChange={(event) => { const value = event.currentTarget.value; setAssets((current) => current.map((item) => item.id === asset.id ? { ...item, street: value } : item)); }} /></label>
+                    <label className="enquiry-field enquiry-field-full"><span>{enquiryType === "project" ? t.projectLocation : t.assetStreet} *</span><input name={`assetStreet-${asset.id}`} autoComplete={index === 0 ? "street-address" : "off"} required maxLength={180} value={asset.street} onChange={(event) => { const value = event.currentTarget.value; setAssets((current) => current.map((item) => item.id === asset.id ? { ...item, street: value } : item)); }} /></label>
                     <label className="enquiry-field"><span>{t.assetCity} *</span><input name={`assetCity-${asset.id}`} required maxLength={100} value={asset.city} onChange={(event) => { const value = event.currentTarget.value; setAssets((current) => current.map((item) => item.id === asset.id ? { ...item, city: value } : item)); }} /></label>
                     <label className="enquiry-field"><span>{t.assetCountry} *</span><input name={`assetCountry-${asset.id}`} autoComplete="country-name" required maxLength={100} value={asset.country} onChange={(event) => { const value = event.currentTarget.value; setAssets((current) => current.map((item) => item.id === asset.id ? { ...item, country: value } : item)); }} /></label>
-                    <label className="enquiry-field"><span>{t.assetType} *</span><span className="enquiry-select-wrap"><select name={`assetType-${asset.id}`} required value={asset.type} onChange={(event) => { const value = event.currentTarget.value; setAssets((current) => current.map((item) => item.id === asset.id ? { ...item, type: value } : item)); }}><option value="" disabled>{t.chooseType}</option>{t.types.map((type) => <option key={type} value={type}>{type}</option>)}</select><ChevronDown size={16} /></span></label>
+                    <label className="enquiry-field"><span>{enquiryType === "project" ? t.projectType : t.assetType} *</span><span className="enquiry-select-wrap"><select name={`assetType-${asset.id}`} required value={asset.type} onChange={(event) => { const value = event.currentTarget.value; setAssets((current) => current.map((item) => item.id === asset.id ? { ...item, type: value } : item)); }}><option value="" disabled>{enquiryType === "project" ? t.chooseProjectType : t.chooseType}</option>{t.types.map((type) => <option key={type} value={type}>{type}</option>)}</select><ChevronDown size={16} /></span></label>
                   </div>
                   <div className="enquiry-field enquiry-field-full enquiry-asset-help"><span>{t.help} *</span><div className="enquiry-options">{t.helpOptions.map((option) => <label key={option} className="enquiry-option"><input type="checkbox" name={`helpNeeded-${asset.id}`} value={option} checked={asset.helpNeeded.includes(option)} onChange={(event) => { const checked = event.currentTarget.checked; setAssets((current) => current.map((item) => item.id === asset.id ? { ...item, helpNeeded: checked ? [...item.helpNeeded, option] : item.helpNeeded.filter((value) => value !== option) } : item)); }} /><span>{option}</span></label>)}</div></div>
                 </section>
               ))}
               {assets.length < 20 ? <button type="button" className="enquiry-add-asset" onClick={() => { setAssets((current) => [...current, { id: nextAssetId, street: "", city: "", country: "", type: "", helpNeeded: [] }]); setNextAssetId((id) => id + 1); }}><Plus size={17} />{t.addAsset}</button> : <p className="enquiry-asset-limit">{t.assetLimit}</p>}
             </div>
-            <label className="enquiry-field enquiry-field-full enquiry-general-details"><span>{t.details}</span><textarea name="details" rows={4} maxLength={2000} placeholder={t.detailsPlaceholder} /></label>
+            <label className="enquiry-field enquiry-field-full enquiry-general-details"><span>{t.details}</span><textarea name="details" rows={4} maxLength={2000} placeholder={enquiryType === "project" ? t.projectDetailsPlaceholder : t.detailsPlaceholder} /></label>
           </fieldset>
 
           <fieldset className="enquiry-fieldset">
