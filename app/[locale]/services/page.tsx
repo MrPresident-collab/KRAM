@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Mail, Phone, MessageCircle, MapPin } from "lucide-react";
 import type { Metadata } from "next";
+import { publicPageMetadata } from "@/lib/public-seo";
 import { isLocale, type Locale } from "@/lib/i18n";
 import { KramBrand } from "@/components/brand/kram-brand";
 import { footerLabels, publicFooter } from "@/lib/public-footer";
@@ -122,7 +123,7 @@ const copy = {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale: rawLocale } = await params;
   const locale: Locale = isLocale(rawLocale) ? rawLocale : "fr";
-  return { title: copy[locale].title, description: copy[locale].description };
+  return publicPageMetadata(locale, "services", copy[locale].title, copy[locale].description);
 }
 
 export default async function ServicesPage({ params }: { params: Promise<{ locale: string }> }) {
