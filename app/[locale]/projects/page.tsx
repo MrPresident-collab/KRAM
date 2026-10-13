@@ -163,14 +163,16 @@ export default async function ProjectsPage({ params }: { params: Promise<{ local
                 <p className="project-card-category">{project.category}</p>
                 <h3>{project.title}</h3>
                 <p>{project.summary}</p>
-                <div className="project-card-gallery">
-                  {project.images.slice(0, 4).map((src, imageIndex) => (
-                    <div className="project-card-thumb" key={src}>
-                      <Image src={src} alt={project.title + " — " + (imageIndex + 1)} fill sizes="100px" />
-                    </div>
-                  ))}
-                  {project.images.length > 4 && <span className="project-card-more">+{project.images.length - 4}</span>}
-                </div>
+                <details className="project-card-details">
+                  <summary>{locale === "fr" ? "Voir les photos" : locale === "pt" ? "Ver fotografias" : "View project photos"} <span aria-hidden="true">↗</span></summary>
+                  <div className="project-card-gallery">
+                    {project.images.map((src, imageIndex) => (
+                      <div className="project-card-thumb" key={src}>
+                        <Image src={src} alt={project.title + " — " + (imageIndex + 1)} fill sizes="(max-width: 720px) 28vw, 100px" />
+                      </div>
+                    ))}
+                  </div>
+                </details>
               </div>
             </article>
           ))}
