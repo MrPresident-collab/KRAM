@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Mail, Phone, MessageCircle, MapPin } from "lucide-react";
 import type { Metadata } from "next";
+import { publicPageMetadata } from "@/lib/public-seo";
 import { isLocale, type Locale } from "@/lib/i18n";
 import { KramBrand } from "@/components/brand/kram-brand";
 import { footerLabels, publicFooter } from "@/lib/public-footer";
@@ -143,7 +144,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     en: "KRAM — Clear, accountable asset oversight",
     pt: "KRAM — Acompanhamento de ativos com clareza"
   };
-  return { title: titles[locale], description: content[locale].hero.description };
+  return publicPageMetadata(locale, "", titles[locale], content[locale].hero.description);
 }
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
