@@ -44,11 +44,11 @@ export default async function LegalPage({
     <main className="public-home legal-page" id="top">
       <header className="site-header">
         <Link className="legal-header-wordmark" href={`/${locale}`} aria-label="KRAM home">KRAM</Link>
-        <nav className="main-nav" aria-label={nav.home}>
+        <nav className="main-nav" aria-label={locale === "fr" ? "Navigation principale" : locale === "pt" ? "Navegação principal" : "Main navigation"}>
           <Link href={`/${locale}`}>{nav.home}</Link>
           <Link href={`/${locale}/about`}>{nav.about}</Link>
           <Link href={`/${locale}/services`}>{nav.services}</Link>
-          <Link href={`/${locale}/login`}>{nav.portal}</Link>
+          <Link href={`/${locale}/client-login`}>{nav.portal}</Link>
         </nav>
         <div className="language-switch" aria-label={nav.language}>
           {locales.map((language) => (
@@ -106,11 +106,11 @@ export default async function LegalPage({
             <p className="footer-company">{footerLabels[locale].company}</p>
             <p className="footer-tagline">{footerLabels[locale].tagline}</p>
           </div>
-          <div className="footer-contact"><span>{footerLabels[locale].contact}</span><Link href={pathFor("enquiry")}>{footerLabels[locale].start} ↗</Link></div>
+          <div className="footer-contact"><Link href={pathFor("enquiry")}>{footerLabels[locale].contact} ↗</Link></div>
         </div>
         <div className="footer-columns">
           <section className="footer-column"><h2>{footerLabels[locale].explore}</h2><nav className="footer-column-links" aria-label={footerLabels[locale].explore}>
-            <Link href={`/${locale}`}>{nav.home}</Link><Link href={`/${locale}/about`}>{nav.about}</Link><Link href={`/${locale}/services`}>{nav.services}</Link><Link href={`/${locale}/login`}>{nav.portal}</Link>
+            <Link href={`/${locale}`}>{nav.home}</Link><Link href={`/${locale}/about`}>{nav.about}</Link><Link href={`/${locale}/services`}>{nav.services}</Link><Link href={`/${locale}/client-login`}>{nav.portal}</Link>
           </nav></section>
           <section className="footer-column"><h2>{footerLabels[locale].resources}</h2><nav className="footer-column-links" aria-label={footerLabels[locale].resources}>
             <Link href={pathFor("enquiry")}>{nav.enquiry}</Link><Link href={pathFor("client-login")}>{nav.portal}</Link><Link href={pathFor("faqs")}>{nav.faqs}</Link>
