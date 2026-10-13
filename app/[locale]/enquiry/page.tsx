@@ -273,7 +273,7 @@ export default function EnquiryPage() {
             <p className="footer-company">{footerLabels[locale].company}</p>
             <p className="footer-tagline">{footerLabels[locale].tagline}</p>
           </div>
-          <div className="footer-contact"><Link href={`/${locale}/services`}>{footerLabels[locale].start} ↗</Link></div>
+          <div className="footer-contact"><Link href={`/${locale}/enquiry`}>{footerLabels[locale].start} ↗</Link></div>
         </div>
         <div className="footer-columns">
           <section className="footer-column">
