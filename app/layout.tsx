@@ -3,7 +3,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "KRAM — Remote Asset Management",
-  description: "Kore Remote Asset Management",
+  description: "KRAM helps property owners oversee assets remotely through inspections, maintenance coordination, project oversight and clear reporting.",
+  icons: { icon: "/brand/kram-mark.svg" },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
