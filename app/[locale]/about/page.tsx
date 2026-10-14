@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Mail, Phone, MessageCircle, MapPin } from "lucide-react";
+import { ArrowUpRight, Mail, Phone, MessageCircle, MapPin  } from "lucide-react";
 import type { Metadata } from "next";
 import { publicPageMetadata } from "@/lib/public-seo";
 import { isLocale, type Locale } from "@/lib/i18n";
@@ -111,7 +111,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           <div className="language-switch" aria-label={locale === "fr" ? "Langue" : locale === "pt" ? "Idioma" : "Language"}>
             {(["en", "fr", "pt"] as const).map((language) => <Link key={language} href={`/${language}/about`} aria-current={locale === language ? "page" : undefined} className={locale === language ? "language-current" : ""}>{language.toUpperCase()}</Link>)}
           </div>
-          <a className="button button-small button-orange header-cta" href="#contact">{t.nav.start}<span aria-hidden="true">↗</span></a>
+          <a className="button button-small button-orange header-cta" href="#contact">{t.nav.start}<span aria-hidden="true"><ArrowUpRight size={16} aria-hidden="true" /></span></a>
         </div>
       </header>
 
@@ -152,7 +152,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                 <article className="about-principle" key={item.n}>
                   <span className="about-principle-number">{item.n}</span>
                   <div><h3>{item.title}</h3><p>{item.body}</p></div>
-                  <span className="about-principle-arrow" aria-hidden="true">↗</span>
+                  <span className="about-principle-arrow" aria-hidden="true"><ArrowUpRight size={16} aria-hidden="true" /></span>
                 </article>
               ))}
             </div>
@@ -165,7 +165,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           <p className="eyebrow"><span className="eyebrow-line" />KRAM</p>
           <h2>{t.closingTitle}</h2>
           <p>{t.closingBody}</p>
-          <a className="button button-orange" href={`/${locale}#contact`}>{t.cta}<span aria-hidden="true">↗</span></a>
+          <a className="button button-orange" href={`/${locale}#contact`}>{t.cta}<span aria-hidden="true"><ArrowUpRight size={16} aria-hidden="true" /></span></a>
         </div>
         <div className="about-closing-image" role="img" aria-label={locale === "fr" ? "Matériaux naturels et lumière douce dans un intérieur soigné" : locale === "pt" ? "Materiais naturais e luz suave num interior cuidado" : "Natural materials and soft light in a well-kept interior"} />
       </section>
@@ -177,7 +177,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             <p className="footer-company">{footerLabels[locale].company}</p>
             <p className="footer-tagline">{footerLabels[locale].tagline}</p>
           </div>
-          <div className="footer-contact"><Link href={`/${locale}#contact`}>{footerLabels[locale].start} ↗</Link></div>
+          <div className="footer-contact"><Link href={`/${locale}#contact`}>{footerLabels[locale].start} <ArrowUpRight size={16} aria-hidden="true" /></Link></div>
         </div>
         <div className="footer-columns">
           <section className="footer-column">
