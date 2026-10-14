@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Mail, Phone, MessageCircle, MapPin } from "lucide-react";
+import { ArrowUpRight, Mail, Phone, MessageCircle, MapPin  } from "lucide-react";
 import type { Metadata } from "next";
 import { publicPageMetadata } from "@/lib/public-seo";
 import { isLocale, type Locale } from "@/lib/i18n";
@@ -147,7 +147,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
           <div className="language-switch" aria-label={locale === "fr" ? "Langue" : locale === "pt" ? "Idioma" : "Language"}>
             {(["en", "fr", "pt"] as const).map((language) => <Link key={language} href={`/${language}/services`} aria-current={locale === language ? "page" : undefined} className={locale === language ? "language-current" : ""}>{language.toUpperCase()}</Link>)}
           </div>
-          <a className="button button-small button-orange header-cta" href={`/${locale}/enquiry`}>{t.nav.start}<span aria-hidden="true">↗</span></a>
+          <a className="button button-small button-orange header-cta" href={`/${locale}/enquiry`}>{t.nav.start}<span aria-hidden="true"><ArrowUpRight size={16} aria-hidden="true" /></span></a>
         </div>
       </header>
 
@@ -158,7 +158,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
           <p className="eyebrow eyebrow-light"><span className="eyebrow-line" />{t.eyebrow}</p>
           <h1 id="services-title">{t.headline}</h1>
           <p>{t.hero}</p>
-          <a className="button button-orange" href={`/${locale}/enquiry`}>{t.cta}<span aria-hidden="true">↗</span></a>
+          <a className="button button-orange" href={`/${locale}/enquiry`}>{t.cta}<span aria-hidden="true"><ArrowUpRight size={16} aria-hidden="true" /></span></a>
           <div className="services-hero-note"><span className="hero-footnote-dot" />{t.note}</div>
         </div>
         <span className="services-hero-index">KRAM / 03</span>
@@ -208,7 +208,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
           <h2>{t.fitTitle}</h2>
           <p>{t.fitBody}</p>
         </div>
-        <ul className="services-fit-list">{t.fitPoints.map((point) => <li key={point}><span aria-hidden="true">↗</span>{point}</li>)}</ul>
+        <ul className="services-fit-list">{t.fitPoints.map((point) => <li key={point}><span aria-hidden="true"><ArrowUpRight size={16} aria-hidden="true" /></span>{point}</li>)}</ul>
       </section>
 
       <section className="services-closing" id="contact">
@@ -218,7 +218,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
           <p className="eyebrow eyebrow-light"><span className="eyebrow-line" />KRAM</p>
           <h2>{t.finalTitle}</h2>
           <p>{t.finalBody}</p>
-          <a className="button button-orange" href={`/${locale}/enquiry`}>{t.finalCta}<span aria-hidden="true">↗</span></a>
+          <a className="button button-orange" href={`/${locale}/enquiry`}>{t.finalCta}<span aria-hidden="true"><ArrowUpRight size={16} aria-hidden="true" /></span></a>
         </div>
       </section>
 
@@ -229,7 +229,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
             <p className="footer-company">{footerLabels[locale].company}</p>
             <p className="footer-tagline">{footerLabels[locale].tagline}</p>
           </div>
-          <div className="footer-contact"><Link href={`/${locale}/enquiry`}>{footerLabels[locale].start} ↗</Link></div>
+          <div className="footer-contact"><Link href={`/${locale}/enquiry`}>{footerLabels[locale].start} <ArrowUpRight size={16} aria-hidden="true" /></Link></div>
         </div>
         <div className="footer-columns">
           <section className="footer-column">
