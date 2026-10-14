@@ -19,7 +19,7 @@ const statusOptions = [
  {value:"converted",en:"Converted to client",fr:"Convertie en client",pt:"Convertido em cliente"}
 ] as const;
 
-export function EnquiriesInbox({initialItems,assignees,locale,labels}:{initialItems:Enquiry[];assignees:{id:string;name:string;role:string}[];locale:"en"|"fr"|"pt";labels:{empty:string;asset:string;assets:string;resident:string;help:string;preferred:string;language:string;details:string;save:string;saved:string;error:string;received:string;contact:string;assigned:string;unassigned:string;assignedSaved:string;assignedError:string;convert:string;branch:string;chooseBranch:string;converted:string;convertError:string},branches:{id:string;name:string}[];clients:{id:string;name:string;email:string|null}[];canConvert:boolean}){
+export function EnquiriesInbox({initialItems,assignees,locale,labels,branches,clients,canConvert}:{initialItems:Enquiry[];assignees:{id:string;name:string;role:string}[];locale:"en"|"fr"|"pt";labels:{empty:string;asset:string;assets:string;resident:string;help:string;preferred:string;language:string;details:string;save:string;saved:string;error:string;received:string;contact:string;assigned:string;unassigned:string;assignedSaved:string;assignedError:string;convert:string;branch:string;chooseBranch:string;converted:string;convertError:string},branches:{id:string;name:string}[];clients:{id:string;name:string;email:string|null}[];canConvert:boolean}){
  const [items,setItems]=useState(initialItems);
  const [pending,setPending]=useState<string|null>(null);
  const [notice,setNotice]=useState("");
