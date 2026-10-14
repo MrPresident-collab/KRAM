@@ -55,6 +55,7 @@ export async function transitionWorkOrder(
     .from("organization_members")
     .select("organization_id,role")
     .eq("user_id", userId)
+    .eq("status", "active")
     .limit(1)
     .maybeSingle();
 
