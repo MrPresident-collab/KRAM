@@ -15,7 +15,7 @@ export default async function OpsLayout({ children, params }: Readonly<{ childre
   const supabase = await createClient();
   const { data: claims } = await supabase.auth.getClaims();
   const userId = claims?.claims?.sub;
-  if (!userId) redirect(`/${locale}/login`);
+  if (!userId) redirect(`/${locale}/ops-login`);
 
   const [{ data: profile }, { data: membership }] = await Promise.all([
     supabase.from("profiles").select("full_name,job_title,avatar_url").eq("id", userId).maybeSingle(),
