@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Mail, Phone, MessageCircle, MapPin } from "lucide-react";
+import { ArrowUpRight, Mail, Phone, MessageCircle, MapPin  } from "lucide-react";
 import type { Metadata } from "next";
 import { publicPageMetadata } from "@/lib/public-seo";
 import { isLocale, type Locale } from "@/lib/i18n";
@@ -175,7 +175,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               <Link key={language} href={`/${language}`} aria-current={locale === language ? "page" : undefined} className={locale === language ? "language-current" : ""}>{language.toUpperCase()}</Link>
             ))}
           </div>
-          <a className="button button-small button-orange header-cta" href={`/${locale}/enquiry`}>{t.nav.start}<span aria-hidden="true">↗</span></a>
+          <a className="button button-small button-orange header-cta" href={`/${locale}/enquiry`}>{t.nav.start}<span aria-hidden="true"><ArrowUpRight size={16} aria-hidden="true" /></span></a>
         </div>
       </header>
 
@@ -186,7 +186,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <p className="eyebrow eyebrow-light"><span className="eyebrow-line" />{t.hero.note}</p>
           <h1 id="hero-title">{t.hero.title}</h1>
           <p className="hero-description">{t.hero.description}</p>
-          <a className="button button-orange" href={`/${locale}/enquiry`}>{t.hero.start}<span aria-hidden="true">↗</span></a>
+          <a className="button button-orange" href={`/${locale}/enquiry`}>{t.hero.start}<span aria-hidden="true"><ArrowUpRight size={16} aria-hidden="true" /></span></a>
           <div className="hero-footnote"><span className="hero-footnote-dot" />{locale === "fr" ? "Une approche centrée sur votre actif" : locale === "pt" ? "Uma abordagem centrada no seu ativo" : "A considered approach to your asset"}</div>
         </div>
         <div className="hero-index" aria-hidden="true"><span>01</span><i /><span>03</span></div>
@@ -209,14 +209,14 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <p className="eyebrow"><span className="eyebrow-line" />{t.care.eyebrow}</p>
             <h2>{t.care.title}</h2>
             <p className="section-description">{t.care.body}</p>
-            <Link className="text-link" href={`/${locale}/services`}>{t.nav.services}<span aria-hidden="true">↗</span></Link>
+            <Link className="text-link" href={`/${locale}/services`}>{t.nav.services}<span aria-hidden="true"><ArrowUpRight size={16} aria-hidden="true" /></span></Link>
           </div>
           <div className="care-list">
             {t.care.items.map((item, index) => (
               <article className="care-item" key={item.title}>
                 <span className="care-number">0{index + 1}</span>
                 <div><h3>{item.title}</h3><p>{item.body}</p></div>
-                <span className="care-arrow" aria-hidden="true">↗</span>
+                <span className="care-arrow" aria-hidden="true"><ArrowUpRight size={16} aria-hidden="true" /></span>
               </article>
             ))}
           </div>
@@ -258,7 +258,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <p className="footer-company">{footerLabels[locale].company}</p>
             <p className="footer-tagline">{footerLabels[locale].tagline}</p>
           </div>
-          <div className="footer-contact"><Link href={`/${locale}/enquiry`}>{footerLabels[locale].start} ↗</Link></div>
+          <div className="footer-contact"><Link href={`/${locale}/enquiry`}>{footerLabels[locale].start} <ArrowUpRight size={16} aria-hidden="true" /></Link></div>
         </div>
         <div className="footer-columns">
           <section className="footer-column">
