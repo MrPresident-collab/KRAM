@@ -81,13 +81,18 @@ export async function transitionWorkOrder(
     return { success: false, message: "That status transition is not allowed." };
   }
 
-  const { error: updateError } = await supabase
+  // Optimistic concurrency guard: do not overwrite a status changed by another staff member.
+  const { data: updated, error: updateError } = await supabase
     .from("work_orders")
     .update({ status: parsed.data.status, updated_at: new Date().toISOString() })
     .eq("id", current.id)
-    .eq("organization_id", current.organization_id);
+    .eq("organization_id", current.organization_id)
+    .eq("status", current.status)
+    .select("id")
+    .maybeSingle();
 
   if (updateError) return { success: false, message: "The work order could not be updated." };
+  if (!updated) return { success: false, message: "This work order was changed by another staff member. Refresh and try again." };
 
   const { error: historyError } = await supabase
     .from("work_order_updates")
