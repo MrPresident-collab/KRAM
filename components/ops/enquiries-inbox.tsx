@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Mail, MapPin, Phone, UserRound, UserCheck } from "lucide-react";
+import { Check, MapPin, Phone, UserRound, UserCheck, Languages } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 export type Enquiry = {
  id:string; full_name:string; email:string; phone:string|null; residence:string;
  asset_location:string; asset_type:string; help_needed:string[]; assets?:{asset_type:string;asset_location:string;help_needed:string[]}[]|null; details:string|null;
- preferred_contact:string; preferred_language:string; status:string; assigned_to:string|null; created_at:string;
+ preferred_contact:string; preferred_language?:string|null; status:string; assigned_to:string|null; created_at:string;
 };
 
 const statusOptions = [
@@ -19,7 +19,7 @@ const statusOptions = [
  {value:"converted",en:"Converted to client",fr:"Convertie en client",pt:"Convertido em cliente"}
 ] as const;
 
-export function EnquiriesInbox({initialItems,assignees,locale,labels}:{initialItems:Enquiry[];assignees:{id:string;name:string;role:string}[];locale:"en"|"fr"|"pt";labels:{empty:string;asset:string;assets:string;resident:string;help:string;preferred:string;details:string;save:string;saved:string;error:string;received:string;contact:string;assigned:string;unassigned:string;assignedSaved:string;assignedError:string}}){
+export function EnquiriesInbox({initialItems,assignees,locale,labels}:{initialItems:Enquiry[];assignees:{id:string;name:string;role:string}[];locale:"en"|"fr"|"pt";labels:{empty:string;asset:string;assets:string;resident:string;help:string;preferred:string;language:string;details:string;save:string;saved:string;error:string;received:string;contact:string;assigned:string;unassigned:string;assignedSaved:string;assignedError:string}}){
  const [items,setItems]=useState(initialItems);
  const [pending,setPending]=useState<string|null>(null);
  const [notice,setNotice]=useState("");
@@ -58,6 +58,7 @@ export function EnquiriesInbox({initialItems,assignees,locale,labels}:{initialIt
     <div className="flex gap-2 text-sm text-[var(--kram-metal)]"><MapPin size={16} className="mt-0.5 shrink-0 text-[var(--kram-orange)]"/><div className="min-w-0 flex-1"><p className="text-xs text-[var(--kram-soft-metal)]">{(item.assets?.length ?? 0) > 1 ? labels.assets : labels.asset}</p><div className="mt-2 space-y-3">{(item.assets?.length ? item.assets : [{asset_type:item.asset_type,asset_location:item.asset_location,help_needed:item.help_needed}]).map((asset,index)=><div key={index} className="rounded-lg border border-[var(--kram-border)] bg-white p-3"><p className="font-semibold text-[var(--kram-ink)]">{(item.assets?.length ?? 0) > 1 ? `${index+1}. ` : ""}{asset.asset_type}</p><p className="mt-1 break-words text-sm">{asset.asset_location}</p><p className="mt-2 text-xs text-[var(--kram-soft-metal)]">{asset.help_needed.join(", ")}</p></div>)}</div></div></div>
     <div className="flex gap-2 text-sm text-[var(--kram-metal)]"><UserRound size={16} className="mt-0.5 shrink-0 text-[var(--kram-orange)]"/><div><p className="text-xs text-[var(--kram-soft-metal)]">{labels.resident}</p><p className="mt-1 font-medium text-[var(--kram-ink)]">{item.residence}</p></div></div>
     <div className="flex gap-2 text-sm text-[var(--kram-metal)]"><Phone size={16} className="mt-0.5 shrink-0 text-[var(--kram-orange)]"/><div><p className="text-xs text-[var(--kram-soft-metal)]">{labels.contact}</p><p className="mt-1 font-medium text-[var(--kram-ink)]">{item.phone||"—"} · {item.preferred_contact}</p></div></div>
+    <div className="flex gap-2 text-sm text-[var(--kram-metal)]"><Languages size={16} className="mt-0.5 shrink-0 text-[var(--kram-orange)]"/><div><p className="text-xs text-[var(--kram-soft-metal)]">{labels.language}</p><p className="mt-1 font-medium text-[var(--kram-ink)]">{({en:locale==="fr"?"Anglais":locale==="pt"?"Inglês":"English",fr:locale==="fr"?"Français":locale==="pt"?"Francês":"French",pt:locale==="fr"?"Portugais":locale==="pt"?"Português":"Portuguese",other:locale==="fr"?"Autre":locale==="pt"?"Outro":"Other"} as Record<string,string>)[item.preferred_language || ""] || item.preferred_language || "—"}</p></div></div>
     
    </div>
    {item.details&&<div className="border-t border-[var(--kram-border)] pt-4"><p className="text-xs font-semibold text-[var(--kram-soft-metal)]">{labels.details}</p><p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-[var(--kram-metal)]">{item.details}</p></div>}
