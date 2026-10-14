@@ -96,7 +96,7 @@ export default function ClientLoginPage() {
           <div className="language-switch" aria-label={locale === "fr" ? "Langue" : locale === "pt" ? "Idioma" : "Language"}>
             {(["en", "fr", "pt"] as const).map((language) => <Link key={language} href={`/${language}/login`} aria-current={locale === language ? "page" : undefined} className={locale === language ? "language-current" : ""}>{language.toUpperCase()}</Link>)}
           </div>
-          <a className="button button-small button-orange header-cta" href="#client-choices">{t.newAction}<span aria-hidden="true">↗</span></a>
+          <a className="button button-small button-orange header-cta" href="#client-choices">{t.newAction}<span aria-hidden="true"><ArrowUpRight size={16} aria-hidden="true" /></span></a>
         </div>
       </header>
 
@@ -163,7 +163,7 @@ export default function ClientLoginPage() {
             <p className="footer-company">{footerLabels[locale].company}</p>
             <p className="footer-tagline">{footerLabels[locale].tagline}</p>
           </div>
-          <div className="footer-contact"><Link href={`/${locale}/services`}>{footerLabels[locale].contact} ↗</Link></div>
+          <div className="footer-contact"><Link href={`/${locale}/services`}>{footerLabels[locale].contact} <ArrowUpRight size={16} aria-hidden="true" /></Link></div>
         </div>
         <div className="footer-columns">
           <section className="footer-column">
