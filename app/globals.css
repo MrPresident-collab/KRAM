@@ -1,4 +1,20 @@
 @import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&display=swap");
+@import "tailwindcss";
+
+:root {
+  --kram-charcoal: #242424;
+  --kram-deep: #181818;
+  --kram-metal: #707070;
+  --kram-soft-metal: #9b9b96;
+  --kram-orange: #f47721;
+  --kram-orange-soft: #fff0e6;
+  --kram-bg: #f3f3f0;
+  --kram-border: #deded9;
+  --kram-surface: #ffffff;
+  --kram-green: #2d8a63;
+  --kram-ink: #171717;
+}
+
 
 /* KRAM public website — editorial asset-care direction */
 .public-home {
