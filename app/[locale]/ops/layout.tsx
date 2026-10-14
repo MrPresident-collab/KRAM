@@ -19,7 +19,7 @@ export default async function OpsLayout({ children, params }: Readonly<{ childre
 
   const [{ data: profile }, { data: membership }] = await Promise.all([
     supabase.from("profiles").select("full_name,job_title,avatar_url").eq("id", userId).maybeSingle(),
-    supabase.from("organization_members").select("role,scope_level,country_id,branch_id").eq("user_id", userId).order("created_at", { ascending: true }).limit(1).maybeSingle()
+    supabase.from("organization_members").select("role,scope_level,country_id,branch_id").eq("user_id", userId).eq("status", "active").order("created_at", { ascending: true }).limit(1).maybeSingle()
   ]);
 
   let workspaceLabel = locale === "fr" ? "Vue globale" : locale === "pt" ? "Visão global" : "Global Overview";
