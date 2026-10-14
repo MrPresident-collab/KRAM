@@ -39,6 +39,8 @@ const copy = {
     details: "Tell us a little more (optional)",
     detailsPlaceholder: "What is happening, and what would you like KRAM to help you with?",
     preferred: "Preferred way to contact you",
+    preferredLanguage: "Preferred communication language",
+    languageOptions: { en: "English", fr: "French", pt: "Portuguese", other: "Other" },
     emailOption: "Email", phoneOption: "Phone call", whatsappOption: "WhatsApp",
     privacy: "Submitting an enquiry does not create a client account or commit you to a service. Our team will review your request and contact you about the next step.",
     submit: "Send enquiry", sending: "Sending…", successTitle: "Your enquiry has been received.", successBody: "Thank you. Your request has been securely recorded for KRAM’s team to review. It does not create a client account.", error: "We couldn’t submit your enquiry. Please check your details and try again.",
@@ -75,6 +77,8 @@ const copy = {
     details: "Quelques précisions (facultatif)",
     detailsPlaceholder: "Que se passe-t-il et comment KRAM pourrait-il vous aider ?",
     preferred: "Moyen de contact préféré",
+    preferredLanguage: "Langue de communication préférée",
+    languageOptions: { en: "Anglais", fr: "Français", pt: "Portugais", other: "Autre" },
     emailOption: "E-mail", phoneOption: "Appel téléphonique", whatsappOption: "WhatsApp",
     privacy: "Envoyer une demande ne crée pas de compte client et ne vous engage pas à acheter un service. Notre équipe examinera votre demande et vous contactera pour la suite.",
     submit: "Envoyer la demande", sending: "Envoi…", successTitle: "Votre demande a été reçue.", successBody: "Merci. Votre demande a été enregistrée de manière sécurisée pour examen par l’équipe KRAM. Aucun compte client n’a été créé.", error: "Impossible d’envoyer votre demande. Vérifiez les informations et réessayez.",
@@ -111,6 +115,8 @@ const copy = {
     details: "Conte-nos um pouco mais (opcional)",
     detailsPlaceholder: "O que está a acontecer e como gostaria que a KRAM ajudasse?",
     preferred: "Forma preferida de contacto",
+    preferredLanguage: "Idioma de comunicação preferido",
+    languageOptions: { en: "Inglês", fr: "Francês", pt: "Português", other: "Outro" },
     emailOption: "E-mail", phoneOption: "Chamada telefónica", whatsappOption: "WhatsApp",
     privacy: "O envio de um pedido não cria uma conta de cliente nem o compromete com um serviço. A nossa equipa irá analisar o pedido e contactá-lo sobre os próximos passos.",
     submit: "Enviar pedido", sending: "A enviar…", successTitle: "O seu pedido foi recebido.", successBody: "Obrigado. O pedido foi registado em segurança para análise pela equipa KRAM. Não foi criada nenhuma conta de cliente.", error: "Não foi possível enviar o pedido. Verifique os dados e tente novamente.",
@@ -205,7 +211,7 @@ function EnquiryPageContent() {
             p_help_needed: firstAsset.help_needed,
             p_details: `[Enquiry type: ${enquiryType}] ${String(data.get("details") || "").trim()}`.slice(0, 2000),
             p_preferred_contact: String(data.get("preferredContact") || "email"),
-            p_language: locale,
+            p_language: String(data.get("preferredLanguage") || locale),
             p_assets: submittedAssets
           });
           setSubmitting(false);
@@ -257,6 +263,11 @@ function EnquiryPageContent() {
               {assets.length < 20 ? <button type="button" className="enquiry-add-asset" onClick={() => { setAssets((current) => [...current, { id: nextAssetId, street: "", city: "", country: "", type: "", helpNeeded: [] }]); setNextAssetId((id) => id + 1); }}><Plus size={17} />{t.addAsset}</button> : <p className="enquiry-asset-limit">{t.assetLimit}</p>}
             </div>
             <label className="enquiry-field enquiry-field-full enquiry-general-details"><span>{t.details}</span><textarea name="details" rows={4} maxLength={2000} placeholder={enquiryType === "project" ? t.projectDetailsPlaceholder : t.detailsPlaceholder} /></label>
+          </fieldset>
+
+          <fieldset className="enquiry-fieldset">
+            <legend>{t.preferredLanguage}</legend>
+            <label className="enquiry-field enquiry-field-full"><span>{t.preferredLanguage} *</span><span className="enquiry-select-wrap"><select name="preferredLanguage" required defaultValue={locale}><option value="en">{t.languageOptions.en}</option><option value="fr">{t.languageOptions.fr}</option><option value="pt">{t.languageOptions.pt}</option><option value="other">{t.languageOptions.other}</option></select><ChevronDown size={16} /></span></label>
           </fieldset>
 
           <fieldset className="enquiry-fieldset">
