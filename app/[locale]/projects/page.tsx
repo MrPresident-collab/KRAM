@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ProjectPhotoGallery } from "@/components/projects/project-photo-gallery";
-import { Mail, Phone, MessageCircle, MapPin } from "lucide-react";
+import { ArrowUpRight, Mail, Phone, MessageCircle, MapPin  } from "lucide-react";
 import type { Metadata } from "next";
 import { publicPageMetadata } from "@/lib/public-seo";
 import { isLocale, type Locale } from "@/lib/i18n";
@@ -113,7 +113,7 @@ export default async function ProjectsPage({ params }: { params: Promise<{ local
           <div className="language-switch" aria-label={locale === "fr" ? "Langue" : locale === "pt" ? "Idioma" : "Language"}>
             {(["en", "fr", "pt"] as const).map((language) => <Link key={language} href={`/${language}/projects`} aria-current={locale === language ? "page" : undefined} className={locale === language ? "language-current" : ""}>{language.toUpperCase()}</Link>)}
           </div>
-          <Link className="button button-small button-orange header-cta" href={`/${locale}/enquiry`}>{t.nav.start}<span aria-hidden="true">↗</span></Link>
+          <Link className="button button-small button-orange header-cta" href={`/${locale}/enquiry`}>{t.nav.start}<span aria-hidden="true"><ArrowUpRight size={16} aria-hidden="true" /></span></Link>
         </div>
       </header>
 
@@ -168,7 +168,7 @@ export default async function ProjectsPage({ params }: { params: Promise<{ local
                 <h3>{project.title}</h3>
                 <p>{project.summary}</p>
                 <details className="project-card-details">
-                  <summary>{locale === "fr" ? "Voir les photos" : locale === "pt" ? "Ver fotografias" : "View project photos"} <span aria-hidden="true">↗</span></summary>
+                  <summary>{locale === "fr" ? "Voir les photos" : locale === "pt" ? "Ver fotografias" : "View project photos"} <span aria-hidden="true"><ArrowUpRight size={16} aria-hidden="true" /></span></summary>
                   <ProjectPhotoGallery images={project.images} title={project.title} locale={locale} />
                 </details>
               </div>
@@ -184,7 +184,7 @@ export default async function ProjectsPage({ params }: { params: Promise<{ local
           <p className="eyebrow eyebrow-light"><span className="eyebrow-line" />KRAM</p>
           <h2>{t.ctaTitle}</h2>
           <p>{t.ctaBody}</p>
-          <Link className="button button-orange" href={`/${locale}/enquiry?type=project`}>{t.cta}<span aria-hidden="true">↗</span></Link>
+          <Link className="button button-orange" href={`/${locale}/enquiry?type=project`}>{t.cta}<span aria-hidden="true"><ArrowUpRight size={16} aria-hidden="true" /></span></Link>
         </div>
       </section>
 
@@ -195,7 +195,7 @@ export default async function ProjectsPage({ params }: { params: Promise<{ local
             <p className="footer-company">{footerLabels[locale].company}</p>
             <p className="footer-tagline">{footerLabels[locale].tagline}</p>
           </div>
-          <div className="footer-contact"><Link href={`/${locale}/enquiry`}>{footerLabels[locale].start} ↗</Link></div>
+          <div className="footer-contact"><Link href={`/${locale}/enquiry`}>{footerLabels[locale].start} <ArrowUpRight size={16} aria-hidden="true" /></Link></div>
         </div>
         <div className="footer-columns">
           <section className="footer-column">
