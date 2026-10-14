@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Mail, Phone, MessageCircle, MapPin } from "lucide-react";
+import { ArrowUpRight, Mail, Phone, MessageCircle, MapPin  } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { isLocale, locales, type Locale } from "@/lib/i18n";
@@ -76,7 +76,7 @@ export default async function LegalPage({
           </nav>
           <div className="legal-toc-help">
             <p>{locale === "fr" ? "Une question ?" : locale === "pt" ? "Tem uma dúvida?" : "Have a question?"}</p>
-            <Link href={pathFor("enquiry")}>{nav.contact} ↗</Link>
+            <Link href={pathFor("enquiry")}>{nav.contact} <ArrowUpRight size={16} aria-hidden="true" /></Link>
           </div>
         </aside>
         <article className="legal-content">
@@ -89,10 +89,10 @@ export default async function LegalPage({
           ))}
           <div className="legal-document-links">
             <h2>{locale === "fr" ? "Documents associés" : locale === "pt" ? "Documentos relacionados" : "Related documents"}</h2>
-            <Link href={pathFor("privacy-policy")}>{nav.privacy} ↗</Link>
-            <Link href={pathFor("terms-of-service")}>{nav.terms} ↗</Link>
-            <Link href={pathFor("cookie-policy")}>{nav.cookies} ↗</Link>
-            <Link href={pathFor("faqs")}>{nav.faqs} ↗</Link>
+            <Link href={pathFor("privacy-policy")}>{nav.privacy} <ArrowUpRight size={16} aria-hidden="true" /></Link>
+            <Link href={pathFor("terms-of-service")}>{nav.terms} <ArrowUpRight size={16} aria-hidden="true" /></Link>
+            <Link href={pathFor("cookie-policy")}>{nav.cookies} <ArrowUpRight size={16} aria-hidden="true" /></Link>
+            <Link href={pathFor("faqs")}>{nav.faqs} <ArrowUpRight size={16} aria-hidden="true" /></Link>
           </div>
         </article>
       </div>
@@ -104,7 +104,7 @@ export default async function LegalPage({
             <p className="footer-company">{footerLabels[locale].company}</p>
             <p className="footer-tagline">{footerLabels[locale].tagline}</p>
           </div>
-          <div className="footer-contact"><Link href={pathFor("enquiry")}>{footerLabels[locale].contact} ↗</Link></div>
+          <div className="footer-contact"><Link href={pathFor("enquiry")}>{footerLabels[locale].contact} <ArrowUpRight size={16} aria-hidden="true" /></Link></div>
         </div>
         <div className="footer-columns">
           <section className="footer-column"><h2>{footerLabels[locale].explore}</h2><nav className="footer-column-links" aria-label={footerLabels[locale].explore}>
