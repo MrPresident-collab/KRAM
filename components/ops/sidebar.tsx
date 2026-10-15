@@ -7,9 +7,9 @@ import { KramBrand } from "@/components/brand/kram-brand";
 import type { Locale } from "@/lib/i18n";
 import { copy } from "@/lib/i18n";
 
-type Props = { locale: Locale; collapsed?: boolean; mobileOpen?: boolean; onCloseMobile?: () => void };
+type Props = { locale: Locale; role: string; collapsed?: boolean; mobileOpen?: boolean; onCloseMobile?: () => void };
 
-export function OpsSidebar({ locale, collapsed = false, mobileOpen = false, onCloseMobile }: Props) {
+export function OpsSidebar({ locale, role, collapsed = false, mobileOpen = false, onCloseMobile }: Props) {
   const pathname = usePathname();
   const t = copy[locale];
   const overview = locale === "fr" ? "Vue globale" : locale === "pt" ? "Visão global" : "Global Overview";
@@ -44,6 +44,40 @@ export function OpsSidebar({ locale, collapsed = false, mobileOpen = false, onCl
     ] }
   ];
 
+  // This is a role-specific navigation aid, not an authorization boundary.
+  const allowed: Record<string, string[]> = {
+    owner: ["overview", "operations", "communication", "assets", "network", "finance", "documents", "system"],
+    regional_admin: ["overview", "operations", "communication", "assets", "network", "finance", "documents", "activity", "users"],
+    admin: ["overview", "operations", "communication", "assets", "network", "expenses", "approvals", "documents"],
+    operations: ["overview", "operations", "communication", "assets", "network", "documents"],
+    finance: ["overview", "finance", "documents"],
+    support: ["overview", "communication", "clients", "enquiries"],
+    viewer: ["overview", "operations", "communication", "assets", "documents", "activity"],
+  };
+  const roleSections = allowed[role] ?? [];
+  const visibleSections = sections
+    .map((section, index) => {
+      const key = index === 0 ? "overview"
+        : index === 1 ? "operations"
+        : index === 2 ? "communication"
+        : index === 3 ? "assets"
+        : index === 4 ? "network"
+        : index === 5 ? "finance"
+        : index === 6 ? "documents"
+        : "system";
+      const filtered = section.items.filter(item => {
+        if (item.href.endsWith("/clients")) return roleSections.includes("assets") || roleSections.includes("clients");
+        if (item.href.endsWith("/enquiries")) return roleSections.includes("assets") || roleSections.includes("enquiries");
+        if (item.href.endsWith("/activity")) return roleSections.includes("system") || roleSections.includes("activity");
+        if (item.href.endsWith("/users")) return roleSections.includes("system") || roleSections.includes("users");
+        if (item.href.endsWith("/settings")) return role === "owner";
+        if (item.href.endsWith("/expenses") || item.href.includes("/expenses/bin") || item.href.endsWith("/financial-reports") || item.href.endsWith("/approvals")) return roleSections.includes("finance") || (role === "admin" && (item.href.endsWith("/expenses") || item.href.endsWith("/approvals")));
+        return true;
+      });
+      return { ...section, key, items: filtered };
+    })
+    .filter(section => roleSections.includes(section.key) && section.items.length > 0);
+
   return <>
     {mobileOpen && <button type="button" aria-label="Close navigation" onClick={onCloseMobile} className="fixed inset-0 z-40 bg-black/30 lg:hidden" />}
     <aside className={"fixed inset-y-0 left-0 z-50 flex flex-col border-r border-[var(--kram-border)] bg-[var(--kram-surface)] transition-[width,transform] duration-200 " + (collapsed ? "lg:w-[72px]" : "lg:w-[228px]") + " " + (mobileOpen ? "w-[280px] translate-x-0" : "w-[280px] -translate-x-full lg:translate-x-0")}>
@@ -52,7 +86,7 @@ export function OpsSidebar({ locale, collapsed = false, mobileOpen = false, onCl
         <button type="button" onClick={onCloseMobile} className="rounded-lg p-2 text-[var(--kram-metal)] hover:bg-[var(--kram-bg)] lg:hidden" aria-label="Close navigation"><X size={18}/></button>
       </div>
       <div className="kram-scrollbar flex-1 overflow-y-auto px-2.5 py-4">
-        {sections.map((section,i)=><div key={i} className={section.label ? "mb-5" : "mb-3"}>
+        {visibleSections.map((section,i)=><div key={i} className={section.label ? "mb-5" : "mb-3"}>
           {section.label && !collapsed && <p className="mb-1.5 px-2.5 text-[9px] font-bold uppercase tracking-[.17em] text-[var(--kram-soft-metal)]">{section.label}</p>}
           <nav className="space-y-0.5">{section.items.map(item=>{
             const Icon=item.icon;
