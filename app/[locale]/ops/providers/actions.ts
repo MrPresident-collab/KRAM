@@ -13,7 +13,7 @@ export async function createProvider(_prev:ProviderActionState,fd:FormData):Prom
  const parsed=schema.safeParse({name:fd.get("name"),phone,email:fd.get("email")||"",specialties:fd.getAll("specialties").map(String),coverage:fd.get("coverage")||undefined,notes:fd.get("notes")||undefined,branchId:fd.get("branchId")||""});
  if(!parsed.success){const i=parsed.error.issues[0];return{success:false,message:"Please check "+i.path.join(".")+": "+i.message+"."}}
  const s=await createClient();const{data:c}=await s.auth.getClaims();const uid=c?.claims?.sub;if(!uid)return{success:false,message:"Your session is no longer valid."};
- const{data:m}=await s.from("organization_members").select("organization_id,role").eq("user_id",uid).eq("status","active").limit(1).maybeSingle();
+ const{data:m}=await s.from("organization_members").select("organization_id,role").eq("user_id",uid).eq("status","active").limit(2).maybeSingle();
  if(!m||!["owner","admin","regional_admin","operations"].includes(m.role))return{success:false,message:"You are not authorized to add service providers."};
  const{data:services}=await s.from("service_catalog").select("code").in("code",parsed.data.specialties).eq("active",true);
  if(!services||services.length!==new Set(parsed.data.specialties).size)return{success:false,message:"One or more selected specialties are not available in the KRAM service catalog."};
@@ -38,7 +38,7 @@ export async function updateProviderVerification(_prev: ProviderActionState, fd:
  const {data:claims}=await s.auth.getClaims();
  const uid=claims?.claims?.sub;
  if(!uid) return {success:false,message:"Your session is no longer valid."};
- const {data:m}=await s.from("organization_members").select("organization_id,role,scope_level,branch_id").eq("user_id",uid).eq("status","active").limit(1).maybeSingle();
+ const {data:m}=await s.from("organization_members").select("organization_id,role,scope_level,branch_id").eq("user_id",uid).eq("status","active").limit(2).maybeSingle();
  if(!m || !["owner","admin","regional_admin","operations"].includes(m.role)) return {success:false,message:"You are not authorized to update provider status."};
  const {data:provider}=await s.from("service_providers").select("id,branch_id").eq("id",providerId).eq("organization_id",m.organization_id).maybeSingle();
  if(!provider) return {success:false,message:"Service provider not found or outside your organization."};
@@ -58,7 +58,7 @@ export async function updateProvider(_prev: ProviderActionState, fd: FormData): 
  if(phone&&!INTERNATIONAL_PHONE_REGEX.test(phone)) return {success:false,message:"Please check phone: use international format, e.g. +244912345678."};
  const s=await createClient(); const {data:claims}=await s.auth.getClaims(); const uid=claims?.claims?.sub;
  if(!uid) return {success:false,message:"Your session is no longer valid."};
- const {data:m}=await s.from("organization_members").select("organization_id,role").eq("user_id",uid).eq("status","active").limit(1).maybeSingle();
+ const {data:m}=await s.from("organization_members").select("organization_id,role").eq("user_id",uid).eq("status","active").limit(2).maybeSingle();
  if(!m||!["owner","admin","regional_admin","operations"].includes(m.role)) return {success:false,message:"You are not authorized to edit service providers."};
  const {data:provider}=await s.from("service_providers").select("id").eq("id",providerId).eq("organization_id",m.organization_id).maybeSingle();
  if(!provider) return {success:false,message:"Service provider not found or outside your organization."};
