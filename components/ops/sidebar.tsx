@@ -66,6 +66,7 @@ export function OpsSidebar({ locale, role, collapsed = false, mobileOpen = false
         : index === 6 ? "documents"
         : "system";
       const filtered = section.items.filter(item => {
+        if (item.href.endsWith("/assets")) return roleSections.includes("assets");
         if (item.href.endsWith("/clients")) return roleSections.includes("assets") || roleSections.includes("clients");
         if (item.href.endsWith("/enquiries")) return roleSections.includes("assets") || roleSections.includes("enquiries");
         if (item.href.endsWith("/activity")) return roleSections.includes("system") || roleSections.includes("activity");
@@ -76,7 +77,7 @@ export function OpsSidebar({ locale, role, collapsed = false, mobileOpen = false
       });
       return { ...section, key, items: filtered };
     })
-    .filter(section => roleSections.includes(section.key) && section.items.length > 0);
+    .filter(section => (roleSections.includes(section.key) || (section.key === "assets" && (roleSections.includes("clients") || roleSections.includes("enquiries")))) && section.items.length > 0);
 
   return <>
     {mobileOpen && <button type="button" aria-label="Close navigation" onClick={onCloseMobile} className="fixed inset-0 z-40 bg-black/30 lg:hidden" />}
