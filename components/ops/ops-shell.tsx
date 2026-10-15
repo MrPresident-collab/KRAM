@@ -30,7 +30,7 @@ export function OpsShell({ locale, user, workspaceLabel, children }: { locale: L
   };
 
   return <div className="min-h-screen">
-    <OpsSidebar locale={locale} collapsed={collapsed} mobileOpen={mobileOpen} onCloseMobile={() => setMobileOpen(false)} />
+    <OpsSidebar locale={locale} role={user.role} collapsed={collapsed} mobileOpen={mobileOpen} onCloseMobile={() => setMobileOpen(false)} />
     <div className={"min-h-screen transition-[padding-left] duration-200 " + (collapsed ? "lg:pl-[72px]" : "lg:pl-[228px]")}>
       <OpsHeader locale={locale} user={user} workspaceLabel={workspaceLabel} collapsed={collapsed} onToggleSidebar={toggleSidebar} onOpenMobile={() => setMobileOpen(true)} />
       <main className="mx-auto max-w-[1680px] px-5 py-6 lg:px-7 lg:py-7">{children}</main>
