@@ -58,25 +58,29 @@ export async function transitionExpense(
  const uid=c?.claims?.sub;
  if(!uid)return{success:false,message:"Your session is no longer valid."};
 
+ const{data:e}=await s.from("expenses")
+   .select("id,organization_id,status,deleted_at")
+   .eq("id",parsed.data.expenseId)
+   .is("deleted_at",null)
+   .maybeSingle();
+
+ if(!e)return{success:false,message:"Expense not found."};
+
  const{data:m}=await s.from("organization_members")
    .select("organization_id,role")
-   .eq("user_id",uid).limit(1).maybeSingle();
+   .eq("user_id",uid)
+   .eq("organization_id",e.organization_id)
+   .eq("status","active")
+   .limit(1).maybeSingle();
 
  if(!m||!["owner","admin","regional_admin","finance"].includes(m.role))
    return{success:false,message:"You are not authorized to approve or verify expenses."};
-
- const{data:e}=await s.from("expenses")
-   .select("id,organization_id,status")
-   .eq("id",parsed.data.expenseId)
-   .eq("organization_id",m.organization_id).maybeSingle();
-
- if(!e)return{success:false,message:"Expense not found."};
 
  const allowed=expenseTransitions[e.status]??[];
  if(!allowed.includes(parsed.data.status))
    return{success:false,message:"That expense transition is not allowed."};
 
- const{error:updateError}=await s.from("expenses")
+ const{data:updated,error:updateError}=await s.from("expenses")
    .update({
      status:parsed.data.status,
      ...(parsed.data.status==="approved"?{approved_by:uid}:{ }),
@@ -84,9 +88,10 @@ export async function transitionExpense(
      ...(parsed.data.status==="paid"?{paid_at:new Date().toISOString()}:{ }),
      updated_at:new Date().toISOString(),
    })
-   .eq("id",e.id).eq("organization_id",e.organization_id);
+   .eq("id",e.id).eq("organization_id",e.organization_id).eq("status",e.status).is("deleted_at",null).select("id").maybeSingle();
 
  if(updateError)return{success:false,message:"The expense could not be updated."};
+ if(!updated)return{success:false,message:"This expense was changed by another staff member. Refresh and try again."};
  await writeAudit(s,{organizationId:e.organization_id,actorId:uid,action:`expense.${parsed.data.status}`,entityType:"expense",entityId:e.id,summary:`Expense moved to ${parsed.data.status}`,metadata:{from:e.status,to:parsed.data.status,note:parsed.data.note||null}});
 
  if(["approved","rejected"].includes(parsed.data.status)){
