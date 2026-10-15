@@ -12,7 +12,7 @@ export async function createClientRecord(_prev:ClientActionState,formData:FormDa
  if(!parsed.success){ const issue=parsed.error.issues[0]; const field=issue?.path?.join(".")||"form"; return{success:false,message:`Please check ${field}: ${issue?.message||"invalid value"}.`}; }
  const supabase=await createClient(); const {data:claims}=await supabase.auth.getClaims(); const userId=claims?.claims?.sub;
  if(!userId)return{success:false,message:"Your session is no longer valid."};
- const {data:membership}=await supabase.from("organization_members").select("organization_id,role,scope_level,country_id,branch_id").eq("user_id",userId).eq("status","active").limit(1).maybeSingle();
+ const {data:membership}=await supabase.from("organization_members").select("organization_id,role,scope_level,country_id,branch_id").eq("user_id",userId).eq("status","active").limit(2).maybeSingle();
  if(!membership)return{success:false,message:"You are not authorized to create clients."};
  if(!["owner","admin","regional_admin"].includes(membership.role))return{success:false,message:"You are not authorized to create clients."};
  const {data:branch}=await supabase.from("branches").select("id,country_id").eq("id",parsed.data.branchId).eq("organization_id",membership.organization_id).maybeSingle();
@@ -46,7 +46,7 @@ export async function updateClientRecord(_prev:ClientActionState,fd:FormData):Pr
  }).safeParse({clientId:fd.get("clientId"),fullName:fd.get("fullName"),email:fd.get("email")||"",primaryPhone:fd.get("primaryPhone")||"",alternativePhone:fd.get("alternativePhone")||"",residencyCountry:fd.get("residencyCountry")||"",residencyCity:fd.get("residencyCity")||"",residencyAddress:fd.get("residencyAddress")||"",preferredLanguage:fd.get("preferredLanguage"),preferredContactMethod:fd.get("preferredContactMethod"),notes:fd.get("notes")||""});
  if(!parsed.success){const issue=parsed.error.issues[0];return{success:false,message:"Please check "+(issue?.path.join(".")||"form")+": "+(issue?.message||"invalid value")};}
  const s=await createClient();const{data:claims}=await s.auth.getClaims();const uid=claims?.claims?.sub;if(!uid)return{success:false,message:"Your session is no longer valid."};
- const{data:m}=await s.from("organization_members").select("organization_id,role,scope_level,country_id,branch_id").eq("user_id",uid).eq("status","active").limit(1).maybeSingle();
+ const{data:m}=await s.from("organization_members").select("organization_id,role,scope_level,country_id,branch_id").eq("user_id",uid).eq("status","active").limit(2).maybeSingle();
  if(!m||!["owner","admin","regional_admin","operations","support"].includes(m.role))return{success:false,message:"You are not authorized to edit clients."};
  const{data:client}=await s.from("clients").select("id,branch_id").eq("id",parsed.data.clientId).eq("organization_id",m.organization_id).maybeSingle();
  if(!client)return{success:false,message:"Client not found or outside your organization."};
