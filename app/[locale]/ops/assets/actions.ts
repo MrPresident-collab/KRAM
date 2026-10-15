@@ -41,7 +41,7 @@ export async function createAssetRecord(_prev: AssetActionState, formData: FormD
     .eq("user_id", userId)
     .eq("status", "active")
     .order("created_at", { ascending: true })
-    .limit(1)
+    .limit(2)
     .maybeSingle();
 
   if (!membership) return { success: false, message: "You are not authorized to create assets." };
@@ -101,7 +101,7 @@ export async function updateAssetRecord(_prev:AssetActionState,fd:FormData):Prom
  const parsed=schema.extend({assetId:z.string().uuid()}).safeParse({assetId:fd.get("assetId"),name:fd.get("name"),type:fd.get("type"),countryId:fd.get("countryId"),branchId:fd.get("branchId"),city:fd.get("city"),address:fd.get("address"),description:fd.get("description"),clientId:fd.get("clientId")});
  if(!parsed.success)return{success:false,message:"Please complete the required asset fields."};
  const s=await createClient();const{data:claims}=await s.auth.getClaims();const uid=claims?.claims?.sub;if(!uid)return{success:false,message:"Your session is no longer valid."};
- const{data:m}=await s.from("organization_members").select("organization_id,role,scope_level,country_id,branch_id").eq("user_id",uid).eq("status","active").order("created_at",{ascending:true}).limit(1).maybeSingle();
+ const{data:m}=await s.from("organization_members").select("organization_id,role,scope_level,country_id,branch_id").eq("user_id",uid).eq("status","active").order("created_at",{ascending:true}).limit(2).maybeSingle();
  if(!m)return{success:false,message:"You are not authorized to edit assets."};
  if(!["owner","admin","regional_admin","operations"].includes(m.role))return{success:false,message:"You are not authorized to edit assets."};
  const{data:asset}=await s.from("assets").select("id,branch_id,country_code").eq("id",parsed.data.assetId).eq("organization_id",m.organization_id).maybeSingle();
