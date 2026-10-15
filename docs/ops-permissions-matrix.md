@@ -15,7 +15,7 @@ The membership enum currently contains `global`, `country`, and `branch`. Keep t
 - **Branch / Admin:** `branch` scope confines the administrator to the assigned branch and its permitted operational functions.
 - **Functional roles:** `operations`, `finance`, `support`, and `viewer` describe job responsibilities, not extra organisational reach. They remain confined to their assigned scope. `client` belongs to the client portal and must not receive staff Ops access.
 
-Do not equate a region with a country. The current database has a `countries` table and `organization_members.country_id`; a first-class region entity and region-to-country/branch relationships must be designed before regional scope can be reliably enforced. Do not silently treat a country ID as a region ID.
+For business purposes, the existing `countries` table is the **region registry**. Keep the database table/column/enum names as they are; present this concept as **Regions** in Ops UI. `organization_members.country_id` is the assigned region ID, and `branches.country_id` associates a branch with that region. Do not introduce a second region entity or rename the existing fields as part of this implementation. The free-text `branches.region` field is descriptive legacy data only and must not determine authorization.
 
 ## 2. Enforcement sequence (required for every protected action)
 
@@ -55,11 +55,11 @@ The exact permitted actions (create/edit/assign/approve/pay/archive/restore/perm
 
 - Database enums currently include roles: `owner`, `admin`, `operations`, `finance`, `support`, `viewer`, `client`, `regional_admin`; scopes: `global`, `country`, `branch`.
 - `organization_members` has active/invited/deactivated/archived statuses and `country_id`/ `branch_id` foreign keys. The live membership summary currently returned one active `owner/global` membership, so real behaviour for every role cannot be verified using current production-like membership data alone.
-- Ops layout selects the earliest active membership for a user and derives a workspace label from `country_id` or `branch_id`. This is not sufficient as a general multi-membership resolver and labels the legacy `country` scope as a country.
+- Ops layout now fails closed when there is no active staff membership, more than one active membership, an invalid Global/Owner combination, a client role, or a missing region/branch assignment. This first guard is committed, but is not yet build- or production-verified.
 - Ops sidebar currently builds a common navigation list and displays all sections regardless of role. Role-specific navigation/workspaces are not yet consistently enforced in the UI.
-- Countries and branches have create/update/delete actions in the server layer restricted to active global-scope `owner` or `admin`. The intended model reserves Global scope for the owner; this needs to be reconciled so a branch admin cannot acquire global powers and only the owner can create/manage the organisational structure unless explicitly delegated.
+- Countries/Regions and branches have create/update/delete server actions. They must be restricted to an active global-scope `owner`; `admin` must never gain Global powers through these actions.
 - Live RLS policies for `branches` allow writes through `can_manage_country(organization_id, country_id)`, and country writes through `can_manage_country(organization_id)`. Those helper semantics and grants must be inspected and aligned with the owner-only region/branch administration rule; the server action checks alone do not establish that direct database writes are safe.
-- There is currently no `region_id` field in `organization_members`, `countries`, or `branches`; branch records have a free-text `region` field. This is insufficient to enforce a multi-country region boundary.
+- The existing `countries` records are used as region records; `organization_members.country_id` and `branches.country_id` are the structural region links. The branch free-text `region` field is not an authorization boundary.
 - Some RLS policies use shared helpers such as `has_org_role`, `is_org_member`, and `can_access_branch`. Existing policy expressions and action-level checks vary by table/module and must be audited together rather than assumed consistent.
 - Existing membership and role checks are not proof that all record reads, server actions, RLS policies, and Storage paths have equivalent scope enforcement.
 
@@ -73,7 +73,7 @@ Ops must provide a controlled way for the owner to configure:
 4. Membership assignments to a region or branch with role and active status.
 5. Validation preventing cross-organisation references and invalid combinations (e.g. a branch admin without a branch; regional admin without a region; global scope assigned without explicit owner authority).
 
-The current `countries` table is not itself a region model. Before implementing this UI, design a migration for a first-class region entity and update membership references and policy helpers in one coordinated change. Preserve existing records with an explicit backfill/mapping plan.
+Use the existing `countries` table as the region registry and label it **Regions** in the Ops interface. Preserve the database names `countries`, `country_id`, and the `country` scope enum for compatibility. The owner must be able to create/edit regions and branches, and assign active staff to the appropriate region or branch. Enforce same-organisation references and valid role/scope combinations. Do not add a parallel region table.
 
 ## 6. Coordinated audit plan (no isolated patches)
 
