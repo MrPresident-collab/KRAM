@@ -118,11 +118,14 @@ export async function transitionExpense(
 export async function moveExpenseToBin(_prev:ExpenseActionState,fd:FormData):Promise<ExpenseActionState>{
  const id=String(fd.get("expenseId")||""); if(!z.string().uuid().safeParse(id).success)return{success:false,message:"Invalid expense."};
  const s=await createClient(); const{data:c}=await s.auth.getClaims(); const uid=c?.claims?.sub; if(!uid)return{success:false,message:"Your session is no longer valid."};
- const{data:m}=await s.from("organization_members").select("organization_id,role").eq("user_id",uid).eq("status","active").limit(1).maybeSingle();
+ const{data:record}=await s.from("expenses").select("id,organization_id,deleted_at").eq("id",id).maybeSingle();
+ if(!record||record.deleted_at)return{success:false,message:"Expense not found."};
+ const{data:m}=await s.from("organization_members").select("organization_id,role").eq("user_id",uid).eq("organization_id",record.organization_id).eq("status","active").limit(1).maybeSingle();
  if(!m||!["owner","admin","regional_admin"].includes(m.role))return{success:false,message:"Only administrators can move expenses to the bin."};
- const{error}=await s.from("expenses").update({deleted_at:new Date().toISOString(),deleted_by:uid,updated_at:new Date().toISOString()}).eq("id",id).eq("organization_id",m.organization_id);
- if(error)return{success:false,message:"The expense could not be moved to the bin."}; for(const l of["fr","en","pt"])revalidatePath("/"+l+"/ops/expenses"); return{success:true,message:"Expense moved to bin."};
+ const{data:updated,error}=await s.from("expenses").update({deleted_at:new Date().toISOString(),deleted_by:uid,updated_at:new Date().toISOString()}).eq("id",id).eq("organization_id",record.organization_id).is("deleted_at",null).select("id").maybeSingle();
+ if(error)return{success:false,message:"The expense could not be moved to the bin."};if(!updated)return{success:false,message:"The expense was already changed. Refresh and try again."}; for(const l of["fr","en","pt"])revalidatePath("/"+l+"/ops/expenses"); return{success:true,message:"Expense moved to bin."};
 }
+
 export async function emptyExpenseBin(_prev:ExpenseActionState,fd:FormData):Promise<ExpenseActionState>{void _prev; void fd;
  const s=await createClient(); const{data:c}=await s.auth.getClaims(); const uid=c?.claims?.sub; if(!uid)return{success:false,message:"Your session is no longer valid."};
  const{data:m}=await s.from("organization_members").select("organization_id,role").eq("user_id",uid).eq("status","active").limit(1).maybeSingle(); if(!m||!["owner","admin","regional_admin"].includes(m.role))return{success:false,message:"Only Global and Regional administrators can empty the bin."};
