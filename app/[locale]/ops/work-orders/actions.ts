@@ -8,7 +8,7 @@ export async function createWorkOrder(_prev:WorkOrderActionState,fd:FormData):Pr
  if(!parsed.success)return{success:false,message:"Please complete the required work order fields."};
  const supabase=await createClient();const{data:claims}=await supabase.auth.getClaims();const userId=claims?.claims?.sub;if(!userId)return{success:false,message:"Your session is no longer valid."};
  const{data:asset}=await supabase.from("assets").select("id,organization_id,branch_id").eq("id",parsed.data.assetId).is("deleted_at",null).maybeSingle();if(!asset)return{success:false,message:"The selected asset is not accessible."};
- const{data:membership}=await supabase.from("organization_members").select("organization_id,role,scope_level,branch_id,country_id").eq("user_id",userId).eq("organization_id",asset.organization_id).eq("status","active").limit(2).maybeSingle();if(!membership||!["owner","admin","regional_admin","operations"].includes(membership.role))return{success:false,message:"You are not authorized to create work orders."};if(membership.scope_level==="branch"&&membership.branch_id!==asset.branch_id)return{success:false,message:"The selected asset is outside your branch scope."};
+ const{data:membership}=await supabase.from("organization_members").select("organization_id,role,scope_level,branch_id,country_id").eq("user_id",userId).eq("organization_id",asset.organization_id).eq("status","active").limit(2).maybeSingle();if(!membership||!["owner","admin","regional_admin","operations"].includes(membership.role))return{success:false,message:"You are not authorized to create work orders."};if((membership.role==="owner"&&membership.scope_level!=="global")||(membership.role==="regional_admin"&&membership.scope_level!=="country")||(membership.role==="admin"&&membership.scope_level!=="branch")||(membership.role==="operations"&&!["country","branch"].includes(membership.scope_level)))return{success:false,message:"Your role and assigned scope do not permit this action."};if(membership.scope_level==="branch"&&membership.branch_id!==asset.branch_id)return{success:false,message:"The selected asset is outside your branch scope."};if(membership.scope_level==="country"){if(!asset.branch_id)return{success:false,message:"This asset has no branch assignment, so its region cannot be verified."};const{data:assetBranch}=await supabase.from("branches").select("country_id").eq("id",asset.branch_id).eq("organization_id",asset.organization_id).maybeSingle();if(!assetBranch||assetBranch.country_id!==membership.country_id)return{success:false,message:"The selected asset is outside your region scope."};}
  const{data:service}=await supabase.from("service_catalog").select("code").eq("code",parsed.data.category).eq("active",true).maybeSingle();if(!service)return{success:false,message:"Please select a KRAM service from the service catalog."};
  const{data:createdWorkOrder,error}=await supabase.from("work_orders").insert({organization_id:membership.organization_id,asset_id:asset.id,branch_id:asset.branch_id,title:parsed.data.title,category:parsed.data.category,priority:parsed.data.priority,description:parsed.data.description||null,estimated_cost:parsed.data.estimatedCost??null,client_approval:parsed.data.clientApproval,created_by:userId}).select("id").single();
  if(error||!createdWorkOrder)return{success:false,message:"The work order could not be created."};
@@ -72,8 +72,16 @@ export async function transitionWorkOrder(
   if (!membership || !["owner","admin","regional_admin","operations"].includes(membership.role)) {
     return { success: false, message: "You are not authorized to update work orders." };
   }
+  if ((membership.role === "owner" && membership.scope_level !== "global") || (membership.role === "regional_admin" && membership.scope_level !== "country") || (membership.role === "admin" && membership.scope_level !== "branch") || (membership.role === "operations" && !["country", "branch"].includes(membership.scope_level))) {
+    return { success: false, message: "Your role and assigned scope do not permit this action." };
+  }
   if (membership.scope_level === "branch" && membership.branch_id !== current.branch_id) {
     return { success: false, message: "This work order is outside your branch scope." };
+  }
+  if (membership.scope_level === "country") {
+    if (!current.branch_id) return { success: false, message: "This work order has no branch assignment, so its region cannot be verified." };
+    const { data: currentBranch } = await supabase.from("branches").select("country_id").eq("id", current.branch_id).eq("organization_id", current.organization_id).maybeSingle();
+    if (!currentBranch || currentBranch.country_id !== membership.country_id) return { success: false, message: "This work order is outside your region scope." };
   }
 
   const allowed = transitions[current.status] ?? [];
